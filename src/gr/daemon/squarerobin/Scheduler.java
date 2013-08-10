@@ -8,16 +8,18 @@ import java.util.Collections;
 public class Scheduler {
     private HashMap<Integer,ArrayList> fullSchedule = new HashMap<>();
     private ArrayList<String> teams = new ArrayList<>();
-    private static final int FIXED_TEAM_NUMBER = 0;
+    private static final int FIXED_TEAM_NUMBER = 0; // number of array position
     
-    Scheduler(ArrayList<String> teamList) throws IllegalArgumentException {
+    public Scheduler(ArrayList<String> teamList) throws IllegalArgumentException {
         if ((teamList.size() % 2) == 1) {
             throw new IllegalArgumentException("Input list size must be an even number");
-        }
-        teams = (ArrayList<String>) teamList.clone();
+        } 
+        teams = new ArrayList<>(teamList);
+        Collections.shuffle(teams);
     }
 
     public void schedule() {
+        ArrayList<ArrayList<String>> day;
         ArrayList<String> pair;
         String fixedTeam;
 
@@ -29,14 +31,20 @@ public class Scheduler {
             // add fixed team in first position
             teams.add(0, fixedTeam);
             
+            // create a new schedule day
+            day = new ArrayList<>();
+            
             for (int i = 0; i < (teams.size() / 2); i++) {
                 pair = new ArrayList<>();
                 pair.add(teams.get(i));
-                pair.add(teams.get(teams.size()-(i+1)));
-                
-                System.out.println("round: " + j + " a: " + pair.get(0) + " b: " + pair.get(1));
-                fullSchedule.put(j, pair);
+                pair.add(teams.get(teams.size() - (i + 1)));
+
+                // add each pair to day
+                day.add(new ArrayList<>(pair));
             }
+            // add day to schedule
+            fullSchedule.put(j, new ArrayList<>(day));
+            
             // remove fixed team and rotate
             teams.remove(0);
             Collections.rotate(teams, 1);
