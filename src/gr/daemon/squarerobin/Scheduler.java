@@ -43,7 +43,7 @@ public class Scheduler {
         }
     }
     
-    public HashMap<Integer,ArrayList> get_schedule() {
+    public HashMap<Integer,ArrayList> getSchedule() {
         return fullSchedule;
     }
 
