@@ -65,8 +65,7 @@ public class CLI {
 	private void printDraw() {
 		HashMap<Integer, ArrayList<String[]>> schedule;
 		
-		Scheduler scheduler = new Scheduler(this.clubs);
-		scheduler.schedule();
+		Scheduler scheduler = new Scheduler(this.clubs);		
 		schedule = scheduler.getSchedule();
 		for (int day : schedule.keySet()) {
 			System.out.println("Day " + day);

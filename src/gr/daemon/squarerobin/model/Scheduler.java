@@ -15,6 +15,7 @@ public class Scheduler {
         } 
         teams = new ArrayList<>(teamList);
         Collections.shuffle(teams);
+        schedule();
     }
 
     public void schedule() {
@@ -33,8 +34,8 @@ public class Scheduler {
             // create a new schedule day
             day = new ArrayList<>();
             
-            for (int i = 0; i < (teams.size() / 2); i++) {            	            	
-            	pair[0] = teams.get(i);            	
+            for (int i = 0; i < (teams.size() / 2); i++) {
+            	pair[0] = teams.get(i);
             	pair[1] = teams.get(teams.size() - (i + 1));               
 
                 // add each pair to day
