@@ -38,7 +38,7 @@ public class Scheduler {
             	pair[1] = teams.get(teams.size() - (i + 1));               
 
                 // add each pair to day
-                day.add(pair);
+                day.add(pair.clone());
             }
             // add day to schedule
             fullSchedule.put(j, day);
