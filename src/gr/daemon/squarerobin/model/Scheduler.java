@@ -8,7 +8,7 @@ import java.util.Collections;
 public class Scheduler {
     private HashMap<Integer, ArrayList<String[]>> fullSchedule = new HashMap<>();
     private ArrayList<String> teams = new ArrayList<>();
-    private static final int FIXED_TEAM_NUMBER = 0; // number of array position
+    private static final int FIXED_TEAM_NUMBER = 0; // number of array index
     
     public Scheduler(ArrayList<String> teamList) throws IllegalArgumentException {
         // unique check
@@ -42,7 +42,7 @@ public class Scheduler {
         fixedTeam = teams.get(FIXED_TEAM_NUMBER);
         teams.remove(FIXED_TEAM_NUMBER);
         
-        for (int j = 0; j < (teams.size() - 1); j++) {
+        for (int j = 0; j < teams.size(); j++) {
             // add fixed team in first position
             teams.add(0, fixedTeam);
             
