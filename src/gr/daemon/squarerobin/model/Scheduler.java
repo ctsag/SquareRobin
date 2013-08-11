@@ -12,13 +12,13 @@ public class Scheduler {
     
     public Scheduler(ArrayList<String> teamList) throws IllegalArgumentException {
         // unique check
-        ArrayList<String> uniqueList = new ArrayList<>(new HashSet<>(teamList)); 
+        ArrayList<String> uniqueList = new ArrayList<>(new HashSet<String>(teamList)); 
         if (!checkTeams(uniqueList) || (teamList.size() != uniqueList.size()) ) {
             throw new IllegalArgumentException("Input list is not unique");
         }
-        // odd or 0 check
+        // odd or empty check
         if (!checkTeams(teamList)) {
-            throw new IllegalArgumentException("Input list size must be an even number greater than 0");
+            throw new IllegalArgumentException("Input list size must be an even number and not empty");
         } 
         teams = new ArrayList<>(teamList);
         Collections.shuffle(teams);
