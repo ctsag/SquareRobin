@@ -15,6 +15,7 @@ public class Scheduler {
         } 
         teams = new ArrayList<>(teamList);
         Collections.shuffle(teams);
+        schedule();
     }
 
     public void schedule() {
