@@ -1,7 +1,9 @@
 package gr.daemon.squarerobin.cli;
 
 import gr.daemon.squarerobin.cli.State;
+import gr.daemon.squarerobin.model.Scheduler;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class CLI {	
@@ -60,15 +62,26 @@ public class CLI {
 		}		
 	}
 	
+	private void printDraw() {
+		HashMap<Integer, ArrayList<String[]>> schedule;
+		
+		Scheduler scheduler = new Scheduler(this.clubs);
+		scheduler.schedule();
+		schedule = scheduler.getSchedule();
+		for (int day : schedule.keySet()) {
+			System.out.println("Day " + day);
+			for (String[] pair : schedule.get(day)) {
+				System.out.println(pair[0] + " - " + pair[1]);
+			}			
+		}
+	}
+	
 	public static void main(String[] args) {
-		CLI robin = new CLI();	
+		CLI robin = new CLI();
 		
 		if (robin.validateArgs(args)) {
 			robin.getInput();
-			System.out.println("Thank you for your input");
-			for (String club : robin.clubs) {
-				System.out.println(club);
-			}
+			robin.printDraw();			
 		}
 	}
 	
