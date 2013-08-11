@@ -12,20 +12,20 @@ public class Scheduler {
     
     public Scheduler(ArrayList<String> teamList) throws IllegalArgumentException {
         // unique check
-        ArrayList<String> uniqueList = new ArrayList<>(new HashSet<>(teamList)); 
-        if (!teamCheck(uniqueList) || (teamList.size() != uniqueList.size()) ) {
+        ArrayList<String> uniqueList = new ArrayList<>(new HashSet<String>(teamList)); 
+        if (!checkTeams(uniqueList) || (teamList.size() != uniqueList.size()) ) {
             throw new IllegalArgumentException("Input list is not unique");
         }
-        // odd or 0 check
-        if (!teamCheck(teamList)) {
-            throw new IllegalArgumentException("Input list size must be an even number greater than 0");
+        // odd or empty check
+        if (!checkTeams(teamList)) {
+            throw new IllegalArgumentException("Input list size must be an even number and not empty");
         } 
         teams = new ArrayList<>(teamList);
         Collections.shuffle(teams);
         schedule();
     }
 
-    private boolean teamCheck(ArrayList<String> teamList) {
+    private boolean checkTeams(ArrayList<String> teamList) {
         if ( ((teamList.size() % 2) == 1) || (teamList.isEmpty()) ) {
             return false;
         } else {
