@@ -42,7 +42,7 @@ public class Scheduler {
         fixedTeam = teams.get(FIXED_TEAM_NUMBER);
         teams.remove(FIXED_TEAM_NUMBER);
         
-        for (int j = 0; j < teams.size(); j++) {
+        for (int j = 1; j <= teams.size(); j++) {
             // add fixed team in first position
             teams.add(0, fixedTeam);
             
