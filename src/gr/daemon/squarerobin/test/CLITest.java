@@ -42,7 +42,7 @@ public class CLITest {
 		CLI.main(new String[]{});
 		
 		// Assert number of days
-		for (int i = 0; i < clubs.length - 1; i++) {
+		for (int i = 1; i < clubs.length; i++) {
 			assertEquals(1, this.countOccurences(systemOut.toString(), "Day " + i));			
 		}
 		
