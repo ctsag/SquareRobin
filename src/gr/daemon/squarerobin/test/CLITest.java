@@ -7,7 +7,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.security.Permission;
 import static org.junit.Assert.*;
-
 import org.junit.Test;
 
 public class CLITest {
