@@ -98,9 +98,12 @@ public class SchedulerTest {
         try {
             Scheduler scheduler = new Scheduler(teams);
             outSchedule = scheduler.getSchedule();
-        } catch(Exception e) {
-            assertTrue(e instanceof IllegalStateException);
-            assertEquals(Scheduler.ERR_HOMEAWAY, e.getMessage());
-        }        
+            int a = 1;
+        } catch(IllegalStateException e) {
+            fail(e.getMessage());
+        } catch(IllegalArgumentException e) {
+            assertTrue(e instanceof IllegalArgumentException);
+            assertEquals(Scheduler.ERR_CLUBS_NOTUNIQUE, e.getMessage());
+        }
     }
 }

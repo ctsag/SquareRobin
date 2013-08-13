@@ -10,6 +10,7 @@ import java.util.Iterator;
 public class Scheduler {
     
     private HashMap<Integer, ArrayList<String[]>> fullSchedule = new HashMap<>();
+    HashMap<Integer, ArrayList<String[]>> normalizedSchedule;
     private ArrayList<String> teams = new ArrayList<>();
     private HashMap<String, Integer> homeAwayCounter = new HashMap<>();
     private static final int FIXED_TEAM_NUMBER = 0; // number of array index
@@ -34,17 +35,19 @@ public class Scheduler {
         Collections.shuffle(teams);
         try {
             normalizeSchedule();
-        } catch (Exception e) {
+        } catch (IllegalStateException e) {
             throw new IllegalStateException(e.getMessage());
         }
     }
     
     public void normalizeSchedule() throws IllegalStateException {
         
-        ArrayList<String[]> day;
-        String[] pair;
+        ArrayList<String[]> pairList;
+        ArrayList<String[]> newDay;
+        String[] reversePair;
         String team;
         Iterator it;
+        int day;
 
         it = teams.iterator();
         while (it.hasNext()) {
@@ -53,31 +56,45 @@ public class Scheduler {
         }
         
         schedule();
+        normalizedSchedule = (HashMap<Integer, ArrayList<String[]>>) fullSchedule.clone();
         it = fullSchedule.entrySet().iterator();
         
         while (it.hasNext()) {
             Entry thisEntry = (Entry) it.next();
-            day = (ArrayList<String[]>) thisEntry.getValue();
-            pair = day.get(0);
-            for (int i = 0; i <= 1; i++) {
-                if (homeAwayCounter.get(pair[i]) >= 0) {
-                    if (i == 0) {
-                        homeAwayCounter.put(pair[i], homeAwayCounter.get(pair[i]) + 1);
-                    } else {
-                        homeAwayCounter.put(pair[i], 1);
-                    }
-                } else {
-                    if (i == 0) {
-                        homeAwayCounter.put(pair[i], -1);
-                    } else {
-                        homeAwayCounter.put(pair[i], homeAwayCounter.get(pair[i]) - 1);
+            day = (int) thisEntry.getKey();
+            pairList = (ArrayList<String[]>) thisEntry.getValue();
+            for (String[] pair : pairList) {
+                if (homeAwayCounter.get(pair[0]) > 0) {
+                    if (homeAwayCounter.get(pair[1]) < 2) {
+                        reversePair = new String[] {pair[1], pair[0]};
+                        newDay = (ArrayList<String[]>) pairList.clone();
+                        newDay.set(newDay.indexOf(pair), reversePair.clone());
+                        normalizedSchedule.put(day, newDay);
+                        pair = reversePair.clone();
                     }
                 }
-                if (Math.abs(homeAwayCounter.get(pair[i])) == 3) {
-                    throw new IllegalStateException(ERR_HOMEAWAY);
+
+                for (int i = 0; i <= 1; i++) {
+                    if (homeAwayCounter.get(pair[i]) >= 0) {
+                        if (i == 0) {
+                            homeAwayCounter.put(pair[i], homeAwayCounter.get(pair[i]) + 1);
+                        } else {
+                            homeAwayCounter.put(pair[i], -1);
+                        }
+                    } else {
+                        if (i == 0) {
+                            homeAwayCounter.put(pair[i], 1);
+                        } else {
+                            homeAwayCounter.put(pair[i], homeAwayCounter.get(pair[i]) - 1);
+                        }
+                    }
+                    if (Math.abs(homeAwayCounter.get(pair[i])) == 3) {
+                        throw new IllegalStateException(ERR_HOMEAWAY);
+                    }
                 }
             }
         }
+        fullSchedule = normalizedSchedule;
     }
     
     private void schedule() {
