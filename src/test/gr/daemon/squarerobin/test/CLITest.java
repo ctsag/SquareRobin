@@ -84,7 +84,6 @@ public class CLITest {
 		}
 	}
 	
-	
 	@Test
 	public void testOddClubs() {
 		String[] clubs = new String[]{"PAO", "OSFP", "AEK"};
