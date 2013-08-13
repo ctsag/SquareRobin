@@ -3,9 +3,10 @@ package gr.daemon.squarerobin.cli;
 public enum State {
 	
 	OK(0),
-	INVALID_ARGUMENTS(1),
-	INSUFFICIENT_CLUBS(2),
-	ODD_CLUBS(3);
+	UNSPECIFIED_ERROR(1),
+	INVALID_ARGUMENTS(2),
+	INSUFFICIENT_CLUBS(3),
+	ODD_CLUBS(4);
 	
 	private int value;
 	
@@ -22,6 +23,9 @@ public enum State {
 		
 		switch (this) {
 			case OK :				
+				break;
+			case UNSPECIFIED_ERROR :
+				message = "An error has occured";
 				break;
 			case INVALID_ARGUMENTS :
 				message = "Invalid number of arguments";

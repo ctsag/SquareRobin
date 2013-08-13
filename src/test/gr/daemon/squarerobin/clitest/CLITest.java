@@ -134,12 +134,38 @@ public class CLITest {
 		// Assert invalid arguments number of clubs produce appropriate exit code
 		System.setSecurityManager(new NoExitSecurityManager());
 		try {
-			CLI.main(new String[]{"invalid"});
+			CLI.main(new String[]{"invalid arguments"});
 			fail("System.exit() expected");
 		} catch(ExitException e) {
 			assertEquals(State.INVALID_ARGUMENTS.getValue(), e.getExitCode());
 		}		
 		System.setSecurityManager(null);
-	}	
+	}
+	
+	@Test
+	public void testUnspecifiedError() {
+		String[] clubs = new String[]{"PAO", "OSFP", "AEK", "PAO"};
+		String systemIn = "";
+		ByteArrayOutputStream systemOut = new ByteArrayOutputStream();
+
+		// Setup input and output.
+		for (String club : clubs) {
+			systemIn += club + "\n";
+		}
+		systemIn += "\n";
+		System.setIn(new ByteArrayInputStream(systemIn.getBytes()));
+		System.setOut(new PrintStream(systemOut));
+
+		// Assert an uncaught exception (such as duplicate teams) produces the appropriate exit code and outputs the exception message properly
+		System.setSecurityManager(new NoExitSecurityManager());
+		try {
+			CLI.main(new String[]{});
+			fail("System.exit() expected");
+		} catch(ExitException e) {			
+			assertEquals(State.UNSPECIFIED_ERROR.getValue(), e.getExitCode());
+			assertEquals(1, this.countOccurences(systemOut.toString(), State.UNSPECIFIED_ERROR.toString() + " : "));
+		}
+		System.setSecurityManager(null);
+	}
 
 }

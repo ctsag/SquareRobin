@@ -15,7 +15,7 @@ public class CLI {
 		System.out.println("Please run the CLI command without any arguments");
 	}
 	
-	private void handleError(State state) {
+	private void handleError(State state, String message) {
 		this.state = state;
 		switch (this.state) {
 			case OK :
@@ -24,13 +24,21 @@ public class CLI {
 				this.printUsage();
 				System.exit(this.state.getValue());
 				break;
+			case UNSPECIFIED_ERROR :
 			case INSUFFICIENT_CLUBS :
 			case ODD_CLUBS :
-				System.out.println(this.state.toString());
+				if (!message.equals("")) {
+					message = " : " + message;
+				}
+				System.out.println(this.state.toString() + message);
 				System.exit(this.state.getValue());
 			default :
 				break;
-		}
+		}		
+	}
+	
+	private void handleError(State state) {
+		this.handleError(state, "");
 	}
 	
 	private boolean validateArgs(String[] args) {
@@ -63,14 +71,17 @@ public class CLI {
 	}
 	
 	private void printDraw() {
-		Scheduler scheduler = new Scheduler(this.clubs);
-		HashMap<Integer, ArrayList<String[]>> schedule = scheduler.getSchedule();	
-		
-		for (int day : schedule.keySet()) {
-			System.out.println("Day " + day);
-			for (String[] pair : schedule.get(day)) {
-				System.out.println(pair[0] + " - " + pair[1]);
-			}			
+		try {
+			Scheduler scheduler = new Scheduler(this.clubs);
+			HashMap<Integer, ArrayList<String[]>> schedule = scheduler.getSchedule();
+			for (int day : schedule.keySet()) {
+				System.out.println("Day " + day);
+				for (String[] pair : schedule.get(day)) {
+					System.out.println(pair[0] + " - " + pair[1]);
+				}			
+			}
+		} catch(IllegalArgumentException e) {
+			handleError(State.UNSPECIFIED_ERROR, e.getMessage());
 		}
 	}
 	
