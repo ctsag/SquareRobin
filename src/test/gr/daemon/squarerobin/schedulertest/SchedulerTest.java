@@ -83,4 +83,23 @@ public class SchedulerTest {
             assertEquals(teams.size() - 1, outSchedule.size());
         }
     }
+    
+    @Test
+    public void testHomeAway() {
+        
+        teams.add("PAO");
+        teams.add("OSFP");
+        teams.add("MPAOK");
+        teams.add("ARIS");
+        teams.add("ASTERAS");
+        teams.add("OFI");
+        
+        try {
+            Scheduler scheduler = new Scheduler(teams);
+            outSchedule = scheduler.getSchedule();
+        } catch(Exception e) {
+            assertTrue(e instanceof IllegalStateException);
+            assertEquals(Scheduler.ERR_HOMEAWAY, e.getMessage());
+        }        
+    }
 }
