@@ -63,14 +63,19 @@ public class Scheduler {
             Entry thisEntry = (Entry) it.next();
             day = (int) thisEntry.getKey();
             pairList = (ArrayList<String[]>) thisEntry.getValue();
+            
             for (String[] pair : pairList) {
-                if (homeAwayCounter.get(pair[0]) > 0) {
-                    if (homeAwayCounter.get(pair[1]) < 2) {
-                        reversePair = new String[] {pair[1], pair[0]};
-                        newDay = (ArrayList<String[]>) pairList.clone();
-                        newDay.set(newDay.indexOf(pair), reversePair.clone());
-                        normalizedSchedule.put(day, newDay);
-                        pair = reversePair.clone();
+                if (homeAwayCounter.get(pair[1]) <= 2) {
+                    if (homeAwayCounter.get(pair[0]) >= -2) {
+                        if (homeAwayCounter.get(pair[0]) > 0) {
+                            
+                            reversePair = new String[] {pair[1], pair[0]};
+                            newDay = normalizedSchedule.get(day);
+                            newDay.set(newDay.indexOf(pair), reversePair.clone());
+                            normalizedSchedule.put(day, newDay);
+                            pair = reversePair.clone();
+                        }
+                        
                     }
                 }
 
@@ -94,7 +99,7 @@ public class Scheduler {
                 }
             }
         }
-        fullSchedule = normalizedSchedule;
+        //fullSchedule = normalizedSchedule;
     }
     
     private void schedule() {
@@ -131,7 +136,7 @@ public class Scheduler {
     }
     
     public HashMap<Integer, ArrayList<String[]>> getSchedule() {
-        return fullSchedule;
+        return normalizedSchedule;
     }
 
 }
