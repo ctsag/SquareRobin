@@ -13,6 +13,7 @@ public class CLITest {
 
 	private class ExitException extends SecurityException {
 
+		private static final long serialVersionUID = 1L;
 		private int exitCode;
 
 		public ExitException(int code) {
@@ -28,14 +29,17 @@ public class CLITest {
 
 	private class NoExitSecurityManager extends SecurityManager {
 		
+		@Override
 		public void checkPermission(Permission perm) {
 			// allow anything.
 		}
-
+		
+		@Override
 		public void checkPermission(Permission perm, Object context) {
 			// allow anything.
 		}
 
+		@Override
 		public void checkExit(int status) {
 			super.checkExit(status);
 			throw new ExitException(status);
