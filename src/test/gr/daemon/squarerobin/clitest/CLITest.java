@@ -1,4 +1,4 @@
-package gr.daemon.squarerobin.test;
+package gr.daemon.squarerobin.clitest;
 
 import gr.daemon.squarerobin.cli.CLI;
 import gr.daemon.squarerobin.cli.State;
@@ -62,7 +62,7 @@ public class CLITest {
 	}
 	
 	@Test
-	public void testProperExecution() {
+	public void testProperUsage() {
 		String[] clubs = new String[]{"PAO", "OSFP", "AEK", "PAOK"};
 		String systemIn = "";
 		ByteArrayOutputStream systemOut = new ByteArrayOutputStream();
