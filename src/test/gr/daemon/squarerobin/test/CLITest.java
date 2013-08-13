@@ -62,7 +62,7 @@ public class CLITest {
 	}
 	
 	@Test
-	public void testProperExecution() {
+	public void testProperUsage() {
 		String[] clubs = new String[]{"PAO", "OSFP", "AEK", "PAOK"};
 		String systemIn = "";
 		ByteArrayOutputStream systemOut = new ByteArrayOutputStream();
