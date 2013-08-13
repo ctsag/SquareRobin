@@ -9,7 +9,9 @@ public class StateTest {
 	@Test
 	public void testMessages() {
 		for (State state : State.values()) {
-			assertFalse(state.toString().equals(""));
+			if (state.getValue() > 0) {
+				assertFalse(state.toString().equals(""));
+			}
 		}
 	}
 
