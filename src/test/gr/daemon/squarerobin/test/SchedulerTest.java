@@ -22,6 +22,7 @@ public class SchedulerTest {
     
     @Test
     public void testOddTeams() {
+        
         ArrayList<String> teams = new ArrayList<>();
         HashMap<Integer, ArrayList<String[]>> outSchedule = new HashMap<>();
         
@@ -35,6 +36,65 @@ public class SchedulerTest {
             
         } catch(Exception e) {
             assertTrue(e instanceof IllegalArgumentException);
+            assertEquals(Scheduler.ERR_ODDEMPTY_CLUBS, e.getMessage());
+        }
+    }
+    
+    @Test
+    public void testEmptyInput() {
+        
+        ArrayList<String> teams = new ArrayList<>();
+        HashMap<Integer, ArrayList<String[]>> outSchedule = new HashMap<>();
+        
+        try {
+            Scheduler scheduler = new Scheduler(teams);
+            outSchedule = scheduler.getSchedule();
+            
+        } catch(Exception e) {
+            assertTrue(e instanceof IllegalArgumentException);
+            assertEquals(Scheduler.ERR_ODDEMPTY_CLUBS, e.getMessage());
+        }
+    }
+    
+    @Test
+    public void testNotUniqueTeams() {
+        
+        ArrayList<String> teams = new ArrayList<>();
+        HashMap<Integer, ArrayList<String[]>> outSchedule = new HashMap<>();
+        
+        teams.add("PAO");
+        teams.add("OSFP");
+        teams.add("MPAOK");
+        teams.add("MPAOK");
+        
+        try {
+            Scheduler scheduler = new Scheduler(teams);
+            outSchedule = scheduler.getSchedule();
+            
+        } catch(Exception e) {
+            assertTrue(e instanceof IllegalArgumentException);
+            assertEquals(Scheduler.ERR_CLUBS_NOTUNIQUE, e.getMessage());
+        }
+    }
+    
+    @Test
+    public void testOutput() {
+        
+        ArrayList<String> teams = new ArrayList<>();
+        HashMap<Integer, ArrayList<String[]>> outSchedule = new HashMap<>();
+        
+        teams.add("PAO");
+        teams.add("OSFP");
+        teams.add("MPAOK");
+        teams.add("ARIS");
+        teams.add("ASTERAS");
+        teams.add("OFI");
+        
+        try {
+            Scheduler scheduler = new Scheduler(teams);
+            outSchedule = scheduler.getSchedule();            
+        } catch(Exception e) {
+            assertEquals(teams.size() - 1, outSchedule.size());
         }
     }
 }

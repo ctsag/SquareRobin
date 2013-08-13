@@ -6,34 +6,33 @@ import java.util.HashSet;
 import java.util.Collections;
 
 public class Scheduler {
+    
     private HashMap<Integer, ArrayList<String[]>> fullSchedule = new HashMap<>();
     private ArrayList<String> teams = new ArrayList<>();
     private static final int FIXED_TEAM_NUMBER = 0; // number of array index
+    public static final String ERR_ODDEMPTY_CLUBS = "Input list size must be an even number and not empty";
+    public static final String ERR_CLUBS_NOTUNIQUE = "Input list is not unique";
+    
     
     public Scheduler(ArrayList<String> teamList) throws IllegalArgumentException {
+
         // unique check
         ArrayList<String> uniqueList = new ArrayList<>(new HashSet<String>(teamList)); 
-        if (!checkTeams(uniqueList) || (teamList.size() != uniqueList.size()) ) {
-            throw new IllegalArgumentException("Input list is not unique");
+        if (teamList.size() != uniqueList.size()) {
+            throw new IllegalArgumentException(ERR_CLUBS_NOTUNIQUE);
         }
         // odd or empty check
-        if (!checkTeams(teamList)) {
-            throw new IllegalArgumentException("Input list size must be an even number and not empty");
-        } 
+        if ( ((teamList.size() % 2) == 1) || (teamList.isEmpty()) ) {
+            throw new IllegalArgumentException(ERR_ODDEMPTY_CLUBS);
+        }
+
         teams = new ArrayList<>(teamList);
         Collections.shuffle(teams);
         schedule();
     }
-
-    private boolean checkTeams(ArrayList<String> teamList) {
-        if ( ((teamList.size() % 2) == 1) || (teamList.isEmpty()) ) {
-            return false;
-        } else {
-            return true;
-        }
-    }
     
     private void schedule() {
+        
         ArrayList<String[]> day;
         String[] pair = new String[2];
         String fixedTeam;
