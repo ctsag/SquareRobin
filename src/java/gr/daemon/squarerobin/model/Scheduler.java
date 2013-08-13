@@ -41,6 +41,7 @@ public class Scheduler {
     
     public void normalizeSchedule() throws IllegalStateException {
         
+        ArrayList<String[]> day;
         String[] pair;
         String team;
         Iterator it;
@@ -56,7 +57,8 @@ public class Scheduler {
         
         while (it.hasNext()) {
             Entry thisEntry = (Entry) it.next();
-            pair = (String[]) thisEntry.getValue();
+            day = (ArrayList<String[]>) thisEntry.getValue();
+            pair = day.get(0);
             for (int i = 0; i <= 1; i++) {
                 if (homeAwayCounter.get(pair[i]) >= 0) {
                     if (i == 0) {
@@ -71,9 +73,9 @@ public class Scheduler {
                         homeAwayCounter.put(pair[i], homeAwayCounter.get(pair[i]) - 1);
                     }
                 }
-            }
-            if ( (Math.abs(homeAwayCounter.get(pair[0])) == 3) || (Math.abs(homeAwayCounter.get(pair[1])) == 3) ) {
-                throw new IllegalStateException(ERR_HOMEAWAY);
+                if (Math.abs(homeAwayCounter.get(pair[i])) == 3) {
+                    throw new IllegalStateException(ERR_HOMEAWAY);
+                }
             }
         }
     }

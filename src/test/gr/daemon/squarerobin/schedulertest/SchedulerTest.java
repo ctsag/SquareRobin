@@ -67,7 +67,7 @@ public class SchedulerTest {
     }
     
     @Test
-    public void testOutput() {
+    public void testProperOutput() {
         
         teams.add("PAO");
         teams.add("OSFP");
@@ -78,9 +78,10 @@ public class SchedulerTest {
         
         try {
             Scheduler scheduler = new Scheduler(teams);
-            outSchedule = scheduler.getSchedule();            
-        } catch(Exception e) {
+            outSchedule = scheduler.getSchedule();
             assertEquals(teams.size() - 1, outSchedule.size());
+        } catch(Exception e) {
+            fail(e.getMessage());
         }
     }
     
