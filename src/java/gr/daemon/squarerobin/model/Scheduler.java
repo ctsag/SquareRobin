@@ -12,7 +12,7 @@ public class Scheduler {
     private HashMap<Integer, ArrayList<String[]>> fullSchedule = new HashMap<>();
     private HashMap<Integer, ArrayList<String[]>> normalizedSchedule;
     private ArrayList<String> teams = new ArrayList<>();
-    private HashMap<String, Integer> homeAwayCounter = new HashMap<>();
+    
     
     private static final int FIXED_TEAM_NUMBER = 0; // number of array index
     public static final String ERR_ODDEMPTY_CLUBS = "Input list size must be an even number and not empty";
@@ -43,6 +43,7 @@ public class Scheduler {
     
     public void normalizeSchedule() throws IllegalStateException {
         
+        HashMap<String, Integer> homeAwayCounter = new HashMap<>();
         ArrayList<String[]> pairList;
         ArrayList<String[]> newDay;
         String[] reversePair;
@@ -50,6 +51,7 @@ public class Scheduler {
         Iterator it;
         int day;
 
+        // initialize home/away counters
         it = teams.iterator();
         while (it.hasNext()) {
             team = (String) it.next();
@@ -92,7 +94,7 @@ public class Scheduler {
                             homeAwayCounter.put(pair[i], homeAwayCounter.get(pair[i]) - 1);
                         }
                     }
-                    if (Math.abs(homeAwayCounter.get(pair[i])) == 3) { // a club has reached 3 games home or away in a row
+                    if (Math.abs(homeAwayCounter.get(pair[i])) == 3) { // a club has reached 3 home/away games in a row
                         throw new IllegalStateException(ERR_HOMEAWAY);
                     }
                 }
