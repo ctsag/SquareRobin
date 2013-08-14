@@ -10,9 +10,10 @@ import java.util.Iterator;
 public class Scheduler {
     
     private HashMap<Integer, ArrayList<String[]>> fullSchedule = new HashMap<>();
-    HashMap<Integer, ArrayList<String[]>> normalizedSchedule;
+    private HashMap<Integer, ArrayList<String[]>> normalizedSchedule;
     private ArrayList<String> teams = new ArrayList<>();
     private HashMap<String, Integer> homeAwayCounter = new HashMap<>();
+    
     private static final int FIXED_TEAM_NUMBER = 0; // number of array index
     public static final String ERR_ODDEMPTY_CLUBS = "Input list size must be an even number and not empty";
     public static final String ERR_CLUBS_NOTUNIQUE = "Input list is not unique";
@@ -65,17 +66,15 @@ public class Scheduler {
             pairList = (ArrayList<String[]>) thisEntry.getValue();
             
             for (String[] pair : pairList) {
-                if (homeAwayCounter.get(pair[1]) <= 2) {
-                    if (homeAwayCounter.get(pair[0]) >= -2) {
-                        if (homeAwayCounter.get(pair[0]) > 0) {
-                            
-                            reversePair = new String[] {pair[1], pair[0]};
-                            newDay = normalizedSchedule.get(day);
-                            newDay.set(newDay.indexOf(pair), reversePair.clone());
-                            normalizedSchedule.put(day, newDay);
-                            pair = reversePair.clone();
+                
+                // make sure that each clud has the least home or away games in a row
+                if (homeAwayCounter.get(pair[1]) < 2 && homeAwayCounter.get(pair[0]) > -2) {
+                    if (homeAwayCounter.get(pair[0]) > 0) {
+                        pair = reversePair(pair, day);
+                    } else if (homeAwayCounter.get(pair[0]) > -2 && homeAwayCounter.get(pair[1]) < 2) {
+                        if (homeAwayCounter.get(pair[1]) < 0) {
+                            pair = reversePair(pair, day);
                         }
-                        
                     }
                 }
 
@@ -93,13 +92,24 @@ public class Scheduler {
                             homeAwayCounter.put(pair[i], homeAwayCounter.get(pair[i]) - 1);
                         }
                     }
-                    if (Math.abs(homeAwayCounter.get(pair[i])) == 3) {
+                    if (Math.abs(homeAwayCounter.get(pair[i])) == 3) { // a club has reached 3 games home or away in a row
                         throw new IllegalStateException(ERR_HOMEAWAY);
                     }
                 }
             }
         }
-        //fullSchedule = normalizedSchedule;
+    }
+    
+    private String[] reversePair(String[] pair, int day) {
+        String[] newPair;
+        ArrayList<String[]> newDay;
+        
+        newPair = new String[] {pair[1], pair[0]};
+        newDay = normalizedSchedule.get(day);
+        newDay.set(newDay.indexOf(pair), newPair.clone());
+        normalizedSchedule.put(day, newDay);
+        
+        return newPair;
     }
     
     private void schedule() {
@@ -116,17 +126,14 @@ public class Scheduler {
             // add fixed team in first position
             teams.add(0, fixedTeam);
             
-            // create a new schedule day
             day = new ArrayList<>();
             
             for (int i = 0; i < (teams.size() / 2); i++) {
             	pair[0] = teams.get(i);
             	pair[1] = teams.get(teams.size() - (i + 1));               
 
-                // add each pair to day
                 day.add(pair.clone());
             }
-            // add day to schedule
             fullSchedule.put(j, day);
             
             // remove fixed team and rotate
