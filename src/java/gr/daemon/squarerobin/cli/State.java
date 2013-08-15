@@ -28,7 +28,7 @@ public enum State {
 				message = "An error has occured";
 				break;
 			case INVALID_ARGUMENTS :
-				message = "Invalid number of arguments";
+				message = "Invalid arguments";
 				break;
 			case INSUFFICIENT_CLUBS :
 				message = "At least one club is required";

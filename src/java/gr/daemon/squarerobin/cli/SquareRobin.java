@@ -22,6 +22,14 @@ public class SquareRobin {
 	private Options options = new Options();
 	private boolean noDays = false;
 	
+	private String joinArray(String[] array) {
+		String joined = "";
+		for (String string : array) {
+			joined += string + " ";
+		}
+		return joined;
+	}
+
 	private void constructOptions() {
 		Option noDays = new Option("nodays", "do not print day number");
 		Option version = new Option("version", "print the version information and exit");
@@ -30,10 +38,11 @@ public class SquareRobin {
 		this.options.addOption(noDays);
 		this.options.addOption(version);
 		this.options.addOption(help);
-	}	
+	}
 	
 	private void parseOptions(String[] args) {
-		CommandLineParser parser = new GnuParser();
+		CommandLineParser parser = new GnuParser();		
+		
 		try {
 			CommandLine cmd = parser.parse(this.options, args);
 			if (cmd.hasOption("version")) {
@@ -43,13 +52,17 @@ public class SquareRobin {
 			} else {
 				if (cmd.hasOption("nodays")) {
 					this.noDays = true;
+				} else {
+					if (args.length > 0) {						
+						this.handleError(State.INVALID_ARGUMENTS, this.joinArray(args));
+					}
 				}
 				this.getInput();
 				this.printDraw();
 			}
 		} catch(ParseException e) {			
-			this.handleError(State.INVALID_ARGUMENTS, e.getMessage());
-		}				
+			this.handleError(State.INVALID_ARGUMENTS, this.joinArray(args));
+		}
 	}
 	
 	private void printUsage() {
@@ -66,10 +79,8 @@ public class SquareRobin {
 		switch (this.state) {
 			case OK :
 				break;
-			case INVALID_ARGUMENTS :
-				if (!message.equals("")) {
-					System.err.println(message + "\n");
-				}
+			case INVALID_ARGUMENTS :				
+				System.err.println(this.state.toString() + " : " + message + "\n");
 				this.printUsage();
 				System.exit(this.state.getValue());
 				break;
