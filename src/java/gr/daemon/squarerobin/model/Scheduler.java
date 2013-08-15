@@ -1,5 +1,6 @@
 package gr.daemon.squarerobin.model;
 
+import gr.daemon.squarerobin.model.State;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -12,12 +13,7 @@ public class Scheduler {
     private HashMap<Integer, ArrayList<String[]>> fullSchedule = new HashMap<>();
     private HashMap<Integer, ArrayList<String[]>> normalizedSchedule;
     private ArrayList<String> teams = new ArrayList<>();
-    
-    
     private static final int FIXED_TEAM_NUMBER = 0; // number of array index
-    public static final String ERR_ODDEMPTY_CLUBS = "Input list size must be an even number and not empty";
-    public static final String ERR_CLUBS_NOTUNIQUE = "Input list is not unique";
-    public static final String ERR_HOMEAWAY = "Found 3 matches home/away";
     
     
     public Scheduler(ArrayList<String> teamList) throws IllegalArgumentException,IllegalStateException {
@@ -25,11 +21,15 @@ public class Scheduler {
         // unique check
         ArrayList<String> uniqueList = new ArrayList<>(new HashSet<String>(teamList)); 
         if (teamList.size() != uniqueList.size()) {
-            throw new IllegalArgumentException(ERR_CLUBS_NOTUNIQUE);
+            throw new IllegalArgumentException(State.ERR_CLUBS_NOT_UNIQUE.toString());
         }
-        // odd or empty check
-        if ( ((teamList.size() % 2) == 1) || (teamList.isEmpty()) ) {
-            throw new IllegalArgumentException(ERR_ODDEMPTY_CLUBS);
+        // empty input check
+        if (teamList.isEmpty()) {
+            throw new IllegalArgumentException(State.ERR_EMPTY_INPUT.toString());
+        }
+        // odd clubs check
+        if ((teamList.size() % 2) == 1) {
+            throw new IllegalArgumentException(State.ERR_ODD_CLUBS.toString());
         }
 
         teams = new ArrayList<>(teamList);
@@ -95,7 +95,7 @@ public class Scheduler {
                         }
                     }
                     if (Math.abs(homeAwayCounter.get(pair[i])) == 3) { // a club has reached 3 home/away games in a row
-                        throw new IllegalStateException(ERR_HOMEAWAY);
+                        throw new IllegalStateException(State.ERR_HOME_AWAY.toString());
                     }
                 }
             }

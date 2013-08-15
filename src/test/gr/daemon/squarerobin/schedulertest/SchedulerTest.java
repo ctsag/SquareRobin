@@ -1,5 +1,6 @@
 package gr.daemon.squarerobin.schedulertest;
 
+import gr.daemon.squarerobin.model.State;
 import gr.daemon.squarerobin.model.Scheduler;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,7 +34,7 @@ public class SchedulerTest {
             
         } catch(Exception e) {
             assertTrue(e instanceof IllegalArgumentException);
-            assertEquals(Scheduler.ERR_ODDEMPTY_CLUBS, e.getMessage());
+            assertEquals(State.ERR_ODD_CLUBS.toString(), e.getMessage());
         }
     }
     
@@ -46,7 +47,7 @@ public class SchedulerTest {
             
         } catch(Exception e) {
             assertTrue(e instanceof IllegalArgumentException);
-            assertEquals(Scheduler.ERR_ODDEMPTY_CLUBS, e.getMessage());
+            assertEquals(State.ERR_EMPTY_INPUT.toString(), e.getMessage());
         }
     }
     
@@ -64,7 +65,7 @@ public class SchedulerTest {
             
         } catch(Exception e) {
             assertTrue(e instanceof IllegalArgumentException);
-            assertEquals(Scheduler.ERR_CLUBS_NOTUNIQUE, e.getMessage());
+            assertEquals(State.ERR_CLUBS_NOT_UNIQUE.toString(), e.getMessage());
         }
     }
     
@@ -104,7 +105,7 @@ public class SchedulerTest {
             fail(e.getMessage());
         } catch(IllegalArgumentException e) {
             assertTrue(e instanceof IllegalArgumentException);
-            assertEquals(Scheduler.ERR_CLUBS_NOTUNIQUE, e.getMessage());
+            assertEquals(State.ERR_CLUBS_NOT_UNIQUE.toString(), e.getMessage());
         }
     }
     
@@ -114,8 +115,6 @@ public class SchedulerTest {
         HashMap<String, Integer> homeAwayCounter = new HashMap<>();
         ArrayList<String[]> pairList;
         Iterator it;
-        String team;
-        int home, away;
 
         teams.add("PAO");
         teams.add("OSFP");
@@ -158,11 +157,8 @@ public class SchedulerTest {
                     }
                 }
             }
-        } catch(IllegalStateException e) {
+        } catch(IllegalStateException|IllegalArgumentException e) {
             fail(e.getMessage());
-        } catch(IllegalArgumentException e) {
-            assertTrue(e instanceof IllegalArgumentException);
-            assertEquals(Scheduler.ERR_CLUBS_NOTUNIQUE, e.getMessage());
         }
     }
 }
