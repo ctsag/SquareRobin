@@ -32,8 +32,9 @@ public class SchedulerTest {
             Scheduler scheduler = new Scheduler(teams);
             outSchedule = scheduler.getSchedule();
             
-        } catch(Exception e) {
-            assertTrue(e instanceof IllegalArgumentException);
+        } catch(IllegalStateException e) {
+            fail(e.getMessage());
+        } catch(IllegalArgumentException e) {
             assertEquals(State.ERR_ODD_CLUBS.toString(), e.getMessage());
         }
     }
@@ -45,8 +46,9 @@ public class SchedulerTest {
             Scheduler scheduler = new Scheduler(teams);
             outSchedule = scheduler.getSchedule();
             
-        } catch(Exception e) {
-            assertTrue(e instanceof IllegalArgumentException);
+        } catch(IllegalStateException e) {
+            fail(e.getMessage());
+        } catch(IllegalArgumentException e) {
             assertEquals(State.ERR_EMPTY_INPUT.toString(), e.getMessage());
         }
     }
@@ -63,8 +65,9 @@ public class SchedulerTest {
             Scheduler scheduler = new Scheduler(teams);
             outSchedule = scheduler.getSchedule();
             
-        } catch(Exception e) {
-            assertTrue(e instanceof IllegalArgumentException);
+        } catch(IllegalStateException e) {
+            fail(e.getMessage());
+        } catch(IllegalArgumentException e) {
             assertEquals(State.ERR_CLUBS_NOT_UNIQUE.toString(), e.getMessage());
         }
     }
@@ -83,7 +86,7 @@ public class SchedulerTest {
             Scheduler scheduler = new Scheduler(teams);
             outSchedule = scheduler.getSchedule();
             assertEquals(teams.size() - 1, outSchedule.size());
-        } catch(Exception e) {
+        } catch(IllegalStateException|IllegalArgumentException e) {
             fail(e.getMessage());
         }
     }
@@ -101,10 +104,9 @@ public class SchedulerTest {
         try {
             Scheduler scheduler = new Scheduler(teams);
             outSchedule = scheduler.getSchedule();
-        } catch(IllegalStateException e) {
-            fail(e.getMessage());
         } catch(IllegalArgumentException e) {
-            assertTrue(e instanceof IllegalArgumentException);
+            fail(e.getMessage());
+        } catch(IllegalStateException e) {
             assertEquals(State.ERR_CLUBS_NOT_UNIQUE.toString(), e.getMessage());
         }
     }
