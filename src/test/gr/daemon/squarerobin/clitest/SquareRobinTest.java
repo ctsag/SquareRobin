@@ -1,6 +1,6 @@
 package gr.daemon.squarerobin.clitest;
 
-import gr.daemon.squarerobin.cli.CLI;
+import gr.daemon.squarerobin.cli.SquareRobin;
 import gr.daemon.squarerobin.cli.State;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -9,7 +9,7 @@ import java.security.Permission;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
-public class CLITest {
+public class SquareRobinTest {
 
 	private class ExitException extends SecurityException {
 
@@ -75,7 +75,7 @@ public class CLITest {
 		System.setIn(new ByteArrayInputStream(systemIn.getBytes()));		
 		System.setOut(new PrintStream(systemOut));
 
-		CLI.main(new String[]{});
+		SquareRobin.main(new String[]{});
 
 		// Assert number of days
 		for (int i = 1; i < clubs.length; i++) {
@@ -103,7 +103,7 @@ public class CLITest {
 		// Assert odd number of clubs produces appropriate exit code
 		System.setSecurityManager(new NoExitSecurityManager());
 		try {
-			CLI.main(new String[]{});
+			SquareRobin.main(new String[]{});
 			fail("System.exit() expected");
 		} catch(ExitException e) {			
 			assertEquals(State.ODD_CLUBS.getValue(), e.getExitCode());
@@ -121,7 +121,7 @@ public class CLITest {
 		// Assert insufficient number of clubs produces appropriate exit code
 		System.setSecurityManager(new NoExitSecurityManager());
 		try {
-			CLI.main(new String[]{});
+			SquareRobin.main(new String[]{});
 			fail("System.exit() expected");
 		} catch(ExitException e) {
 			assertEquals(State.INSUFFICIENT_CLUBS.getValue(), e.getExitCode());
@@ -134,7 +134,7 @@ public class CLITest {
 		// Assert invalid arguments number of clubs produce appropriate exit code
 		System.setSecurityManager(new NoExitSecurityManager());
 		try {
-			CLI.main(new String[]{"invalid arguments"});
+			SquareRobin.main(new String[]{"invalid arguments"});
 			fail("System.exit() expected");
 		} catch(ExitException e) {
 			assertEquals(State.INVALID_ARGUMENTS.getValue(), e.getExitCode());
@@ -159,7 +159,7 @@ public class CLITest {
 		// Assert an uncaught exception (such as duplicate teams) produces the appropriate exit code and outputs the exception message properly
 		System.setSecurityManager(new NoExitSecurityManager());
 		try {
-			CLI.main(new String[]{});
+			SquareRobin.main(new String[]{});
 			fail("System.exit() expected");
 		} catch(ExitException e) {			
 			assertEquals(State.UNSPECIFIED_ERROR.getValue(), e.getExitCode());
