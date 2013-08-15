@@ -62,7 +62,7 @@ public class SquareRobinTest {
 	}
 	
 	@Test
-	public void testProperUsage() {
+	public void testDefaultUsage() {
 		String[] clubs = new String[]{"PAO", "OSFP", "AEK", "PAOK"};
 		String systemIn = "";
 		ByteArrayOutputStream systemOut = new ByteArrayOutputStream();
@@ -87,6 +87,59 @@ public class SquareRobinTest {
 			assertEquals(clubs.length - 1, this.countOccurences(systemOut.toString(), "\r\n" + club + " - ") + this.countOccurences(systemOut.toString(), " - " + club + "\r\n"));
 		}
 	}
+	
+	@Test
+	public void testNoDays() {
+		String[] clubs = new String[]{"PAO", "OSFP", "AEK", "PAOK"};
+		String systemIn = "";
+		ByteArrayOutputStream systemOut = new ByteArrayOutputStream();
+
+		// Setup input and output.
+		for (String club : clubs) {
+			systemIn += club + "\n";
+		}
+		systemIn += "\n";
+		System.setIn(new ByteArrayInputStream(systemIn.getBytes()));		
+		System.setOut(new PrintStream(systemOut));
+
+		SquareRobin.main(new String[]{"-nodays"});
+
+		// Assert days are not printed
+		for (int i = 1; i < clubs.length; i++) {
+			assertEquals(0, this.countOccurences(systemOut.toString(), "Day " + i));			
+		}
+
+		// Assert number of occurences per club
+		for (String club : clubs) {
+			assertEquals(clubs.length - 1, this.countOccurences(systemOut.toString(), "\r\n" + club + " - ") + this.countOccurences(systemOut.toString(), " - " + club + "\r\n"));
+		}
+	}
+	
+	@Test
+	public void testHelp() {
+		ByteArrayOutputStream systemOut = new ByteArrayOutputStream();
+
+		// Setup input and output.
+		System.setOut(new PrintStream(systemOut));
+
+		SquareRobin.main(new String[]{"-help"});
+
+		// Assert help is printed
+		assertEquals(1, this.countOccurences(systemOut.toString(), "usage: " + SquareRobin.APPLICATION_NAME));
+	}
+	
+	@Test
+	public void testVersion() {
+		ByteArrayOutputStream systemOut = new ByteArrayOutputStream();
+
+		// Setup input and output.
+		System.setOut(new PrintStream(systemOut));
+
+		SquareRobin.main(new String[]{"-version"});
+
+		// Assert help is printed
+		assertEquals(1, this.countOccurences(systemOut.toString(), SquareRobin.APPLICATION_VERSION));
+	}	
 	
 	@Test
 	public void testOddClubs() {
