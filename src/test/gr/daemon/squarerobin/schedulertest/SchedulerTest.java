@@ -163,4 +163,29 @@ public class SchedulerTest {
             fail(e.getMessage());
         }
     }
+    
+    @Test
+    public void stressTest() {
+        
+        for (int i = 1; i <= 1000000; i++) {
+            
+            teams.add("PAO");
+            teams.add("OSFP");
+            teams.add("MPAOK");
+            teams.add("ARIS");
+            teams.add("ASTERAS");
+            teams.add("OFI");
+
+            try {
+                Scheduler scheduler = new Scheduler(teams);
+                outSchedule = scheduler.getSchedule();
+                teams = new ArrayList<>();
+                outSchedule = new HashMap<>();
+            } catch(IllegalArgumentException e) {
+                fail(e.getMessage());
+            } catch(IllegalStateException e) {
+                assertEquals(State.ERR_CLUBS_NOT_UNIQUE.toString(), e.getMessage());
+            }
+        }
+    }
 }
