@@ -90,7 +90,7 @@ public class SquareRobinTest {
 	
 	@Test
 	public void testNoDays() {
-		String[] clubs = new String[]{"PAO", "OSFP", "AEK", "PAOK"};
+		String[] clubs = new String[]{"PAO", "OSFP", "AEK", "PAOK"};		
 		String systemIn = "";
 		ByteArrayOutputStream systemOut = new ByteArrayOutputStream();
 
@@ -114,6 +114,61 @@ public class SquareRobinTest {
 			assertEquals(clubs.length - 1, this.countOccurences(systemOut.toString(), "\r\n" + club + " - ") + this.countOccurences(systemOut.toString(), " - " + club + "\r\n"));
 		}
 	}
+	
+	@Test
+	public void testOnlyOneClub() {
+		String[] clubs = new String[]{"PAO", "OSFP", "AEK", "PAOK"};
+		String onlyForClub = "PAO";
+		String[] otherClubs = new String[]{"OSFP", "AEK", "PAOK"};
+		String systemIn = "";
+		ByteArrayOutputStream systemOut = new ByteArrayOutputStream();
+
+		// Setup input and output.
+		for (String club : clubs) {
+			systemIn += club + "\n";
+		}
+		systemIn += "\n";
+		System.setIn(new ByteArrayInputStream(systemIn.getBytes()));		
+		System.setOut(new PrintStream(systemOut));
+
+		SquareRobin.main(new String[]{"-only", onlyForClub});
+
+		// Assert only the matches of the specified club are printed
+		for (String club : otherClubs) {
+			assertEquals(1, this.countOccurences(systemOut.toString(), "\r\n" + club + " - ") + this.countOccurences(systemOut.toString(), " - " + club + "\r\n"));
+		}
+		assertEquals(clubs.length - 1, this.countOccurences(systemOut.toString(), "\r\n" + onlyForClub + " - ") + this.countOccurences(systemOut.toString(), " - " + onlyForClub + "\r\n")); 
+	}
+	
+	@Test
+	public void testMultipleFlags() {
+		String[] clubs = new String[]{"PAO", "OSFP", "AEK", "PAOK"};
+		String onlyForClub = "PAO";
+		String[] otherClubs = new String[]{"OSFP", "AEK", "PAOK"};
+		String systemIn = "";
+		ByteArrayOutputStream systemOut = new ByteArrayOutputStream();
+
+		// Setup input and output.
+		for (String club : clubs) {
+			systemIn += club + "\n";
+		}
+		systemIn += "\n";
+		System.setIn(new ByteArrayInputStream(systemIn.getBytes()));		
+		System.setOut(new PrintStream(systemOut));
+
+		SquareRobin.main(new String[]{"-only", onlyForClub, "-nodays"});
+		
+		// Assert days are not printed
+		for (int i = 1; i < clubs.length; i++) {
+			assertEquals(0, this.countOccurences(systemOut.toString(), "Day " + i));			
+		}
+
+		// Assert only the matches of the specified club are printed
+		for (String club : otherClubs) {
+			assertEquals(1, this.countOccurences(systemOut.toString(), "\r\n" + club + " - ") + this.countOccurences(systemOut.toString(), " - " + club + "\r\n"));
+		}
+		assertEquals(clubs.length - 1, this.countOccurences(systemOut.toString(), "\r\n" + onlyForClub + " - ") + this.countOccurences(systemOut.toString(), " - " + onlyForClub + "\r\n")); 
+	}	
 	
 	@Test
 	public void testHelp() {
@@ -185,7 +240,7 @@ public class SquareRobinTest {
 			assertEquals(State.INSUFFICIENT_CLUBS.getValue(), e.getExitCode());
 			assertEquals(1, this.countOccurences(systemErr.toString(), State.INSUFFICIENT_CLUBS.toString()));
 		}
-		System.setSecurityManager(null);		
+		System.setSecurityManager(null);
 	}
 	
 	@Test

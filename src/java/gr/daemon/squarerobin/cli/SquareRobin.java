@@ -3,6 +3,7 @@ package gr.daemon.squarerobin.cli;
 import gr.daemon.squarerobin.cli.State;
 import gr.daemon.squarerobin.model.Scheduler;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Scanner;
 import org.apache.commons.cli.CommandLine;
@@ -10,6 +11,7 @@ import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
+import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
@@ -19,8 +21,8 @@ public class SquareRobin {
 	public static final String APPLICATION_VERSION = "0.3"; 
 	private State state = State.OK;
 	private ArrayList<String> clubs = new ArrayList<>();
-	private Options options = new Options();
-	private boolean noDays = false;
+	private CommandLine cli;
+	private Options options = new Options();	
 	
 	private String joinArray(String[] array) {
 		String joined = "";
@@ -31,11 +33,13 @@ public class SquareRobin {
 	}
 
 	private void constructOptions() {
-		Option noDays = new Option("nodays", "do not print day number");
+		Option noDays = new Option("nodays", "do not print day number");		
+		Option only = OptionBuilder.withArgName("club").hasArg().withDescription("only display schedule for this club").create("only");		
 		Option version = new Option("version", "print the version information and exit");
 		Option help = new Option("help", "print this message");		
 
 		this.options.addOption(noDays);
+		this.options.addOption(only);
 		this.options.addOption(version);
 		this.options.addOption(help);
 	}
@@ -44,23 +48,25 @@ public class SquareRobin {
 		CommandLineParser parser = new GnuParser();		
 		
 		try {
-			CommandLine cmd = parser.parse(this.options, args);
-			if (cmd.hasOption("version")) {
-				this.printVersion();
-			} else if (cmd.hasOption("help")) {
-				this.printUsage();
-			} else {
-				if (cmd.hasOption("nodays")) {
-					this.noDays = true;
-				} else {
-					if (args.length > 0) {						
-						this.handleError(State.INVALID_ARGUMENTS, this.joinArray(args));
-					}
-				}
-				this.getInput();
-				this.printDraw();
+			this.cli = parser.parse(this.options, args);
+			ArrayList<String> options = new ArrayList<>();
+			for (Option option : this.cli.getOptions()) {
+				options.add("-" + option.getOpt());
+				options.add(option.getValue());
 			}
-		} catch(ParseException e) {			
+			if (options.containsAll(Arrays.asList(args))) {
+				if (this.cli.hasOption("version")) {
+					this.printVersion();
+				} else if (this.cli.hasOption("help")) {
+					this.printUsage();
+				} else {				
+					this.getInput();
+					this.printDraw();
+				}
+			} else {
+				this.handleError(State.INVALID_ARGUMENTS, this.joinArray(args));
+			}
+		} catch(ParseException e) {
 			this.handleError(State.INVALID_ARGUMENTS, this.joinArray(args));
 		}
 	}
@@ -126,11 +132,17 @@ public class SquareRobin {
 			Scheduler scheduler = new Scheduler(this.clubs);
 			HashMap<Integer, ArrayList<String[]>> schedule = scheduler.getSchedule();
 			for (int day : schedule.keySet()) {
-				if (!this.noDays) {
+				if (!this.cli.hasOption("nodays")) {
 					System.out.println("Day " + day);
-				}
+				}				
 				for (String[] pair : schedule.get(day)) {
-					System.out.println(pair[0] + " - " + pair[1]);
+					if (this.cli.getOptionValue("only") != null) {
+						if (Arrays.asList(pair).contains(this.cli.getOptionValue("only"))) {
+							System.out.println(pair[0] + " - " + pair[1]);
+						}
+					} else {
+						System.out.println(pair[0] + " - " + pair[1]);
+					}
 				}			
 			}
 		} catch(IllegalArgumentException e) {
