@@ -34,10 +34,19 @@ public class Scheduler {
 
         teams = new ArrayList<>(teamList);
         Collections.shuffle(teams);
-        try {
-            normalizeSchedule();
-        } catch (IllegalStateException e) {
-            throw new IllegalStateException(e.getMessage());
+        
+        // try up to 5 times to create a proper schedule
+        int i = 0;
+        while (i < 5) {
+            try {
+                normalizeSchedule();
+                break;
+            } catch (IllegalStateException e) {
+                i++;
+            }
+        }
+        if (i == 5) {
+            throw new IllegalStateException(State.ERR_HOME_AWAY.toString());
         }
     }
     
@@ -142,6 +151,8 @@ public class Scheduler {
             teams.remove(0);
             Collections.rotate(teams, 1);
         }
+        
+        teams.add(0, fixedTeam);
     }
     
     public HashMap<Integer, ArrayList<String[]>> getSchedule() {
