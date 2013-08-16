@@ -13,14 +13,11 @@ public class Scheduler {
     private HashMap<Integer, HashMap<Integer, ArrayList<String[]>>> fullSchedule = new HashMap<>();
     private HashMap<Integer, ArrayList<String[]>> normalSchedule = new HashMap<>();
     private HashMap<Integer, ArrayList<String[]>> normalizedSchedule;
-    private ArrayList<String> teams = new ArrayList<>();
-    
+    private ArrayList<String> teams = new ArrayList<>();    
     private int rounds;
+
     private static final int FIXED_TEAM_NUMBER = 0; // number of array index
-    public static final int MIN_ROUNDS = 1;
-    public static final int MAX_ROUNDS = 3;
-    
-    
+
     public Scheduler(ArrayList<String> teamList) {
         this(teamList, 1);
     }
@@ -41,10 +38,10 @@ public class Scheduler {
             throw new IllegalArgumentException(State.ERR_ODD_CLUBS.toString());
         }
         // round range check
-        if ( (rounds >= MIN_ROUNDS) && (rounds <= MAX_ROUNDS) ) {
+        if (rounds > 0) {
             this.rounds = rounds;
         } else {
-            throw new IllegalArgumentException(State.ERR_ROUNDS_RANGE.toString());
+            throw new IllegalArgumentException(State.ERR_ROUNDS.toString());
         }
 
         this.teams = new ArrayList<>(teamList);
@@ -55,6 +52,8 @@ public class Scheduler {
         while (i < 5) {
             try {
                 normalizeSchedule();
+                createRounds();
+                checkSchedule();
                 break;
             } catch (IllegalStateException e) {
                 i++;
@@ -64,10 +63,38 @@ public class Scheduler {
             throw new IllegalStateException(State.ERR_HOME_AWAY.toString());
         }
         
-        createRounds();
+
     }
     
-    public void createRounds() {
+    private void checkSchedule() {
+        HashMap<String, Integer> homeAwayCounter = new HashMap<>();
+        int[] homeAwayValues;
+        
+        // loop through the entire schedule in order to check all pair sequence
+        for (int round : fullSchedule.keySet()) {
+            for (int day : fullSchedule.get(round).keySet()) {
+                Iterator it = fullSchedule.get(round).get(day).iterator();
+                for (String[] pair : fullSchedule.get(round).get(day)) {
+
+                    for (int i = 0; i <= 1; i++) {
+                        if (homeAwayCounter.get(pair[i]) == null) { // create home/away counter entry
+                            homeAwayCounter.put(pair[i], 0);
+                        }
+                    }
+                    
+                    homeAwayValues = createHomeAwayValues(homeAwayCounter, pair);
+                    for (int i = 0; i <= 1; i++) {
+                        homeAwayCounter.put(pair[i], homeAwayValues[i]);
+                        if (Math.abs(homeAwayCounter.get(pair[i])) == 3) { // a club has reached 3 home/away games in a row
+                            throw new IllegalStateException(State.ERR_HOME_AWAY.toString());
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    private void createRounds() {
 
         HashMap<Integer, ArrayList<String[]>> currentSchedule;
         ArrayList<String[]> pairList, newPairList;
@@ -76,9 +103,11 @@ public class Scheduler {
         int currentRound = 1;
         int day;
         
+        // first add the normalized schadule
         fullSchedule.put(currentRound, (HashMap<Integer, ArrayList<String[]>>) normalizedSchedule.clone());
 
-        while (currentRound <= (rounds - 1)) {
+        while (currentRound < rounds) {
+            // for each round, reverse all pairs and add rounds to the map
             currentSchedule = new HashMap<>();
             it = fullSchedule.get(currentRound).entrySet().iterator();
             while (it.hasNext()) {
@@ -98,12 +127,12 @@ public class Scheduler {
         }
     }
     
-    public void normalizeSchedule() throws IllegalStateException {
+    private void normalizeSchedule() throws IllegalStateException {
         
         HashMap<String, Integer> homeAwayCounter = new HashMap<>();
         ArrayList<String[]> pairList;
         ArrayList<String[]> newDay;
-        String[] reversePair;
+        int[] homeAwayValues;
         String team;
         Iterator it;
         int day;
@@ -126,7 +155,7 @@ public class Scheduler {
             
             for (String[] pair : pairList) {
                 
-                // make sure that each clud has the least home or away games in a row
+                // make sure that each club has the least home or away games in a row
                 if (homeAwayCounter.get(pair[1]) < 2 && homeAwayCounter.get(pair[0]) > -2) {
                     if (homeAwayCounter.get(pair[0]) > 0) {
                         pair = reversePair(pair, day);
@@ -137,24 +166,9 @@ public class Scheduler {
                     }
                 }
 
-                for (int i = 0; i <= 1; i++) {
-                    if (homeAwayCounter.get(pair[i]) >= 0) {
-                        if (i == 0) {
-                            homeAwayCounter.put(pair[i], homeAwayCounter.get(pair[i]) + 1);
-                        } else {
-                            homeAwayCounter.put(pair[i], -1);
-                        }
-                    } else {
-                        if (i == 0) {
-                            homeAwayCounter.put(pair[i], 1);
-                        } else {
-                            homeAwayCounter.put(pair[i], homeAwayCounter.get(pair[i]) - 1);
-                        }
-                    }
-                    if (Math.abs(homeAwayCounter.get(pair[i])) == 3) { // a club has reached 3 home/away games in a row
-                        throw new IllegalStateException(State.ERR_HOME_AWAY.toString());
-                    }
-                }
+                homeAwayValues = createHomeAwayValues(homeAwayCounter, pair);
+                homeAwayCounter.put(pair[0], homeAwayValues[0]);
+                homeAwayCounter.put(pair[1], homeAwayValues[1]);
             }
         }
     }
@@ -169,6 +183,28 @@ public class Scheduler {
         normalizedSchedule.put(day, newDay);
         
         return newPair;
+    }
+    
+    private int[] createHomeAwayValues(HashMap<String, Integer> homeAwayCounter, String[] pair) {
+        int[] values = new int[2];
+        
+        for (int i = 0; i <= 1; i++) {
+            if (homeAwayCounter.get(pair[i]) >= 0) {
+                if (i == 0) {
+                    values[i] = homeAwayCounter.get(pair[i]) + 1;
+                } else {
+                    values[i] = -1;
+                }
+            } else {
+                if (i == 0) {
+                    values[i] = 1;
+                } else {
+                    values[i] = homeAwayCounter.get(pair[i]) - 1;
+                }
+            }
+        }
+        
+        return values;
     }
     
     private void schedule() {
@@ -199,8 +235,7 @@ public class Scheduler {
             teams.remove(0);
             Collections.rotate(teams, 1);
         }
-        
-        teams.add(0, fixedTeam);
+        teams.add(0, fixedTeam);        
     }
     
     public HashMap<Integer, HashMap<Integer, ArrayList<String[]>>> getSchedule() {

@@ -6,7 +6,7 @@ public enum State {
     ERR_EMPTY_INPUT(1),
     ERR_CLUBS_NOT_UNIQUE(2),
     ERR_HOME_AWAY(3),
-    ERR_ROUNDS_RANGE(4);
+    ERR_ROUNDS(4);
     
     private int value;
 
@@ -35,8 +35,8 @@ public enum State {
             case ERR_HOME_AWAY :
                 message = "Found 3 home/away matches in a row";
                 break;
-            case ERR_ROUNDS_RANGE :
-                message = "Rounds must be between " + Scheduler.MIN_ROUNDS + " and " + Scheduler.MAX_ROUNDS;
+            case ERR_ROUNDS :
+                message = "Rounds must be greater than zero";
                 break;
             default :				
                 break;
