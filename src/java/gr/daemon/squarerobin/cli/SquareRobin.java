@@ -33,11 +33,13 @@ public class SquareRobin {
 	}
 
 	private void constructOptions() {
+		Option noRounds = new Option("norounds", "do not print round number");
 		Option noDays = new Option("nodays", "do not print day number");		
 		Option only = OptionBuilder.withArgName("club").hasArg().withDescription("only display schedule for this club").create("only");		
 		Option version = new Option("version", "print the version information and exit");
 		Option help = new Option("help", "print this message");		
 
+		this.options.addOption(noRounds);
 		this.options.addOption(noDays);
 		this.options.addOption(only);
 		this.options.addOption(version);
@@ -59,7 +61,7 @@ public class SquareRobin {
 					this.printVersion();
 				} else if (this.cli.hasOption("help")) {
 					this.printUsage();
-				} else {				
+				} else {
 					this.getInput();
 					this.printDraw();
 				}
@@ -130,20 +132,25 @@ public class SquareRobin {
 	private void printDraw() {
 		try {
 			Scheduler scheduler = new Scheduler(this.clubs);
-			HashMap<Integer, ArrayList<String[]>> schedule = scheduler.getSchedule();
-			for (int day : schedule.keySet()) {
-				if (!this.cli.hasOption("nodays")) {
-					System.out.println("Day " + day);
-				}				
-				for (String[] pair : schedule.get(day)) {
-					if (this.cli.getOptionValue("only") != null) {
-						if (Arrays.asList(pair).contains(this.cli.getOptionValue("only"))) {
+			HashMap<Integer, HashMap<Integer, ArrayList<String[]>>> schedule = scheduler.getSchedule();
+			for (int round : schedule.keySet()) {
+				if (!this.cli.hasOption("norounds")) {
+					System.out.println("Round " + round);
+				}
+				for (int day : schedule.get(round).keySet()) {					
+					if (!this.cli.hasOption("nodays")) {
+						System.out.println("Day " + day);
+					}
+					for (String[] pair : schedule.get(round).get(day)) {
+						if (this.cli.getOptionValue("only") != null) {
+							if (Arrays.asList(pair).contains(this.cli.getOptionValue("only"))) {
+								System.out.println(pair[0] + " - " + pair[1]);
+							}
+						} else {
 							System.out.println(pair[0] + " - " + pair[1]);
 						}
-					} else {
-						System.out.println(pair[0] + " - " + pair[1]);
 					}
-				}			
+				}
 			}
 		} catch(IllegalArgumentException e) {
 			handleError(State.UNSPECIFIED_ERROR, e.getMessage());

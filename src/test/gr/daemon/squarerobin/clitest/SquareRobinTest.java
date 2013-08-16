@@ -116,6 +116,33 @@ public class SquareRobinTest {
 	}
 	
 	@Test
+	public void testNoRounds() {
+		String[] clubs = new String[]{"PAO", "OSFP", "AEK", "PAOK"};		
+		String systemIn = "";
+		ByteArrayOutputStream systemOut = new ByteArrayOutputStream();
+
+		// Setup input and output.
+		for (String club : clubs) {
+			systemIn += club + "\n";
+		}
+		systemIn += "\n";
+		System.setIn(new ByteArrayInputStream(systemIn.getBytes()));		
+		System.setOut(new PrintStream(systemOut));
+
+		SquareRobin.main(new String[]{"-norounds"});
+
+		// Assert days are not printed
+		for (int i = 1; i <= 2; i++) {
+			assertEquals(0, this.countOccurences(systemOut.toString(), "Round " + i));			
+		}
+
+		// Assert number of occurences per club
+		for (String club : clubs) {
+			assertEquals(clubs.length - 1, this.countOccurences(systemOut.toString(), "\r\n" + club + " - ") + this.countOccurences(systemOut.toString(), " - " + club + "\r\n"));
+		}
+	}
+	
+	@Test
 	public void testOnlyOneClub() {
 		String[] clubs = new String[]{"PAO", "OSFP", "AEK", "PAOK"};
 		String onlyForClub = "PAO";
