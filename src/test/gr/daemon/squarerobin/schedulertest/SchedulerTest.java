@@ -113,7 +113,7 @@ public class SchedulerTest {
     }
     
     @Test
-    public void testThreeGames() {
+    public void test3InARow() {
         
         HashMap<String, Integer> homeAwayCounter = new HashMap<>();
         ArrayList<String[]> pairList;
@@ -199,13 +199,13 @@ public class SchedulerTest {
         teams.add("OFI");
         
         try {
-            Scheduler scheduler = new Scheduler(teams, Scheduler.MAX_ROUNDS + 1);
+            Scheduler scheduler = new Scheduler(teams, -1);
             outSchedule = scheduler.getSchedule();
             
         } catch(IllegalStateException e) {
             fail(e.getMessage());
         } catch(IllegalArgumentException e) {
-            assertEquals(State.ERR_ROUNDS_RANGE.toString(), e.getMessage());
+            assertEquals(State.ERR_ROUNDS.toString(), e.getMessage());
         }
     }
 }
