@@ -13,7 +13,8 @@ import static org.junit.Assert.*;
 public class SchedulerTest {
 
     private ArrayList<String> teams = new ArrayList<>();
-    private HashMap<Integer, ArrayList<String[]>> outSchedule = new HashMap<>();
+    private HashMap<Integer, HashMap<Integer, ArrayList<String[]>>> outSchedule = new HashMap<>();
+    private static final int ROUNDS = 1;
     
     @Before
     public void setUp() {
@@ -29,7 +30,7 @@ public class SchedulerTest {
         teams.add("MPAOK");
         
         try {
-            Scheduler scheduler = new Scheduler(teams);
+            Scheduler scheduler = new Scheduler(teams, ROUNDS);
             outSchedule = scheduler.getSchedule();
             
         } catch(IllegalStateException e) {
@@ -43,7 +44,7 @@ public class SchedulerTest {
     public void testEmptyInput() {
         
         try {
-            Scheduler scheduler = new Scheduler(teams);
+            Scheduler scheduler = new Scheduler(teams, ROUNDS);
             outSchedule = scheduler.getSchedule();
             
         } catch(IllegalStateException e) {
@@ -62,7 +63,7 @@ public class SchedulerTest {
         teams.add("MPAOK");
         
         try {
-            Scheduler scheduler = new Scheduler(teams);
+            Scheduler scheduler = new Scheduler(teams, ROUNDS);
             outSchedule = scheduler.getSchedule();
             
         } catch(IllegalStateException e) {
@@ -83,9 +84,9 @@ public class SchedulerTest {
         teams.add("OFI");
         
         try {
-            Scheduler scheduler = new Scheduler(teams);
+            Scheduler scheduler = new Scheduler(teams, 2);
             outSchedule = scheduler.getSchedule();
-            assertEquals(teams.size() - 1, outSchedule.size());
+            assertEquals(teams.size() - 1, outSchedule.get(1).size());
         } catch(IllegalStateException|IllegalArgumentException e) {
             fail(e.getMessage());
         }
@@ -102,7 +103,7 @@ public class SchedulerTest {
         teams.add("OFI");
         
         try {
-            Scheduler scheduler = new Scheduler(teams);
+            Scheduler scheduler = new Scheduler(teams, ROUNDS);
             outSchedule = scheduler.getSchedule();
         } catch(IllegalArgumentException e) {
             fail(e.getMessage());
@@ -126,10 +127,10 @@ public class SchedulerTest {
         teams.add("OFI");
         
         try {
-            Scheduler scheduler = new Scheduler(teams);
+            Scheduler scheduler = new Scheduler(teams, ROUNDS);
             outSchedule = scheduler.getSchedule();
 
-            it = outSchedule.entrySet().iterator();
+            it = outSchedule.get(1).entrySet().iterator();
             while (it.hasNext()) {
                 Entry thisEntry = (Entry) it.next();
                 pairList = (ArrayList<String[]>) thisEntry.getValue();
@@ -167,7 +168,7 @@ public class SchedulerTest {
     @Test
     public void stressTest() {
         
-        for (int i = 1; i <= 1000000; i++) {
+        for (int i = 1; i <= 1000; i++) {
             
             teams.add("PAO");
             teams.add("OSFP");
@@ -177,7 +178,7 @@ public class SchedulerTest {
             teams.add("OFI");
 
             try {
-                Scheduler scheduler = new Scheduler(teams);
+                Scheduler scheduler = new Scheduler(teams, ROUNDS);
                 outSchedule = scheduler.getSchedule();
                 teams = new ArrayList<>();
                 outSchedule = new HashMap<>();
@@ -186,6 +187,25 @@ public class SchedulerTest {
             } catch(IllegalStateException e) {
                 assertEquals(State.ERR_CLUBS_NOT_UNIQUE.toString(), e.getMessage());
             }
+        }
+    }
+    
+    @Test
+    public void testRoundsOutOfRange() {
+        
+        teams.add("PAO");
+        teams.add("OSFP");
+        teams.add("MPAOK");
+        teams.add("OFI");
+        
+        try {
+            Scheduler scheduler = new Scheduler(teams, Scheduler.MAX_ROUNDS + 1);
+            outSchedule = scheduler.getSchedule();
+            
+        } catch(IllegalStateException e) {
+            fail(e.getMessage());
+        } catch(IllegalArgumentException e) {
+            assertEquals(State.ERR_ROUNDS_RANGE.toString(), e.getMessage());
         }
     }
 }

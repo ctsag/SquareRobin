@@ -10,13 +10,22 @@ import java.util.Iterator;
 
 public class Scheduler {
     
-    private HashMap<Integer, ArrayList<String[]>> fullSchedule = new HashMap<>();
+    private HashMap<Integer, HashMap<Integer, ArrayList<String[]>>> fullSchedule = new HashMap<>();
+    private HashMap<Integer, ArrayList<String[]>> normalSchedule = new HashMap<>();
     private HashMap<Integer, ArrayList<String[]>> normalizedSchedule;
     private ArrayList<String> teams = new ArrayList<>();
+    
+    private int rounds;
     private static final int FIXED_TEAM_NUMBER = 0; // number of array index
+    public static final int MIN_ROUNDS = 1;
+    public static final int MAX_ROUNDS = 3;
     
     
-    public Scheduler(ArrayList<String> teamList) throws IllegalArgumentException,IllegalStateException {
+    public Scheduler(ArrayList<String> teamList) {
+        this(teamList, 1);
+    }
+    
+    public Scheduler(ArrayList<String> teamList, int rounds) throws IllegalArgumentException,IllegalStateException {
 
         // unique check
         ArrayList<String> uniqueList = new ArrayList<>(new HashSet<String>(teamList)); 
@@ -31,8 +40,14 @@ public class Scheduler {
         if ((teamList.size() % 2) == 1) {
             throw new IllegalArgumentException(State.ERR_ODD_CLUBS.toString());
         }
+        // round range check
+        if ( (rounds >= MIN_ROUNDS) && (rounds <= MAX_ROUNDS) ) {
+            this.rounds = rounds;
+        } else {
+            throw new IllegalArgumentException(State.ERR_ROUNDS_RANGE.toString());
+        }
 
-        teams = new ArrayList<>(teamList);
+        this.teams = new ArrayList<>(teamList);
         Collections.shuffle(teams);
         
         // try up to 5 times to create a proper schedule
@@ -47,6 +62,39 @@ public class Scheduler {
         }
         if (i == 5) {
             throw new IllegalStateException(State.ERR_HOME_AWAY.toString());
+        }
+        
+        createRounds();
+    }
+    
+    public void createRounds() {
+
+        HashMap<Integer, ArrayList<String[]>> currentSchedule;
+        ArrayList<String[]> pairList, newPairList;
+        String[] newPair;
+        Iterator it;
+        int currentRound = 1;
+        int day;
+        
+        fullSchedule.put(currentRound, (HashMap<Integer, ArrayList<String[]>>) normalizedSchedule.clone());
+
+        while (currentRound <= (rounds - 1)) {
+            currentSchedule = new HashMap<>();
+            it = fullSchedule.get(currentRound).entrySet().iterator();
+            while (it.hasNext()) {
+                Entry thisEntry = (Entry) it.next();
+                day = (int) thisEntry.getKey();
+                pairList = (ArrayList<String[]>) thisEntry.getValue();
+                newPairList = new ArrayList<>();
+
+                for (String[] pair : pairList) {
+                    newPair = new String[]{pair[1], pair[0]};
+                    newPairList.add(newPair.clone());
+                }
+                currentSchedule.put(day, (ArrayList<String[]>) newPairList.clone());
+            }
+            currentRound++;
+            fullSchedule.put(currentRound, (HashMap<Integer, ArrayList<String[]>>) currentSchedule.clone());
         }
     }
     
@@ -68,8 +116,8 @@ public class Scheduler {
         }
         
         schedule();
-        normalizedSchedule = (HashMap<Integer, ArrayList<String[]>>) fullSchedule.clone();
-        it = fullSchedule.entrySet().iterator();
+        normalizedSchedule = (HashMap<Integer, ArrayList<String[]>>) normalSchedule.clone();
+        it = normalSchedule.entrySet().iterator();
         
         while (it.hasNext()) {
             Entry thisEntry = (Entry) it.next();
@@ -145,7 +193,7 @@ public class Scheduler {
 
                 day.add(pair.clone());
             }
-            fullSchedule.put(j, day);
+            normalSchedule.put(j, day);
             
             // remove fixed team and rotate
             teams.remove(0);
@@ -155,8 +203,8 @@ public class Scheduler {
         teams.add(0, fixedTeam);
     }
     
-    public HashMap<Integer, ArrayList<String[]>> getSchedule() {
-        return normalizedSchedule;
+    public HashMap<Integer, HashMap<Integer, ArrayList<String[]>>> getSchedule() {
+        return fullSchedule;
     }
 
 }
