@@ -212,6 +212,10 @@ public class Scheduler {
     private int[] createHomeAwayValues(HashMap<String, Integer> homeAwayCounter, String[] pair) {
         int[] values = new int[2];
         
+        // if home team previously played home, points increased by 1
+        // if home team previously played away, points reset to 1
+        // if away team previously played away, points decreased by 1
+        // if away team previously played home, points reset to -1        
         for (int i = 0; i <= 1; i++) {
             if (homeAwayCounter.get(pair[i]) >= 0) {
                 if (i == 0) {
@@ -227,7 +231,6 @@ public class Scheduler {
                 }
             }
         }
-        
         return values;
     }
     
@@ -268,7 +271,6 @@ public class Scheduler {
     
     public HashMap<String, String[]> getLeagueTable() {
 
-        HashMap<String, Integer> leagueTable = new HashMap<>();
         HashMap<String, String[]> statsMap = new HashMap<>();
         String[] stats;
         int points, scoreHome, scoreAway, goalsScored, goalsConceded;
@@ -284,13 +286,13 @@ public class Scheduler {
                     scoreHome = Integer.parseInt(pair[2]);
                     scoreAway = Integer.parseInt(pair[3]);
                     
-                    if (scoreHome > scoreAway) {
+                    if (scoreHome > scoreAway) { // 3 points for winner and 0 for loser
                         pointsToAdd[0] = 3;
                         pointsToAdd[1] = 0;
                     } else if (scoreHome < scoreAway) {
                         pointsToAdd[0] = 0;
                         pointsToAdd[1] = 3;
-                    } else {
+                    } else { // in a tie, each team gets 1 point 
                         pointsToAdd[0] = 1;
                         pointsToAdd[1] = 1;
                     }
