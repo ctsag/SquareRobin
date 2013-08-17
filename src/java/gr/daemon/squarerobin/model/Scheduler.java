@@ -1,6 +1,7 @@
 package gr.daemon.squarerobin.model;
 
 import gr.daemon.squarerobin.model.State;
+import gr.daemon.squarerobin.model.SortLeagueTable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -53,6 +54,7 @@ public class Scheduler {
             try {
                 normalizeSchedule();
                 createRounds();
+                addScores();
                 checkSchedule();
                 break;
             } catch (IllegalStateException e) {
@@ -94,6 +96,28 @@ public class Scheduler {
         }
     }
     
+    private void addScores() {
+        int pairIndex;
+        String scoreHome, scoreAway;
+        String[] newPair;
+        
+        // loop through the entire schedule and add a 3rd element in pair array which represents the score
+        for (int round : fullSchedule.keySet()) {
+            for (int day : fullSchedule.get(round).keySet()) {
+                Iterator it = fullSchedule.get(round).get(day).iterator();
+                for (String[] pair : fullSchedule.get(round).get(day)) {
+                    // add the score
+                    scoreHome = Long.toString(Math.round(Math.random() * 5));
+                    scoreAway = Long.toString(Math.round(Math.random() * 5));
+                    newPair = new String[] {pair[0], pair[1], scoreHome, scoreAway};
+                    pairIndex = fullSchedule.get(round).get(day).indexOf(pair);
+                    fullSchedule.get(round).get(day).set(pairIndex, newPair);
+                }
+            }
+        }
+        
+    }
+    
     private void createRounds() {
 
         HashMap<Integer, ArrayList<String[]>> currentSchedule;
@@ -103,7 +127,7 @@ public class Scheduler {
         int currentRound = 1;
         int day;
         
-        // first add the normalized schadule
+        // first add the normalized schedule
         fullSchedule.put(currentRound, (HashMap<Integer, ArrayList<String[]>>) normalizedSchedule.clone());
 
         while (currentRound < rounds) {
@@ -224,8 +248,8 @@ public class Scheduler {
             day = new ArrayList<>();
             
             for (int i = 0; i < (teams.size() / 2); i++) {
-            	pair[0] = teams.get(i);
-            	pair[1] = teams.get(teams.size() - (i + 1));               
+            	pair[0] = teams.get(i); // home team
+            	pair[1] = teams.get(teams.size() - (i + 1)); // away team
 
                 day.add(pair.clone());
             }
@@ -240,6 +264,69 @@ public class Scheduler {
     
     public HashMap<Integer, HashMap<Integer, ArrayList<String[]>>> getSchedule() {
         return fullSchedule;
+    }
+    
+    public HashMap<String, String[]> getLeagueTable() {
+
+        HashMap<String, Integer> leagueTable = new HashMap<>();
+        HashMap<String, String[]> statsMap = new HashMap<>();
+        String[] stats;
+        int points, scoreHome, scoreAway, goalsScored, goalsConceded;
+        int[] pointsToAdd = new int[2];
+        String[][] unsortedTable = new String[teams.size()][4];
+        String[][] sortedTable;
+        
+        // loop through the entire schedule in order to create team's points
+        for (int round : fullSchedule.keySet()) {
+            for (int day : fullSchedule.get(round).keySet()) {
+                Iterator it = fullSchedule.get(round).get(day).iterator();
+                for (String[] pair : fullSchedule.get(round).get(day)) {
+                    scoreHome = Integer.parseInt(pair[2]);
+                    scoreAway = Integer.parseInt(pair[3]);
+                    
+                    if (scoreHome > scoreAway) {
+                        pointsToAdd[0] = 3;
+                        pointsToAdd[1] = 0;
+                    } else if (scoreHome < scoreAway) {
+                        pointsToAdd[0] = 0;
+                        pointsToAdd[1] = 3;
+                    } else {
+                        pointsToAdd[0] = 1;
+                        pointsToAdd[1] = 1;
+                    }
+
+                    for (int i = 0; i <= 1; i++) {
+                        if (statsMap.get(pair[i]) == null) {
+                            statsMap.put(pair[i], new String[]{null,"0","0","0"});
+                        }
+                        // goals scored is index 2 for home and 3 for away
+                        goalsScored = Integer.parseInt(statsMap.get(pair[i])[2]) + Integer.parseInt(pair[i + 2]);
+                        // goals conceded is index 4 for home and 3 for away
+                        goalsConceded = Integer.parseInt(statsMap.get(pair[i])[3]) + Integer.parseInt(pair[(i == 0) ? 3 : 2]);
+                        points = Integer.parseInt(statsMap.get(pair[i])[1]) + pointsToAdd[i];
+                        stats = new String[]{pair[i], Integer.toString(points), Integer.toString(goalsScored), Integer.toString(goalsConceded)};
+                        statsMap.put(pair[i], stats);
+                    }
+                }
+            }
+        }
+        // create list to sort
+        int i = 0;
+        for (String key : statsMap.keySet()) {
+            unsortedTable[i] = statsMap.get(key);
+            i++;
+        }
+        
+        // sort values by points, goal average, most goals scored, alphabetically
+        SortLeagueTable sorter = new SortLeagueTable(unsortedTable);
+        sortedTable = sorter.getLeagueTable();
+        
+        // add sorted elements to statsMap
+        for (String[] element : sortedTable) {
+            statsMap.put(element[0], new String[]{element[1], element[2], element[3]});
+        }
+        
+        return statsMap;
     }
 
 }
