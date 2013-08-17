@@ -1,4 +1,4 @@
-package gr.daemon.squarerobin.clitest;
+package gr.daemon.squarerobin.cli;
 
 import gr.daemon.squarerobin.cli.SquareRobin;
 import gr.daemon.squarerobin.cli.State;
