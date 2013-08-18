@@ -54,7 +54,6 @@ public class Scheduler {
                 normalizeSchedule();
                 createRounds();
                 addScores();
-                //checkSchedule();
                 break;
             } catch (IllegalStateException e) {
                 i++;
@@ -65,34 +64,6 @@ public class Scheduler {
         }
         
 
-    }
-    
-    private void checkSchedule() {
-        HashMap<String, Integer> homeAwayCounter = new HashMap<>();
-        int[] homeAwayValues;
-        
-        // loop through the entire schedule in order to check all pair sequence
-        for (int round : fullSchedule.keySet()) {
-            for (int day : fullSchedule.get(round).keySet()) {
-                Iterator it = fullSchedule.get(round).get(day).iterator();
-                for (String[] pair : fullSchedule.get(round).get(day)) {
-
-                    for (int i = 0; i <= 1; i++) {
-                        if (homeAwayCounter.get(pair[i]) == null) { // create home/away counter entry
-                            homeAwayCounter.put(pair[i], 0);
-                        }
-                    }
-                    
-                    homeAwayValues = createHomeAwayValues(homeAwayCounter, pair);
-                    for (int i = 0; i <= 1; i++) {
-                        homeAwayCounter.put(pair[i], homeAwayValues[i]);
-                        if (Math.abs(homeAwayCounter.get(pair[i])) == 3) { // a club has reached 3 home/away games in a row
-                            throw new IllegalStateException(State.ERR_HOME_AWAY.toString());
-                        }
-                    }
-                }
-            }
-        }
     }
     
     private void addScores() {
@@ -114,7 +85,6 @@ public class Scheduler {
                 }
             }
         }
-        
     }
     
     private void createRounds() {
