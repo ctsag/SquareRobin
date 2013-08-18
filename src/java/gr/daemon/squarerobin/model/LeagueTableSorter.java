@@ -3,10 +3,10 @@ package gr.daemon.squarerobin.model;
 import java.util.Arrays;
 import java.util.Comparator;
 
-public class SortLeagueTable {
+public class LeagueTableSorter {
     private String[][] leagueTable;
     
-    public SortLeagueTable(String[][] table) {
+    public LeagueTableSorter(String[][] table) {
         leagueTable = table;
         Arrays.sort(leagueTable, ORDER_BY_RULES);
     }
@@ -14,7 +14,7 @@ public class SortLeagueTable {
     private static final Comparator<String[]> ORDER_BY_POINTS = new Comparator<String[]>() {
         @Override
         public int compare(String[] s1, String[] s2) {
-            return s2[1].compareTo(s1[1]);
+            return Integer.valueOf(s2[1]).compareTo(Integer.valueOf(s1[1]));
         }
     };
     private static final Comparator<String[]> ORDER_BY_GOALAVERAGE = new Comparator<String[]>() {
@@ -29,7 +29,7 @@ public class SortLeagueTable {
     private static final Comparator<String[]> ORDER_BY_GOALS = new Comparator<String[]>() {
         @Override
         public int compare(String[] s1, String[] s2) {
-            return s2[3].compareTo(s1[3]);
+            return Integer.valueOf(s2[3]).compareTo(Integer.valueOf(s1[3]));
         }
     };
     private static final Comparator<String[]> ORDER_BY_NAME = new Comparator<String[]>() {
