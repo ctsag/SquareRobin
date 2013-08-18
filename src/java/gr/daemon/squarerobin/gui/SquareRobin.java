@@ -8,6 +8,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.TreeMap;
+
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -56,13 +58,13 @@ public class SquareRobin extends JFrame implements ActionListener {
 				this.clubs.add(cell);
 			}
 		}
-		this.scheduler = new Scheduler(this.clubs, 1);
+		this.scheduler = new Scheduler(this.clubs, 2);
 	}
 	
 	private void displaySchedule() {
 		this.initScheduleModel();
 		try {
-			HashMap<Integer, HashMap<Integer, ArrayList<String[]>>> schedule = scheduler.getSchedule();
+			HashMap<Integer, TreeMap<Integer, ArrayList<String[]>>> schedule = scheduler.getSchedule();
 			int rowAt = 0;
 			for (int round : schedule.keySet()) {
 				this.scheduleTable.setValueAt("Round " + round, rowAt++, 0);
@@ -82,20 +84,22 @@ public class SquareRobin extends JFrame implements ActionListener {
 	}
 
 	private void displayLeagueTable() {
-		HashMap<String, String[]> league;
+		TreeMap<Integer, String[]> league;
 		DefaultTableModel model;		
 		String[] values;
 		
 		this.initLeagueModel();
 		model = (DefaultTableModel)this.leagueTable.getModel();
 		try {
-			league = scheduler.getLeagueTable();
-			for (String club : league.keySet()) {
+			league = scheduler.getLeagueTable(true);
+			for (int index : league.keySet()) {
 				values = new String[6];				
-				values[1] = club;
-				values[2] = league.get(club)[0];
-				values[4] = league.get(club)[1];
-				values[5] = league.get(club)[2];
+				values[0] = league.get(index)[0];
+				values[1] = league.get(index)[1];
+				values[2] = league.get(index)[2];
+				values[3] = league.get(index)[3];
+				values[4] = league.get(index)[4];
+				values[5] = league.get(index)[5];
 				model.addRow(values);
 			}
 			this.leagueTable.setModel(model);
@@ -173,7 +177,7 @@ public class SquareRobin extends JFrame implements ActionListener {
 	}
 	
 	private void initLeagueModel() {
-		String[] headers = { "Position", "Club", "Points", "Goal Average", "Scored", "Conceded" };
+		String[] headers = { "Position", "Club", "Points", "Scored", "Conceded", "Goal Average" };
 		DefaultTableModel model = new NonEditableTableModel(0, headers.length);
 		
 		model.setColumnIdentifiers(headers);

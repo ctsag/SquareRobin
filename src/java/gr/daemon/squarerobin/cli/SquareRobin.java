@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Scanner;
+import java.util.TreeMap;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.GnuParser;
@@ -131,7 +132,7 @@ public class SquareRobin {
 	private void printDraw() {
 		try {
 			Scheduler scheduler = new Scheduler(this.clubs);
-			HashMap<Integer, HashMap<Integer, ArrayList<String[]>>> schedule = scheduler.getSchedule();
+			HashMap<Integer, TreeMap<Integer, ArrayList<String[]>>> schedule = scheduler.getSchedule();
 			for (int round : schedule.keySet()) {
 				if (!this.cli.hasOption("norounds")) {
 					System.out.println("Round " + round);
