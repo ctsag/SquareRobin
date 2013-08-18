@@ -1,4 +1,4 @@
-package gr.daemon.squarerobin.schedulertest;
+package gr.daemon.squarerobin.model;
 
 import gr.daemon.squarerobin.model.State;
 import static org.junit.Assert.*;
