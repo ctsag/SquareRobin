@@ -1,6 +1,5 @@
 package gr.daemon.squarerobin.cli;
 
-import gr.daemon.squarerobin.cli.State;
 import gr.daemon.squarerobin.model.Scheduler;
 import java.util.ArrayList;
 import java.util.Arrays;

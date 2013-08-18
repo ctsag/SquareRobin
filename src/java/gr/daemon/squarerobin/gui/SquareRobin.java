@@ -7,7 +7,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Vector;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -34,6 +33,7 @@ public class SquareRobin extends JFrame implements ActionListener {
 	private JScrollPane leagueScrollPane;
 	private JTable leagueTable;
 	private Scheduler scheduler;
+	private JButton clearButton;
 
 	public SquareRobin() {
 		try {
@@ -62,11 +62,12 @@ public class SquareRobin extends JFrame implements ActionListener {
 		try {
 			HashMap<Integer, HashMap<Integer, ArrayList<String[]>>> schedule = scheduler.getSchedule();
 			int rowAt = 0;
+			//this.clearSchedule();
 			for (int round : schedule.keySet()) {
 				this.scheduleTable.setValueAt("Round " + round, rowAt++, 0);
 				for (int day : schedule.get(round).keySet()) {
 					this.scheduleTable.setValueAt("Day " + day, rowAt++, 1);
-					for (String[] pair : schedule.get(round).get(day)) {						
+					for (String[] pair : schedule.get(round).get(day)) {
 						this.scheduleTable.setValueAt(pair[0], rowAt, 2);
 						this.scheduleTable.setValueAt(pair[1], rowAt, 3);
 						this.scheduleTable.setValueAt(pair[2] + " - " + pair[3], rowAt, 4);						
@@ -78,13 +79,14 @@ public class SquareRobin extends JFrame implements ActionListener {
 			e.printStackTrace();
 		}
 	}
-	
+
 	private void displayLeagueTable() {
 		HashMap<String, String[]> league;
-		DefaultTableModel model = (DefaultTableModel) this.leagueTable.getModel();		
+		DefaultTableModel model;		
 		String[] values;
 		
 		try {			
+			model = (DefaultTableModel)this.leagueTable.getModel();			
 			league = scheduler.getLeagueTable();
 			for (String club : league.keySet()) {
 				values = new String[6];				
@@ -93,50 +95,87 @@ public class SquareRobin extends JFrame implements ActionListener {
 				values[4] = league.get(club)[1];
 				values[5] = league.get(club)[2];
 				model.addRow(values);
-				this.leagueTable.setModel(model);
-				model.fireTableDataChanged();
 			}
+			this.leagueTable.setModel(model);
+			model.fireTableDataChanged();
 		} catch(IllegalArgumentException e) {
 			e.printStackTrace();
 		}
 	}
 	
 	private void initComponents() {
-		String[] inputColumns = { "Club" };
-		String[] scheduleColumns = { "Round", "Day", "Home", "Away", "Score" };
-		String[] leagueColumns = { "Position", "Club", "Points", "Goal Average", "Scored", "Conceded" };
-		DefaultTableModel inputModel = new DefaultTableModel(256, inputColumns.length);
-		DefaultTableModel scheduleModel = new DefaultTableModel(256, scheduleColumns.length);
-		DefaultTableModel leagueModel = new DefaultTableModel(0, leagueColumns.length);
-		inputModel.setColumnIdentifiers(inputColumns);
-		scheduleModel.setColumnIdentifiers(scheduleColumns);
-		leagueModel.setColumnIdentifiers(leagueColumns);
+		this.setMinimumSize(new Dimension(900, 600));
+		this.setTitle(SquareRobin.APPLICATION_NAME);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setBounds(100, 100, 1227, 700);
+		this.setBounds(100, 100, 1227, 576);
 		this.contentPane = new JPanel();
 		this.contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		this.setContentPane(contentPane);		
-		this.runButton = new JButton("Go!");
-		this.runButton.addActionListener(this);
-		this.inputTable = new JTable();		
-		this.inputTable.setModel(inputModel);
-		this.inputTable.putClientProperty("terminateEditOnFocusLost", true);
-		this.inputScrollPane = new JScrollPane();
-		this.inputScrollPane.setViewportView(this.inputTable);		
-		this.scheduleTable = new JTable();
-		this.scheduleTable.setModel(scheduleModel);
-		this.scheduleScrollPane = new JScrollPane();		
-		//this.scheduleScrollPane.setColumnHeaderView(this.scheduleTable);
-		this.scheduleScrollPane.setViewportView(this.scheduleTable);
-		this.leagueTable = new JTable();
-		this.leagueTable.setModel(leagueModel);
-		this.leagueScrollPane = new JScrollPane();
-		//this.leagueScrollPane.setRowHeaderView(this.leagueTable);
-		this.leagueScrollPane.setViewportView(this.leagueTable);
-		this.setMinimumSize(new Dimension(900, 700));
-		this.setTitle(SquareRobin.APPLICATION_NAME);
+		this.setContentPane(contentPane);
+		this.initInputTable();
+		this.initScheduleTable();
+		this.initLeagueTable();
+		this.initButtons();
 	}
 	
+	private void clearTables() {
+		this.clearInputTable();
+		this.initScheduleTable();
+		this.initLeagueTable();
+	}
+	
+	private void clearInputTable() {
+		DefaultTableModel model;
+		
+		if (this.inputTable != null) {
+			model = (DefaultTableModel)this.inputTable.getModel();
+			model.getDataVector().removeAllElements();
+			model.fireTableDataChanged();
+			this.initInputTable();
+		}
+	}
+	
+	private void initInputTable() {
+		String[] headers = { "Club" };
+		DefaultTableModel model = new DefaultTableModel(16, headers.length);
+		
+		model.setColumnIdentifiers(headers);		
+		this.inputTable = new JTable();
+		this.inputTable.setModel(model);
+		model.fireTableDataChanged();
+		this.inputTable.putClientProperty("terminateEditOnFocusLost", true);
+		this.inputScrollPane = new JScrollPane();
+		this.inputScrollPane.setViewportView(this.inputTable);
+	}
+	
+	private void initScheduleTable() {		
+		String[] headers = { "Round", "Day", "Home", "Away", "Score" };
+		DefaultTableModel model = new DefaultTableModel(256, headers.length);
+		
+		model.setColumnIdentifiers(headers);
+		this.scheduleTable = new JTable();		
+		this.scheduleTable.setModel(model);		
+		this.scheduleScrollPane = new JScrollPane();
+		this.scheduleScrollPane.setViewportView(this.scheduleTable);		
+	}
+	
+	private void initLeagueTable() {
+		String[] headers = { "Position", "Club", "Points", "Goal Average", "Scored", "Conceded" };
+		DefaultTableModel model = new DefaultTableModel(0, headers.length);
+		
+		model.setColumnIdentifiers(headers);
+		this.leagueTable = new JTable();
+		this.leagueTable.setModel(model);
+		this.leagueScrollPane = new JScrollPane();
+		this.leagueScrollPane.setViewportView(this.leagueTable);		
+	}
+	
+	private void initButtons() {
+		this.runButton = new JButton("Go!");
+		this.runButton.addActionListener(this);
+		this.clearButton = new JButton("Clear");
+		this.clearButton.addActionListener(this);
+	}
+
 	private void initLayoutManager() {
 		GroupLayout gl_contentPane = new GroupLayout(this.contentPane);
 		gl_contentPane.setHorizontalGroup(
@@ -148,21 +187,24 @@ public class SquareRobin extends JFrame implements ActionListener {
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(this.leagueScrollPane, GroupLayout.DEFAULT_SIZE, 443, Short.MAX_VALUE))
 				.addGroup(gl_contentPane.createSequentialGroup()
-					.addContainerGap()
-					.addComponent(this.runButton)
-					.addContainerGap(1142, Short.MAX_VALUE))
+					.addGap(513)
+					.addComponent(this.runButton, GroupLayout.PREFERRED_SIZE, 67, GroupLayout.PREFERRED_SIZE)
+					.addGap(31)
+					.addComponent(this.clearButton, GroupLayout.PREFERRED_SIZE, 67, GroupLayout.PREFERRED_SIZE)
+					.addGap(523))
 		);
 		gl_contentPane.setVerticalGroup(
 			gl_contentPane.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_contentPane.createSequentialGroup()
 					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_contentPane.createSequentialGroup()
-							.addComponent(this.inputScrollPane, GroupLayout.PREFERRED_SIZE, 514, GroupLayout.PREFERRED_SIZE)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(this.runButton))
+						.addComponent(this.inputScrollPane, GroupLayout.PREFERRED_SIZE, 514, GroupLayout.PREFERRED_SIZE)
 						.addComponent(this.scheduleScrollPane, GroupLayout.PREFERRED_SIZE, 514, GroupLayout.PREFERRED_SIZE)
 						.addComponent(this.leagueScrollPane, GroupLayout.PREFERRED_SIZE, 514, GroupLayout.PREFERRED_SIZE))
-					.addContainerGap(109, Short.MAX_VALUE))
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
+						.addComponent(this.clearButton)
+						.addComponent(this.runButton))
+					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
 		);
 		this.contentPane.setLayout(gl_contentPane);
 	}
@@ -172,6 +214,8 @@ public class SquareRobin extends JFrame implements ActionListener {
 			this.parseInput();
 			this.displaySchedule();
 			this.displayLeagueTable();
+		} else if (event.getSource() == this.clearButton) {			
+			this.clearTables();
 		}
 	}
 	
@@ -186,4 +230,5 @@ public class SquareRobin extends JFrame implements ActionListener {
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new SwingStartUp());
 	}
+
 }
