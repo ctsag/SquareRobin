@@ -166,7 +166,7 @@ public class SquareRobin extends JFrame implements ActionListener {
 	
 	private void initScheduleModel() {
 		String[] headers = { "Round", "Day", "Home", "Away", "Score" };
-		DefaultTableModel model = new DefaultTableModel(256, headers.length);
+		DefaultTableModel model = new NonEditableTableModel(256, headers.length);
 		
 		model.setColumnIdentifiers(headers);
 		this.scheduleTable.setModel(model);
@@ -174,7 +174,7 @@ public class SquareRobin extends JFrame implements ActionListener {
 	
 	private void initLeagueModel() {
 		String[] headers = { "Position", "Club", "Points", "Goal Average", "Scored", "Conceded" };
-		DefaultTableModel model = new DefaultTableModel(0, headers.length);
+		DefaultTableModel model = new NonEditableTableModel(0, headers.length);
 		
 		model.setColumnIdentifiers(headers);
 		this.leagueTable.setModel(model);
