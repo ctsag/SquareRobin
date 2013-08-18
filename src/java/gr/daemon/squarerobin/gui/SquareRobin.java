@@ -21,6 +21,8 @@ import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JTable;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+import javax.swing.JLabel;
 
 public class SquareRobin extends JFrame implements ActionListener {
 
@@ -37,6 +39,8 @@ public class SquareRobin extends JFrame implements ActionListener {
 	private JTable leagueTable;
 	private Scheduler scheduler;
 	private JButton clearButton;
+	private JTextField roundsTextField;
+	private JLabel roundsLabel;
 
 	public SquareRobin() {
 		try {
@@ -58,7 +62,7 @@ public class SquareRobin extends JFrame implements ActionListener {
 				this.clubs.add(cell);
 			}
 		}
-		this.scheduler = new Scheduler(this.clubs, 2);
+		this.scheduler = new Scheduler(this.clubs, Integer.valueOf(this.roundsTextField.getText()));
 	}
 	
 	private void displaySchedule() {
@@ -121,6 +125,7 @@ public class SquareRobin extends JFrame implements ActionListener {
 		this.initScheduleTable();
 		this.initLeagueTable();
 		this.initButtons();
+		this.initTextFields();
 	}
 	
 	private void clearTables() {
@@ -160,6 +165,13 @@ public class SquareRobin extends JFrame implements ActionListener {
 		this.clearButton.setMnemonic(KeyEvent.VK_C);
 	}
 	
+	private void initTextFields() {
+		this.roundsLabel = new JLabel("Rounds");
+		this.roundsTextField = new JTextField();		
+		this.roundsTextField.setColumns(10);
+		this.roundsTextField.setText("2");
+	}
+	
 	private void initInputModel() {
 		String[] headers = { "Club" };
 		DefaultTableModel model = new DefaultTableModel(256, headers.length);
@@ -195,7 +207,11 @@ public class SquareRobin extends JFrame implements ActionListener {
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(this.leagueScrollPane, GroupLayout.DEFAULT_SIZE, 443, Short.MAX_VALUE))
 				.addGroup(gl_contentPane.createSequentialGroup()
-					.addGap(513)
+					.addGap(2)
+					.addComponent(this.roundsLabel)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(this.roundsTextField, GroupLayout.PREFERRED_SIZE, 23, GroupLayout.PREFERRED_SIZE)
+					.addGap(450)
 					.addComponent(this.runButton, GroupLayout.PREFERRED_SIZE, 67, GroupLayout.PREFERRED_SIZE)
 					.addGap(31)
 					.addComponent(this.clearButton, GroupLayout.PREFERRED_SIZE, 67, GroupLayout.PREFERRED_SIZE)
@@ -209,9 +225,13 @@ public class SquareRobin extends JFrame implements ActionListener {
 						.addComponent(this.scheduleScrollPane, GroupLayout.PREFERRED_SIZE, 514, GroupLayout.PREFERRED_SIZE)
 						.addComponent(this.leagueScrollPane, GroupLayout.PREFERRED_SIZE, 514, GroupLayout.PREFERRED_SIZE))
 					.addPreferredGap(ComponentPlacement.UNRELATED)
-					.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
-						.addComponent(this.clearButton)
-						.addComponent(this.runButton))
+					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
+							.addComponent(this.clearButton)
+							.addComponent(this.runButton))
+						.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
+							.addComponent(this.roundsLabel)
+							.addComponent(this.roundsTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
 					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
 		);
 		this.contentPane.setLayout(gl_contentPane);
@@ -238,5 +258,4 @@ public class SquareRobin extends JFrame implements ActionListener {
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new SwingStartUp());
 	}
-
 }
