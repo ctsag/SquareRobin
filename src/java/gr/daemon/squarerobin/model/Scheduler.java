@@ -1,9 +1,8 @@
 package gr.daemon.squarerobin.model;
 
-import gr.daemon.squarerobin.model.State;
-import gr.daemon.squarerobin.model.SortLeagueTable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.TreeMap;
 import java.util.Map.Entry;
 import java.util.HashSet;
 import java.util.Collections;
@@ -11,9 +10,9 @@ import java.util.Iterator;
 
 public class Scheduler {
     
-    private HashMap<Integer, HashMap<Integer, ArrayList<String[]>>> fullSchedule = new HashMap<>();
-    private HashMap<Integer, ArrayList<String[]>> normalSchedule = new HashMap<>();
-    private HashMap<Integer, ArrayList<String[]>> normalizedSchedule;
+    private HashMap<Integer, TreeMap<Integer, ArrayList<String[]>>> fullSchedule = new HashMap<>();
+    private TreeMap<Integer, ArrayList<String[]>> normalSchedule = new TreeMap<>();
+    private TreeMap<Integer, ArrayList<String[]>> normalizedSchedule;
     private ArrayList<String> teams = new ArrayList<>();    
     private int rounds;
 
@@ -46,7 +45,7 @@ public class Scheduler {
         }
 
         this.teams = new ArrayList<>(teamList);
-        Collections.shuffle(teams);
+        //Collections.shuffle(teams);
         
         // try up to 5 times to create a proper schedule
         int i = 0;
@@ -55,7 +54,7 @@ public class Scheduler {
                 normalizeSchedule();
                 createRounds();
                 addScores();
-                checkSchedule();
+                //checkSchedule();
                 break;
             } catch (IllegalStateException e) {
                 i++;
@@ -120,7 +119,7 @@ public class Scheduler {
     
     private void createRounds() {
 
-        HashMap<Integer, ArrayList<String[]>> currentSchedule;
+        TreeMap<Integer, ArrayList<String[]>> currentSchedule;
         ArrayList<String[]> pairList, newPairList;
         String[] newPair;
         Iterator it;
@@ -128,11 +127,11 @@ public class Scheduler {
         int day;
         
         // first add the normalized schedule
-        fullSchedule.put(currentRound, (HashMap<Integer, ArrayList<String[]>>) normalizedSchedule.clone());
+        fullSchedule.put(currentRound, (TreeMap<Integer, ArrayList<String[]>>) normalizedSchedule.clone());
 
         while (currentRound < rounds) {
             // for each round, reverse all pairs and add rounds to the map
-            currentSchedule = new HashMap<>();
+            currentSchedule = new TreeMap<>();
             it = fullSchedule.get(currentRound).entrySet().iterator();
             while (it.hasNext()) {
                 Entry thisEntry = (Entry) it.next();
@@ -147,7 +146,7 @@ public class Scheduler {
                 currentSchedule.put(day, (ArrayList<String[]>) newPairList.clone());
             }
             currentRound++;
-            fullSchedule.put(currentRound, (HashMap<Integer, ArrayList<String[]>>) currentSchedule.clone());
+            fullSchedule.put(currentRound, (TreeMap<Integer, ArrayList<String[]>>) currentSchedule.clone());
         }
     }
     
@@ -169,30 +168,38 @@ public class Scheduler {
         }
         
         schedule();
-        normalizedSchedule = (HashMap<Integer, ArrayList<String[]>>) normalSchedule.clone();
+        normalizedSchedule = (TreeMap<Integer, ArrayList<String[]>>) normalSchedule.clone();
         it = normalSchedule.entrySet().iterator();
         
         while (it.hasNext()) {
             Entry thisEntry = (Entry) it.next();
             day = (int) thisEntry.getKey();
             pairList = (ArrayList<String[]>) thisEntry.getValue();
+            int a = 1;
             
             for (String[] pair : pairList) {
                 
-                // make sure that each club has the least home or away games in a row
+                // CAN the home team become away? And CAN the away team become home? 
                 if (homeAwayCounter.get(pair[1]) < 2 && homeAwayCounter.get(pair[0]) > -2) {
+                    // Yes, both can. But SHOULD the home team become away? 
                     if (homeAwayCounter.get(pair[0]) > 0) {
                         pair = reversePair(pair, day);
-                    } else if (homeAwayCounter.get(pair[0]) > -2 && homeAwayCounter.get(pair[1]) < 2) {
-                        if (homeAwayCounter.get(pair[1]) < 0) {
-                            pair = reversePair(pair, day);
+                    } else {
+                        // No the home team SHOULD NOT become away. But SHOULD the away team become home?
+                        if (homeAwayCounter.get(pair[1]) < -1) {
+                            // Yes. Reverse
+                            pair = reversePair(pair, day); 
                         }
                     }
                 }
 
                 homeAwayValues = createHomeAwayValues(homeAwayCounter, pair);
-                homeAwayCounter.put(pair[0], homeAwayValues[0]);
-                homeAwayCounter.put(pair[1], homeAwayValues[1]);
+                for (int i = 0; i <= 1; i++) {
+                    homeAwayCounter.put(pair[i], homeAwayValues[i]);
+                    if (Math.abs(homeAwayCounter.get(pair[i])) == 3) { // a club has reached 3 home/away games in a row
+                        throw new IllegalStateException(State.ERR_HOME_AWAY.toString());
+                    }
+                }
             }
         }
     }
@@ -212,20 +219,20 @@ public class Scheduler {
     private int[] createHomeAwayValues(HashMap<String, Integer> homeAwayCounter, String[] pair) {
         int[] values = new int[2];
         
-        // if home team previously played home, points increased by 1
-        // if home team previously played away, points reset to 1
-        // if away team previously played away, points decreased by 1
-        // if away team previously played home, points reset to -1        
         for (int i = 0; i <= 1; i++) {
             if (homeAwayCounter.get(pair[i]) >= 0) {
+                // if home team previously played home, points increased by 1
                 if (i == 0) {
                     values[i] = homeAwayCounter.get(pair[i]) + 1;
+                // if away team previously played home, points reset to -1
                 } else {
                     values[i] = -1;
                 }
             } else {
+                // if home team previously played away, points reset to 1
                 if (i == 0) {
                     values[i] = 1;
+                // if away team previously played away, points decreased by 1
                 } else {
                     values[i] = homeAwayCounter.get(pair[i]) - 1;
                 }
@@ -260,20 +267,26 @@ public class Scheduler {
             
             // remove fixed team and rotate
             teams.remove(0);
-            Collections.rotate(teams, 1);
+            Collections.rotate(teams, -1);
         }
         teams.add(0, fixedTeam);        
     }
     
-    public HashMap<Integer, HashMap<Integer, ArrayList<String[]>>> getSchedule() {
+    public HashMap<Integer, TreeMap<Integer, ArrayList<String[]>>> getSchedule() {
         return fullSchedule;
     }
     
-    public HashMap<String, String[]> getLeagueTable() {
+    public TreeMap<Integer, String[]> getLeagueTable() {
+        return this.getLeagueTable(false);
+    }
+    
+    public TreeMap<Integer, String[]> getLeagueTable(boolean tiePreference) {
 
         HashMap<String, String[]> statsMap = new HashMap<>();
+        TreeMap<Integer, String[]> leagueTable = new TreeMap<>();
         String[] stats;
-        int points, scoreHome, scoreAway, goalsScored, goalsConceded;
+        int points, scoreHome, scoreAway, goalsScored, goalsConceded, goalAverage, positionCounter = 1;
+        String position;
         int[] pointsToAdd = new int[2];
         String[][] unsortedTable = new String[teams.size()][4];
         String[][] sortedTable;
@@ -320,15 +333,23 @@ public class Scheduler {
         }
         
         // sort values by points, goal average, most goals scored, alphabetically
-        SortLeagueTable sorter = new SortLeagueTable(unsortedTable);
+        LeagueTableSorter sorter = new LeagueTableSorter(unsortedTable);
         sortedTable = sorter.getLeagueTable();
         
         // add sorted elements to statsMap
         for (String[] element : sortedTable) {
-            statsMap.put(element[0], new String[]{element[1], element[2], element[3]});
+            position = Integer.toString(positionCounter);
+            if (!leagueTable.isEmpty()) {
+                if (leagueTable.get(positionCounter - 1)[2].equals(element[1]) && tiePreference) {
+                    position = "-";
+                }
+            }
+            goalAverage = Integer.parseInt(element[2]) - Integer.parseInt(element[3]);
+            leagueTable.put(positionCounter, new String[]{ position, element[0], element[1], element[2], element[3], Integer.toString(goalAverage) });
+            positionCounter++;
         }
         
-        return statsMap;
+        return leagueTable;
     }
 
 }
