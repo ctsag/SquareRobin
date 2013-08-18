@@ -45,7 +45,7 @@ public class Scheduler {
         }
 
         this.teams = new ArrayList<>(teamList);
-        //Collections.shuffle(teams);
+        Collections.shuffle(teams);
         
         // try up to 5 times to create a proper schedule
         int i = 0;
