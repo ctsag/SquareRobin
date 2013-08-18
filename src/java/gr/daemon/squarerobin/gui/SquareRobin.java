@@ -18,6 +18,7 @@ import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.JOptionPane;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JTable;
 import javax.swing.JScrollPane;
@@ -49,10 +50,10 @@ public class SquareRobin extends JFrame implements ActionListener {
 			e.printStackTrace();
 		}
 		this.initComponents();
-		this.initLayoutManager();
+		this.initLayoutManager();		
 	}
 	
-	private void parseInput() {
+	private boolean parseInput() {
 		String cell = "";
 		
 		this.clubs.clear();
@@ -62,7 +63,13 @@ public class SquareRobin extends JFrame implements ActionListener {
 				this.clubs.add(cell);
 			}
 		}
-		this.scheduler = new Scheduler(this.clubs, Integer.valueOf(this.roundsTextField.getText()));
+		try {
+			this.scheduler = new Scheduler(this.clubs, Integer.valueOf(this.roundsTextField.getText()));
+			return true;
+		} catch(Exception e) {
+			JOptionPane.showMessageDialog(this, e.getMessage());
+		}
+		return false;
 	}
 	
 	private void displaySchedule() {
@@ -239,9 +246,10 @@ public class SquareRobin extends JFrame implements ActionListener {
 	
 	public void actionPerformed(ActionEvent event) {
 		if (event.getSource() == this.runButton) {
-			this.parseInput();
-			this.displaySchedule();
-			this.displayLeagueTable();
+			if (this.parseInput()) {
+				this.displaySchedule();
+				this.displayLeagueTable();
+			}
 		} else if (event.getSource() == this.clearButton) {			
 			this.clearTables();
 		}
