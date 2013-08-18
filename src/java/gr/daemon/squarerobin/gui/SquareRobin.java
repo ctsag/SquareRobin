@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import javax.swing.table.DefaultTableModel;
@@ -25,12 +26,12 @@ public class SquareRobin extends JFrame implements ActionListener {
 	private static final String APPLICATION_NAME = "Square Robin";
 	private JPanel contentPane;
 	private JButton runButton;
-	private ArrayList<String> clubs = new ArrayList<>();
-	private JTable inputTable;
+	private ArrayList<String> clubs = new ArrayList<>();	
 	private JScrollPane inputScrollPane;
 	private JScrollPane scheduleScrollPane;
-	private JTable scheduleTable;
 	private JScrollPane leagueScrollPane;
+	private JTable inputTable;
+	private JTable scheduleTable;
 	private JTable leagueTable;
 	private Scheduler scheduler;
 	private JButton clearButton;
@@ -59,10 +60,10 @@ public class SquareRobin extends JFrame implements ActionListener {
 	}
 	
 	private void displaySchedule() {
+		this.initScheduleModel();
 		try {
 			HashMap<Integer, HashMap<Integer, ArrayList<String[]>>> schedule = scheduler.getSchedule();
 			int rowAt = 0;
-			//this.clearSchedule();
 			for (int round : schedule.keySet()) {
 				this.scheduleTable.setValueAt("Round " + round, rowAt++, 0);
 				for (int day : schedule.get(round).keySet()) {
@@ -85,8 +86,9 @@ public class SquareRobin extends JFrame implements ActionListener {
 		DefaultTableModel model;		
 		String[] values;
 		
-		try {			
-			model = (DefaultTableModel)this.leagueTable.getModel();			
+		this.initLeagueModel();
+		model = (DefaultTableModel)this.leagueTable.getModel();
+		try {
 			league = scheduler.getLeagueTable();
 			for (String club : league.keySet()) {
 				values = new String[6];				
@@ -118,62 +120,64 @@ public class SquareRobin extends JFrame implements ActionListener {
 	}
 	
 	private void clearTables() {
-		this.clearInputTable();
-		this.initScheduleTable();
-		this.initLeagueTable();
+		this.initInputModel();
+		this.initScheduleModel();
+		this.initLeagueModel();
 	}
 	
-	private void clearInputTable() {
-		DefaultTableModel model;
-		
-		if (this.inputTable != null) {
-			model = (DefaultTableModel)this.inputTable.getModel();
-			model.getDataVector().removeAllElements();
-			model.fireTableDataChanged();
-			this.initInputTable();
-		}
-	}
-	
-	private void initInputTable() {
-		String[] headers = { "Club" };
-		DefaultTableModel model = new DefaultTableModel(16, headers.length);
-		
-		model.setColumnIdentifiers(headers);		
+	private void initInputTable() {		
 		this.inputTable = new JTable();
-		this.inputTable.setModel(model);
-		model.fireTableDataChanged();
-		this.inputTable.putClientProperty("terminateEditOnFocusLost", true);
 		this.inputScrollPane = new JScrollPane();
 		this.inputScrollPane.setViewportView(this.inputTable);
+		this.inputTable.putClientProperty("terminateEditOnFocusLost", true);
+		this.initInputModel();
 	}
 	
-	private void initScheduleTable() {		
-		String[] headers = { "Round", "Day", "Home", "Away", "Score" };
-		DefaultTableModel model = new DefaultTableModel(256, headers.length);
-		
-		model.setColumnIdentifiers(headers);
-		this.scheduleTable = new JTable();		
-		this.scheduleTable.setModel(model);		
-		this.scheduleScrollPane = new JScrollPane();
-		this.scheduleScrollPane.setViewportView(this.scheduleTable);		
+	private void initScheduleTable() {
+		this.scheduleTable = new JTable();
+		this.scheduleScrollPane = new JScrollPane();			
+		this.scheduleScrollPane.setViewportView(this.scheduleTable);
+		this.initScheduleModel();
 	}
 	
 	private void initLeagueTable() {
-		String[] headers = { "Position", "Club", "Points", "Goal Average", "Scored", "Conceded" };
-		DefaultTableModel model = new DefaultTableModel(0, headers.length);
-		
-		model.setColumnIdentifiers(headers);
 		this.leagueTable = new JTable();
-		this.leagueTable.setModel(model);
 		this.leagueScrollPane = new JScrollPane();
-		this.leagueScrollPane.setViewportView(this.leagueTable);		
+		this.leagueScrollPane.setViewportView(this.leagueTable);
+		this.initLeagueModel();
 	}
 	
 	private void initButtons() {
 		this.runButton = new JButton("Go!");
 		this.runButton.addActionListener(this);
+		this.runButton.setMnemonic(KeyEvent.VK_G);
 		this.clearButton = new JButton("Clear");
 		this.clearButton.addActionListener(this);
+		this.clearButton.setMnemonic(KeyEvent.VK_C);
+	}
+	
+	private void initInputModel() {
+		String[] headers = { "Club" };
+		DefaultTableModel model = new DefaultTableModel(256, headers.length);
+		
+		model.setColumnIdentifiers(headers);
+		this.inputTable.setModel(model);
+	}
+	
+	private void initScheduleModel() {
+		String[] headers = { "Round", "Day", "Home", "Away", "Score" };
+		DefaultTableModel model = new DefaultTableModel(256, headers.length);
+		
+		model.setColumnIdentifiers(headers);
+		this.scheduleTable.setModel(model);
+	}
+	
+	private void initLeagueModel() {
+		String[] headers = { "Position", "Club", "Points", "Goal Average", "Scored", "Conceded" };
+		DefaultTableModel model = new DefaultTableModel(0, headers.length);
+		
+		model.setColumnIdentifiers(headers);
+		this.leagueTable.setModel(model);
 	}
 
 	private void initLayoutManager() {
