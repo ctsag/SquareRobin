@@ -19,7 +19,7 @@ public class Scheduler {
     private static final int FIXED_TEAM_NUMBER = 0; // number of array index
 
     public Scheduler(ArrayList<String> teamList) {
-        this(teamList, 1);
+        this(teamList, 2);
     }
     
     public Scheduler(ArrayList<String> teamList, int rounds) throws IllegalArgumentException,IllegalStateException {
@@ -255,8 +255,8 @@ public class Scheduler {
         HashMap<String, String[]> statsMap = new HashMap<>();
         TreeMap<Integer, String[]> leagueTable = new TreeMap<>();
         String[] stats;
-        int points, scoreHome, scoreAway, goalsScored, goalsConceded, goalAverage, positionCounter = 1;
-        String position;
+        int points, scoreHome, scoreAway, goalsScored, goalsConceded, positionCounter = 1;
+        String position, goalAverage;
         int[] pointsToAdd = new int[2];
         String[][] unsortedTable = new String[teams.size()][4];
         String[][] sortedTable;
@@ -314,8 +314,9 @@ public class Scheduler {
                     position = "-";
                 }
             }
-            goalAverage = Integer.parseInt(element[2]) - Integer.parseInt(element[3]);
-            leagueTable.put(positionCounter, new String[]{ position, element[0], element[1], element[2], element[3], Integer.toString(goalAverage) });
+            goalAverage = Integer.toString(Integer.parseInt(element[2]) - Integer.parseInt(element[3]));
+            goalAverage = (Character.toString(goalAverage.charAt(0)).equals("-")) ? goalAverage : "+" + goalAverage;
+            leagueTable.put(positionCounter, new String[]{ position, element[0], element[1], element[2], element[3], goalAverage });
             positionCounter++;
         }
         
