@@ -213,7 +213,7 @@ public class SchedulerTest {
     }
     
     @Test
-    public void testLeagueTable() {
+    public void testLeagueTableSize() {
         TreeMap<Integer, String[]> points;
         
         teams.add("PAO");
