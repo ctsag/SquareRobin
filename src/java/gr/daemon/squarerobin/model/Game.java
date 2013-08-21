@@ -37,5 +37,7 @@ public class Game {
         ArrayList<Team> teams = new ArrayList<>();
         teams.add(this.homeTeam);
         teams.add(this.awayTeam);
+        
+        return teams;
     }
 }
