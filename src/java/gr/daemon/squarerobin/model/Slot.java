@@ -5,6 +5,10 @@ import java.util.ArrayList;
 public class Slot {
     private int index;
     private ArrayList<Game> games;
+    
+    public Slot(int index) {
+        this.index = index;
+    }
 
     public int getIndex() {
         return this.index;
