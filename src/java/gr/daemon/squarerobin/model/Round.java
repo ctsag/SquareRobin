@@ -23,6 +23,6 @@ public class Round {
     }
     
     public ArrayList<Slot> getGames() {
-        return this.slots;
+        return (ArrayList<Slot>) this.slots.clone();
     }
 }

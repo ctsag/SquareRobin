@@ -23,6 +23,6 @@ public class Slot {
     }
 
     public ArrayList<Game> getGames() {
-        return this.games;
+        return (ArrayList<Game>) this.games.clone();
     }
 }
