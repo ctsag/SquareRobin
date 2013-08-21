@@ -17,10 +17,6 @@ public class Game {
         this.homeGoals = goals;
     }
     
-    public void setAwayGoals(int goals) {
-        this.awayGoals = goals;
-    }
-    
     public int getHomeGoals() {
         return this.homeGoals;
     }
@@ -29,12 +25,17 @@ public class Game {
         return this.awayGoals;
     }
     
+    public void setAwayGoals(int goals) {
+        this.awayGoals = goals;
+    }
+
     public int[] getScore() {
         return new int[]{this.homeGoals, this.awayGoals};
     }
     
     public ArrayList<Team> getTeams() {
-        
+        ArrayList<Team> teams = new ArrayList<>();
+        teams.add(this.homeTeam);
+        teams.add(this.awayTeam);
     }
 }
-// add getTeams
