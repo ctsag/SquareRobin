@@ -22,7 +22,7 @@ public class Round {
         this.slots.remove(slot);
     }
     
-    public ArrayList<Slot> getGames() {
-        return (ArrayList<Slot>) this.slots.clone();
+    public Slot[] getSlots() {
+        return (Slot[]) this.slots.toArray();
     }
 }

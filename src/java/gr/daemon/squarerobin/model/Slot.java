@@ -22,7 +22,7 @@ public class Slot {
         this.games.remove(game);
     }
 
-    public ArrayList<Game> getGames() {
-        return (ArrayList<Game>) this.games.clone();
+    public Game[] getGames() {
+        return (Game[]) this.games.toArray();
     }
 }
