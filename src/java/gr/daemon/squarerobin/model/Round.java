@@ -3,6 +3,7 @@ package gr.daemon.squarerobin.model;
 import java.util.HashMap;
 
 public class Round {
+    
     private int index;
     private HashMap<Integer, Slot> slots;
     

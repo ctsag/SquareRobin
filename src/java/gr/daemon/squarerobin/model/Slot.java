@@ -3,6 +3,7 @@ package gr.daemon.squarerobin.model;
 import java.util.ArrayList;
 
 public class Slot {
+    
     private int index;
     private ArrayList<Game> games;
     

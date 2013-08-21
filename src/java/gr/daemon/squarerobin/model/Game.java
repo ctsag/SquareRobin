@@ -1,8 +1,7 @@
 package gr.daemon.squarerobin.model;
 
-import java.util.ArrayList;
-
 public class Game {
+    
     private Team homeTeam;
     private Team awayTeam;
     private int homeGoals;
@@ -33,11 +32,7 @@ public class Game {
         return new int[]{this.homeGoals, this.awayGoals};
     }
     
-    public ArrayList<Team> getTeams() {
-        ArrayList<Team> teams = new ArrayList<>();
-        teams.add(this.homeTeam);
-        teams.add(this.awayTeam);
-        
-        return teams;
+    public Team[] getTeams() {
+        return new Team[]{this.homeTeam, this.awayTeam};
     }
 }
