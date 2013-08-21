@@ -4,4 +4,8 @@ public class Tournament {
 	
 	private String name = "";
 	
+	public Tournament() {
+		
+	}
+	
 }
