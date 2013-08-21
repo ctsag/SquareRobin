@@ -1,4 +1,4 @@
-package gr.daemon.squarerobin.model;
+package gr.daemon.squarerobin.engine;
 
 public enum State {
 	

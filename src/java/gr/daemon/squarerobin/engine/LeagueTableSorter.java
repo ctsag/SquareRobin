@@ -1,4 +1,4 @@
-package gr.daemon.squarerobin.model;
+package gr.daemon.squarerobin.engine;
 
 import java.util.Arrays;
 import java.util.Comparator;

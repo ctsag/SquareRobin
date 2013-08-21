@@ -1,5 +1,7 @@
 package gr.daemon.squarerobin.model;
 
+import gr.daemon.squarerobin.engine.State;
+import gr.daemon.squarerobin.engine.Scheduler;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TreeMap;
