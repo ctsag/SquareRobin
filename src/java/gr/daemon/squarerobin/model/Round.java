@@ -3,8 +3,8 @@ package gr.daemon.squarerobin.model;
 import java.util.ArrayList;
 
 public class Round {
-    int index;
-    ArrayList<Slot> slots;
+    private int index;
+    private ArrayList<Slot> slots;
 
     public int getIndex() {
         return this.index;

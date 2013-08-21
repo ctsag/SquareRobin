@@ -3,10 +3,10 @@ package gr.daemon.squarerobin.model;
 import java.util.ArrayList;
 
 public class Game {
-    Team homeTeam;
-    Team awayTeam;
-    int homeGoals;
-    int awayGoals;
+    private Team homeTeam;
+    private Team awayTeam;
+    private int homeGoals;
+    private int awayGoals;
 
     public Game(Team home, Team away) {
         this.homeTeam = home;
