@@ -7,10 +7,6 @@ public class Tournament {
 	private String name = "";
 	private HashMap<String, Season> seasons = new HashMap<>();
 	
-	public Tournament() {
-		this("");		
-	}
-
 	public Tournament(String name) {
 		this.name = name;
 	}
