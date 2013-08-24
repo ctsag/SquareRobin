@@ -9,21 +9,20 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TreeMap;
-
-import javax.swing.table.DefaultTableModel;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.UIManager;
-import javax.swing.border.EmptyBorder;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-import javax.swing.JLabel;
+import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.UIManager;
+import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
 
 public class SquareRobin extends JFrame implements ActionListener {
 
@@ -73,22 +72,33 @@ public class SquareRobin extends JFrame implements ActionListener {
 	}
 	
 	private void displaySchedule() {
+		HashMap<Integer, TreeMap<Integer, ArrayList<String[]>>> schedule;
+		DefaultTableModel model;
+		String[] values;
+		
 		this.initScheduleModel();
+		model = (DefaultTableModel)this.scheduleTable.getModel();
 		try {
-			HashMap<Integer, TreeMap<Integer, ArrayList<String[]>>> schedule = scheduler.getSchedule();
-			int rowAt = 0;
+			schedule = scheduler.getSchedule();			
 			for (int round : schedule.keySet()) {
-				this.scheduleTable.setValueAt("Round " + round, rowAt++, 0);
-				for (int day : schedule.get(round).keySet()) {
-					this.scheduleTable.setValueAt("Day " + day, rowAt++, 1);
-					for (String[] pair : schedule.get(round).get(day)) {
-						this.scheduleTable.setValueAt(pair[0], rowAt, 2);
-						this.scheduleTable.setValueAt(pair[1], rowAt, 3);
-						this.scheduleTable.setValueAt(pair[2] + " - " + pair[3], rowAt, 4);						
-						rowAt++;
+				values = new String[5];
+				values[0] = "Round " + round;
+				model.addRow(values);
+				for (int slot : schedule.get(round).keySet()) {
+					values = new String[5];
+					values[1] = "Slot " + slot;
+					model.addRow(values);
+					for (String[] pair : schedule.get(round).get(slot)) {
+						values = new String[5];
+						values[2] = pair[0];
+						values[3] = pair[1];
+						values[4] = pair[2] + " - " + pair[3];
+						model.addRow(values);
 					}
 				}
 			}
+			this.scheduleTable.setModel(model);
+			model.fireTableDataChanged();
 		} catch(IllegalArgumentException e) {
 			e.printStackTrace();
 		}
@@ -189,7 +199,7 @@ public class SquareRobin extends JFrame implements ActionListener {
 	
 	private void initScheduleModel() {
 		String[] headers = { "Round", "Day", "Home", "Away", "Score" };
-		DefaultTableModel model = new NonEditableTableModel(256, headers.length);
+		DefaultTableModel model = new NonEditableTableModel(0, headers.length);
 		
 		model.setColumnIdentifiers(headers);
 		this.scheduleTable.setModel(model);
