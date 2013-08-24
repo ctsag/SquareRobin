@@ -1,5 +1,6 @@
 package gr.daemon.squarerobin.model;
 
+import java.util.Collection;
 import java.util.HashMap;
 
 public class Tournament {
@@ -20,7 +21,8 @@ public class Tournament {
 	}
 	
 	public Season[] getSeasons() {
-		return (Season[])this.seasons.values().toArray();
+		Collection<Season> seasons = this.seasons.values();
+		return seasons.toArray(new Season[seasons.size()]);
 	}
 	
 	public Season getSeason(String id) {
@@ -29,10 +31,6 @@ public class Tournament {
 	
 	public void addSeason(Season season) {
 		this.seasons.put(season.getId(), season);
-	}
-	
-	public void removeSeason(Season season) {
-		this.seasons.remove(season.getId());
 	}
 	
 	public void removeSeason(String id) {
