@@ -1,10 +1,15 @@
 package gr.daemon.squarerobin.model;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Round {
-    int index;
-    ArrayList<Slot> slots;
+    
+    private int index;
+    private HashMap<Integer, Slot> slots;
+    
+    public Round(int index) {
+        this.index = index;
+    }
 
     public int getIndex() {
         return this.index;
@@ -15,14 +20,26 @@ public class Round {
     }
     
     public void addSlot(Slot slot) {
-        this.slots.add(slot);
+        this.slots.put(slot.getIndex(), slot);
     }
     
     public void removeSlot(Slot slot) {
-        this.slots.remove(slot);
+        this.slots.remove(slot.getIndex());
     }
     
-    public ArrayList<Slot> getGames() {
-        return this.slots;
+    public void removeSlot(int index) {
+        this.slots.remove(index);
+    }
+    
+    public void clearSlots() {
+        this.slots.clear();
+    }
+    
+    public Slot[] getSlots() {
+        return (Slot[]) this.slots.values().toArray();
+    }
+    
+    public Slot getSlot(int index) {
+        return this.slots.get(index);
     }
 }

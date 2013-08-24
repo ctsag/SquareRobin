@@ -1,12 +1,11 @@
 package gr.daemon.squarerobin.model;
 
-import java.util.ArrayList;
-
 public class Game {
-    Team homeTeam;
-    Team awayTeam;
-    int homeGoals;
-    int awayGoals;
+    
+    private Team homeTeam;
+    private Team awayTeam;
+    private int homeGoals;
+    private int awayGoals;
 
     public Game(Team home, Team away) {
         this.homeTeam = home;
@@ -17,10 +16,6 @@ public class Game {
         this.homeGoals = goals;
     }
     
-    public void setAwayGoals(int goals) {
-        this.awayGoals = goals;
-    }
-    
     public int getHomeGoals() {
         return this.homeGoals;
     }
@@ -29,12 +24,15 @@ public class Game {
         return this.awayGoals;
     }
     
+    public void setAwayGoals(int goals) {
+        this.awayGoals = goals;
+    }
+
     public int[] getScore() {
         return new int[]{this.homeGoals, this.awayGoals};
     }
     
-    public ArrayList<Team> getTeams() {
-        
+    public Team[] getTeams() {
+        return new Team[]{this.homeTeam, this.awayTeam};
     }
 }
-// add getTeams
