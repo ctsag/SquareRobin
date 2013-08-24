@@ -75,7 +75,6 @@ public class Scheduler {
         // loop through the entire schedule and add a 3rd element in pair array which represents the score
         for (int round : fullSchedule.keySet()) {
             for (int day : fullSchedule.get(round).keySet()) {
-                Iterator it = fullSchedule.get(round).get(day).iterator();
                 for (String[] pair : fullSchedule.get(round).get(day)) {
                     // add the score
                     scoreHome = Long.toString(Math.round(Math.random() * 5));
@@ -125,7 +124,6 @@ public class Scheduler {
         
         HashMap<String, Integer> homeAwayCounter = new HashMap<>();
         ArrayList<String[]> pairList;
-        ArrayList<String[]> newDay;
         int[] homeAwayValues;
         String team;
         Iterator it;
@@ -146,7 +144,6 @@ public class Scheduler {
             Entry thisEntry = (Entry) it.next();
             day = (int) thisEntry.getKey();
             pairList = (ArrayList<String[]>) thisEntry.getValue();
-            int a = 1;
             
             for (String[] pair : pairList) {
                 
@@ -265,7 +262,6 @@ public class Scheduler {
         // loop through the entire schedule in order to create team's points
         for (int round : fullSchedule.keySet()) {
             for (int day : fullSchedule.get(round).keySet()) {
-                Iterator it = fullSchedule.get(round).get(day).iterator();
                 for (String[] pair : fullSchedule.get(round).get(day)) {
                     scoreHome = Integer.parseInt(pair[2]);
                     scoreAway = Integer.parseInt(pair[3]);

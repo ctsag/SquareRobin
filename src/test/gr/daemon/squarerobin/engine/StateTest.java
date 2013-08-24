@@ -1,4 +1,4 @@
-package gr.daemon.squarerobin.model;
+package gr.daemon.squarerobin.engine;
 
 import gr.daemon.squarerobin.engine.State;
 import static org.junit.Assert.*;
