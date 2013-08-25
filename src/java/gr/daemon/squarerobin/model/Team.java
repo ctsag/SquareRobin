@@ -59,6 +59,26 @@ public class Team {
 		return goalAverage;
 	}
 
+	public void win(final int goalsFor, final int goalsAgainst) {
+		this.points += 3;
+		this.addGoals(goalsFor, goalsAgainst);
+	}
+
+	public void lose(final int goalsFor, final int goalsAgainst) {		
+		this.addGoals(goalsFor, goalsAgainst);
+	}
+
+	public void draw(final int goalsFor, final int goalsAgainst) {
+		this.points += 1;
+		this.addGoals(goalsFor, goalsAgainst);
+	}
+
+	private void addGoals(final int goalsFor, final int goalsAgainst) {
+		this.goalsFor += goalsFor;
+		this.goalsAgainst += goalsAgainst;
+		this.calculateGoalAverage();
+	}
+
 	private void calculateGoalAverage() {
 		this.goalAverage = this.goalsFor - this.goalsAgainst;
 	}
