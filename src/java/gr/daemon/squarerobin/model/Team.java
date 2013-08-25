@@ -8,7 +8,7 @@ public class Team {
 	private int goalsFor;
 	private int goalsAgainst;
 	private int goalAverage;
-	
+
 	public Team(final String name) {
 		this.name = name;
 	}
@@ -20,7 +20,7 @@ public class Team {
 	public void setName(final String name) {
 		this.name = name;
 	}
-	
+
 	public int getPoints() {
 		return points;
 	}
@@ -58,7 +58,7 @@ public class Team {
 	public int getGoalAverage() {
 		return goalAverage;
 	}
-	
+
 	private void calculateGoalAverage() {
 		this.goalAverage = this.goalsFor - this.goalsAgainst;
 	}

@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 public class TournamentTest {
-	
+
 	private static final String TOURNAMENT_A = "Greek Superleague";
 	private static final String TOURNAMENT_B = "Greek Cup";
 	private static final String SEASON_A = "2012";
@@ -25,7 +25,7 @@ public class TournamentTest {
 		assertEquals(expected, tournament.getName());
 	}
 
-	@Test 
+	@Test
 	public void testAddSeason() {
 		final Season season2011 = new Season(TournamentTest.SEASON_A);
 		final Season season2012 = new Season(TournamentTest.SEASON_B);

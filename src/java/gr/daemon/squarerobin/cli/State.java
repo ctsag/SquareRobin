@@ -7,23 +7,23 @@ public enum State {
 	INVALID_ARGUMENTS(2),
 	INSUFFICIENT_CLUBS(3),
 	ODD_CLUBS(4);
-	
+
 	private int value;
-	
+
 	private State(final int value) {
 		this.value = value;
 	}
-	
+
 	public int getValue() {
 		return this.value;
 	}
-	
+
 	@Override
 	public String toString() {
 		String message = "";
-		
+
 		switch (this) {
-			case OK :				
+			case OK :
 				break;
 			case UNSPECIFIED_ERROR :
 				message = "An error has occured";
@@ -37,10 +37,10 @@ public enum State {
 			case ODD_CLUBS :
 				message = "An even number of clubs are is required";
 				break;
-			default :				
+			default :
 				break;
 		}
 		return message;
 	}
-	
+
 }

@@ -11,9 +11,9 @@ public class StateTest {
 			if (state.getValue() > 0) {
 				assertFalse(state.toString().equals(""));
 			}
-		}		
+		}
 	}
-	
+
 	@Test
 	public void testOk() {
 		final State ok = State.OK;

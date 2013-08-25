@@ -18,7 +18,7 @@ public class TeamTest {
 		final Team team = new Team(expected);
 		assertEquals(expected, team.getName());
 	}
-	
+
 	@Test
 	public void testName() {
 		final String expected = TeamTest.TEAM_A;
@@ -26,7 +26,7 @@ public class TeamTest {
 		team.setName(expected);
 		assertEquals(expected, team.getName());		
 	}
-	
+
 	@Test 
 	public void testPoints() {		
 		final int expected = TeamTest.POINTS;
@@ -34,7 +34,7 @@ public class TeamTest {
 		team.setPoints(expected);
 		assertEquals(expected, team.getPoints());
 	}
-	
+
 	@Test 
 	public void testPosition() {		
 		final int expected = TeamTest.POSITION;
@@ -42,7 +42,7 @@ public class TeamTest {
 		team.setPosition(expected);
 		assertEquals(expected, team.getPosition());
 	}
-	
+
 	@Test 
 	public void testGoalsFor() {		
 		final int expected = TeamTest.GOALS_FOR;
@@ -50,7 +50,7 @@ public class TeamTest {
 		team.setGoalsFor(expected);
 		assertEquals(expected, team.getGoalsFor());
 	}
-	
+
 	@Test 
 	public void testGoalsAgainst() {		
 		final int expected = TeamTest.GOALS_AGAINST;
@@ -58,7 +58,7 @@ public class TeamTest {
 		team.setGoalsAgainst(expected);
 		assertEquals(expected, team.getGoalsAgainst());
 	}
-	
+
 	@Test 
 	public void testGoalAverage() {		
 		final int expected = TeamTest.GOALS_FOR - TeamTest.GOALS_AGAINST;
@@ -67,5 +67,5 @@ public class TeamTest {
 		team.setGoalsAgainst(TeamTest.GOALS_AGAINST);
 		assertEquals(expected, team.getGoalAverage());
 	}
-	
+
 }
