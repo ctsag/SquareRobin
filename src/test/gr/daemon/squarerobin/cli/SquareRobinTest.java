@@ -18,8 +18,9 @@ public class SquareRobinTest {
 	private static final String TEAM_B = "Olympiakos";
 	private static final String TEAM_C = "AEK";
 	private static final String TEAM_D = "PAOK";
-	private static final String[] TEAM_SET_A = {SquareRobinTest.TEAM_A, SquareRobinTest.TEAM_B, SquareRobinTest.TEAM_C, SquareRobinTest.TEAM_D};
-	private static final String[] TEAM_SET_B = {SquareRobinTest.TEAM_A, SquareRobinTest.TEAM_B, SquareRobinTest.TEAM_C, SquareRobinTest.TEAM_D};
+	private static final String[] TEAM_SET_EVEN = {SquareRobinTest.TEAM_A, SquareRobinTest.TEAM_B, SquareRobinTest.TEAM_C, SquareRobinTest.TEAM_D};
+	private static final String[] TEAM_SET_ODD = {SquareRobinTest.TEAM_A, SquareRobinTest.TEAM_B, SquareRobinTest.TEAM_C};
+	private static final String[] TEAM_SET_NOT_UNIQUE = {SquareRobinTest.TEAM_A, SquareRobinTest.TEAM_A, SquareRobinTest.TEAM_B, SquareRobinTest.TEAM_C};
 	private static final String LEFT_OUT_TEAM = SquareRobinTest.TEAM_D;
 
 	private class ExitException extends SecurityException {
@@ -74,7 +75,7 @@ public class SquareRobinTest {
 	@Test
 	public void testDefaultUsage() {
 		final ByteArrayOutputStream systemOut = new ByteArrayOutputStream();
-		final String[] clubs = SquareRobinTest.TEAM_SET_A;
+		final String[] clubs = SquareRobinTest.TEAM_SET_EVEN;
 		String systemIn = "";
 
 		// Setup input and output.
@@ -87,16 +88,16 @@ public class SquareRobinTest {
 
 		SquareRobin.main(new String[]{});
 
-		// Assert number of days
-		for (int i = 1; i < clubs.length; i++) {
-			assertEquals(1, this.countOccurences(systemOut.toString(), "Day " + i));
+        // Assert number of occurences per club
+		for (final String club : clubs) {			
+			assertEquals((clubs.length - 1) * 2, this.countOccurences(systemOut.toString(), SquareRobinTest.CRNL + club + SquareRobinTest.VS) + this.countOccurences(systemOut.toString(), SquareRobinTest.VS + club + SquareRobinTest.CRNL));
 		}
 	}
 
 	@Test
 	public void testNoDays() {
 		final ByteArrayOutputStream systemOut = new ByteArrayOutputStream();
-		final String[] clubs = SquareRobinTest.TEAM_SET_A;
+		final String[] clubs = SquareRobinTest.TEAM_SET_EVEN;
 		String systemIn = "";
 
 		// Setup input and output.
@@ -118,7 +119,7 @@ public class SquareRobinTest {
 	@Test
 	public void testNoRounds() {
 		final ByteArrayOutputStream systemOut = new ByteArrayOutputStream();
-		final String[] clubs = SquareRobinTest.TEAM_SET_A;
+		final String[] clubs = SquareRobinTest.TEAM_SET_EVEN;
 		String systemIn = "";
 
 		// Setup input and output.
@@ -140,8 +141,8 @@ public class SquareRobinTest {
 	@Test
 	public void testOnlyOneClub() {
 		final ByteArrayOutputStream systemOut = new ByteArrayOutputStream();
-		final String[] clubs = SquareRobinTest.TEAM_SET_A;
-		final String[] otherClubs = SquareRobinTest.TEAM_SET_B;
+		final String[] clubs = SquareRobinTest.TEAM_SET_EVEN;
+		final String[] otherClubs = SquareRobinTest.TEAM_SET_ODD;
 		final String onlyForClub = SquareRobinTest.LEFT_OUT_TEAM;
 
 		String systemIn = "";
@@ -158,7 +159,7 @@ public class SquareRobinTest {
 
 		// Assert only the matches of the specified club are printed
 		for (final String club : otherClubs) {
-			assertEquals(1, this.countOccurences(systemOut.toString(), SquareRobinTest.CRNL + club + SquareRobinTest.VS) + this.countOccurences(systemOut.toString(), SquareRobinTest.VS + club + SquareRobinTest.CRNL));
+			assertEquals(1 * 2, this.countOccurences(systemOut.toString(), SquareRobinTest.CRNL + club + SquareRobinTest.VS) + this.countOccurences(systemOut.toString(), SquareRobinTest.VS + club + SquareRobinTest.CRNL));
 		}
 	}
 
@@ -190,7 +191,7 @@ public class SquareRobinTest {
 
 	@Test
 	public void testOddClubs() {
-		final String[] clubs = SquareRobinTest.TEAM_SET_B;
+		final String[] clubs = SquareRobinTest.TEAM_SET_ODD;
 		String systemIn = "";
 
 		// Setup input and output.
@@ -257,7 +258,7 @@ public class SquareRobinTest {
 
 	@Test
 	public void testUnspecifiedError() {
-		final String[] clubs = SquareRobinTest.TEAM_SET_A;
+		final String[] clubs = SquareRobinTest.TEAM_SET_NOT_UNIQUE;
 		String systemIn = "";
 
 		// Setup input and output.
