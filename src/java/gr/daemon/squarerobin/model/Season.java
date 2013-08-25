@@ -6,9 +6,9 @@ import java.util.HashMap;
 public class Season {
 	
 	private String id = "";
-	private HashMap<Integer, Round> rounds = new HashMap<>();	
+	private final HashMap<Integer, Round> rounds = new HashMap<>();	
 	
-	public Season(String id) {
+	public Season(final String id) {
 		this.id = id;
 	}
 
@@ -16,24 +16,24 @@ public class Season {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(final String id) {
 		this.id = id;
 	}
 
 	public Round[] getRounds() {
-		Collection<Round> rounds = this.rounds.values();
+		final Collection<Round> rounds = this.rounds.values();
 		return rounds.toArray(new Round[rounds.size()]);
 	}
 	
-	public Round getRound(int index) {
+	public Round getRound(final int index) {
 		return this.rounds.get(index); 
 	}
 	
-	public void addRound(Round round) {
+	public void addRound(final Round round) {
 		this.rounds.put(round.getIndex(), round);
 	}
 	
-	public void removeRound(int index) {
+	public void removeRound(final int index) {
 		this.rounds.remove(index);
 	}
 	

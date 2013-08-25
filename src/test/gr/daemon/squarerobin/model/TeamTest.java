@@ -4,59 +4,67 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 public class TeamTest {
-	
+
+	private static final String TEAM_A = "Panathinaikos";
+	private static final String TEAM_B = "Olympiakos";
+	private static final int POINTS = 8;
+	private static final int POSITION = 1;
+	private static final int GOALS_FOR = 32;
+	private static final int GOALS_AGAINST = 22;	
+
 	@Test
 	public void testConstructor() {
-		String expected = "Panathinaikos";
-		Team team = new Team(expected);
+		final String expected = TeamTest.TEAM_A;
+		final Team team = new Team(expected);
 		assertEquals(expected, team.getName());
 	}
 	
 	@Test
 	public void testName() {
-		String expected = "Panathinaikos";
-		Team team = new Team("Olympiakos");
+		final String expected = TeamTest.TEAM_A;
+		final Team team = new Team(TeamTest.TEAM_B);
 		team.setName(expected);
 		assertEquals(expected, team.getName());		
 	}
 	
 	@Test 
 	public void testPoints() {		
-		int expected = 8;
-		Team team = new Team("Panathinaikos");
+		final int expected = TeamTest.POINTS;
+		final Team team = new Team(TeamTest.TEAM_A);
 		team.setPoints(expected);
 		assertEquals(expected, team.getPoints());
 	}
 	
 	@Test 
 	public void testPosition() {		
-		int expected = 1;
-		Team team = new Team("Panathinaikos");
+		final int expected = TeamTest.POSITION;
+		final Team team = new Team(TeamTest.TEAM_A);
 		team.setPosition(expected);
 		assertEquals(expected, team.getPosition());
 	}
 	
 	@Test 
 	public void testGoalsFor() {		
-		int expected = 32;
-		Team team = new Team("Panathinaikos");
+		final int expected = TeamTest.GOALS_FOR;
+		final Team team = new Team(TeamTest.TEAM_A);
 		team.setGoalsFor(expected);
 		assertEquals(expected, team.getGoalsFor());
 	}
 	
 	@Test 
 	public void testGoalsAgainst() {		
-		int expected = 22;
-		Team team = new Team("Panathinaikos");
+		final int expected = TeamTest.GOALS_AGAINST;
+		final Team team = new Team(TeamTest.TEAM_A);
 		team.setGoalsAgainst(expected);
 		assertEquals(expected, team.getGoalsAgainst());
 	}
 	
 	@Test 
 	public void testGoalAverage() {		
-		int expected = 10;
-		Team team = new Team("Panathinaikos");
-		team.setGoalAverage(expected);
+		final int expected = TeamTest.GOALS_FOR - TeamTest.GOALS_AGAINST;
+		final Team team = new Team(TeamTest.TEAM_A);
+		team.setGoalsFor(TeamTest.GOALS_FOR);
+		team.setGoalsAgainst(TeamTest.GOALS_AGAINST);
 		assertEquals(expected, team.getGoalAverage());
 	}
 	

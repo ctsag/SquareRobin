@@ -4,14 +4,12 @@ import javax.swing.table.DefaultTableModel;
 
 public class NonEditableTableModel extends DefaultTableModel {
 
-	private static final long serialVersionUID = 1L;
-
-	public NonEditableTableModel(int rowCount, int columnCount) {
+	public NonEditableTableModel(final int rowCount, final int columnCount) {
 		super(rowCount, columnCount);
 	}
 
 	@Override
-	public boolean isCellEditable(int row, int column) {
+	public boolean isCellEditable(final int row, final int column) {
 		return false;
 	}
 

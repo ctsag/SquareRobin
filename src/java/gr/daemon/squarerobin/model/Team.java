@@ -3,13 +3,13 @@ package gr.daemon.squarerobin.model;
 public class Team {
 
 	private String name = "";
-	private int points = 0;
-	private int position = 0;
-	private int goalsFor = 0;
-	private int goalsAgainst = 0;
-	private int goalAverage = 0;
+	private int points;
+	private int position;
+	private int goalsFor;
+	private int goalsAgainst;
+	private int goalAverage;
 	
-	public Team(String name) {
+	public Team(final String name) {
 		this.name = name;
 	}
 
@@ -17,7 +17,7 @@ public class Team {
 		return name;
 	}
 
-	public void setName(String name) {
+	public void setName(final String name) {
 		this.name = name;
 	}
 	
@@ -25,7 +25,7 @@ public class Team {
 		return points;
 	}
 
-	public void setPoints(int points) {
+	public void setPoints(final int points) {
 		this.points = points;
 	}
 
@@ -33,7 +33,7 @@ public class Team {
 		return position;
 	}
 
-	public void setPosition(int position) {
+	public void setPosition(final int position) {
 		this.position = position;
 	}
 
@@ -41,24 +41,26 @@ public class Team {
 		return goalsFor;
 	}
 
-	public void setGoalsFor(int goalsFor) {
+	public void setGoalsFor(final int goalsFor) {
 		this.goalsFor = goalsFor;
+		this.calculateGoalAverage();
 	}
 
 	public int getGoalsAgainst() {
 		return goalsAgainst;
 	}
 
-	public void setGoalsAgainst(int goalsAgainst) {
+	public void setGoalsAgainst(final int goalsAgainst) {
 		this.goalsAgainst = goalsAgainst;
+		this.calculateGoalAverage();
 	}
 
 	public int getGoalAverage() {
 		return goalAverage;
 	}
-
-	public void setGoalAverage(int goalAverage) {
-		this.goalAverage = goalAverage;
+	
+	private void calculateGoalAverage() {
+		this.goalAverage = this.goalsFor - this.goalsAgainst;
 	}
 
 }

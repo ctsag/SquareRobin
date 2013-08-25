@@ -6,9 +6,9 @@ import java.util.HashMap;
 public class Tournament {
 	
 	private String name = "";
-	private HashMap<String, Season> seasons = new HashMap<>();
+	private final HashMap<String, Season> seasons = new HashMap<>();
 	
-	public Tournament(String name) {
+	public Tournament(final String name) {
 		this.name = name;
 	}
 	
@@ -16,24 +16,24 @@ public class Tournament {
 		return this.name;
 	}
 	
-	public void setName(String name) {
+	public void setName(final String name) {
 		this.name = name;
 	}
 	
 	public Season[] getSeasons() {
-		Collection<Season> seasons = this.seasons.values();
+		final Collection<Season> seasons = this.seasons.values();
 		return seasons.toArray(new Season[seasons.size()]);
 	}
 	
-	public Season getSeason(String id) {
+	public Season getSeason(final String id) {
 		return this.seasons.get(id);
 	}
 	
-	public void addSeason(Season season) {
+	public void addSeason(final Season season) {
 		this.seasons.put(season.getId(), season);
 	}
 	
-	public void removeSeason(String id) {
+	public void removeSeason(final String id) {
 		this.seasons.remove(id);
 	}
 	

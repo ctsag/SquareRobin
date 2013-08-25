@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.TreeMap;
 import javax.swing.GroupLayout;
@@ -21,16 +22,16 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
 public class SquareRobin extends JFrame implements ActionListener {
 
-	private static final long serialVersionUID = 1L;
 	private static final String APPLICATION_NAME = "Square Robin";
+	private final ArrayList<String> clubs = new ArrayList<>();
 	private JPanel contentPane;
-	private JButton runButton;
-	private ArrayList<String> clubs = new ArrayList<>();	
+	private JButton runButton;		
 	private JScrollPane inputScrollPane;
 	private JScrollPane scheduleScrollPane;
 	private JScrollPane leagueScrollPane;
@@ -42,18 +43,18 @@ public class SquareRobin extends JFrame implements ActionListener {
 	private JTextField roundsTextField;
 	private JLabel roundsLabel;
 
-	public SquareRobin() {
+	public SquareRobin() {		
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		} catch(Exception e) {
-			e.printStackTrace();
+		} catch(UnsupportedLookAndFeelException | ClassNotFoundException | IllegalAccessException | InstantiationException e) {
+			JOptionPane.showMessageDialog(this, e.getMessage());
 		}
 		this.initComponents();
 		this.initLayoutManager();		
 	}
 	
 	private boolean parseInput() {
-		String cell = "";
+		String cell;
 		
 		this.clubs.clear();
 		for (int i = 0; i < this.inputTable.getRowCount(); i++) {
@@ -64,32 +65,30 @@ public class SquareRobin extends JFrame implements ActionListener {
 		}
 		try {
 			this.scheduler = new Scheduler(this.clubs, Integer.valueOf(this.roundsTextField.getText()));
-			return true;
-		} catch(Exception e) {
+		} catch(IllegalArgumentException | IllegalStateException e) {
 			JOptionPane.showMessageDialog(this, e.getMessage());
+			return false;
 		}
-		return false;
+		return true;
 	}
 	
 	private void displaySchedule() {
 		HashMap<Integer, TreeMap<Integer, ArrayList<String[]>>> schedule;
 		DefaultTableModel model;
-		String[] values;
+		String[] values = new String[5];
 		
 		this.initScheduleModel();
 		model = (DefaultTableModel)this.scheduleTable.getModel();
 		try {
 			schedule = scheduler.getSchedule();			
-			for (int round : schedule.keySet()) {
-				values = new String[5];
+			for (final int round : schedule.keySet()) {
+				Arrays.fill(values, null);
 				values[0] = "Round " + round;
 				model.addRow(values);
-				for (int slot : schedule.get(round).keySet()) {
-					values = new String[5];
+				for (final int slot : schedule.get(round).keySet()) {					
 					values[1] = "Slot " + slot;
 					model.addRow(values);
-					for (String[] pair : schedule.get(round).get(slot)) {
-						values = new String[5];
+					for (final String[] pair : schedule.get(round).get(slot)) {						
 						values[2] = pair[0];
 						values[3] = pair[1];
 						values[4] = pair[2] + " - " + pair[3];
@@ -100,21 +99,21 @@ public class SquareRobin extends JFrame implements ActionListener {
 			this.scheduleTable.setModel(model);
 			model.fireTableDataChanged();
 		} catch(IllegalArgumentException e) {
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(this, e.getMessage());
 		}
 	}
 
 	private void displayLeagueTable() {
 		TreeMap<Integer, String[]> league;
 		DefaultTableModel model;		
-		String[] values;
+		String[] values = new String[6];
 		
 		this.initLeagueModel();
 		model = (DefaultTableModel)this.leagueTable.getModel();
 		try {
 			league = scheduler.getLeagueTable(true);
-			for (int index : league.keySet()) {
-				values = new String[6];				
+			for (final int index : league.keySet()) {
+				Arrays.fill(values, null);
 				values[0] = league.get(index)[0];
 				values[1] = league.get(index)[1];
 				values[2] = league.get(index)[2];
@@ -126,7 +125,7 @@ public class SquareRobin extends JFrame implements ActionListener {
 			this.leagueTable.setModel(model);
 			model.fireTableDataChanged();
 		} catch(IllegalArgumentException e) {
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(this, e.getMessage());
 		}
 	}
 	
@@ -190,40 +189,40 @@ public class SquareRobin extends JFrame implements ActionListener {
 	}
 	
 	private void initInputModel() {
-		String[] headers = { "Club" };
-		DefaultTableModel model = new DefaultTableModel(256, headers.length);
+		final String[] headers = { "Club" };
+		final DefaultTableModel model = new DefaultTableModel(256, headers.length);
 		
 		model.setColumnIdentifiers(headers);
 		this.inputTable.setModel(model);
 	}
 	
 	private void initScheduleModel() {
-		String[] headers = { "Round", "Day", "Home", "Away", "Score" };
-		DefaultTableModel model = new NonEditableTableModel(0, headers.length);
+		final String[] headers = { "Round", "Day", "Home", "Away", "Score" };
+		final DefaultTableModel model = new NonEditableTableModel(0, headers.length);
 		
 		model.setColumnIdentifiers(headers);
 		this.scheduleTable.setModel(model);
 	}
 	
 	private void initLeagueModel() {
-		String[] headers = { "Position", "Club", "Points", "Scored", "Conceded", "Goal Average" };
-		DefaultTableModel model = new NonEditableTableModel(0, headers.length);
+		final String[] headers = { "Position", "Club", "Points", "Scored", "Conceded", "Goal Average" };
+		final DefaultTableModel model = new NonEditableTableModel(0, headers.length);
 		
 		model.setColumnIdentifiers(headers);
 		this.leagueTable.setModel(model);
 	}
 
 	private void initLayoutManager() {
-		GroupLayout gl_contentPane = new GroupLayout(this.contentPane);
-		gl_contentPane.setHorizontalGroup(
-			gl_contentPane.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_contentPane.createSequentialGroup()
+		final GroupLayout layout = new GroupLayout(this.contentPane);
+		layout.setHorizontalGroup(
+			layout.createParallelGroup(Alignment.LEADING)
+				.addGroup(layout.createSequentialGroup()
 					.addComponent(this.inputScrollPane, GroupLayout.PREFERRED_SIZE, 291, GroupLayout.PREFERRED_SIZE)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(this.scheduleScrollPane, GroupLayout.PREFERRED_SIZE, 455, GroupLayout.PREFERRED_SIZE)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(this.leagueScrollPane, GroupLayout.DEFAULT_SIZE, 443, Short.MAX_VALUE))
-				.addGroup(gl_contentPane.createSequentialGroup()
+				.addGroup(layout.createSequentialGroup()
 					.addGap(2)
 					.addComponent(this.roundsLabel)
 					.addPreferredGap(ComponentPlacement.RELATED)
@@ -234,27 +233,27 @@ public class SquareRobin extends JFrame implements ActionListener {
 					.addComponent(this.clearButton, GroupLayout.PREFERRED_SIZE, 67, GroupLayout.PREFERRED_SIZE)
 					.addGap(523))
 		);
-		gl_contentPane.setVerticalGroup(
-			gl_contentPane.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_contentPane.createSequentialGroup()
-					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+		layout.setVerticalGroup(
+			layout.createParallelGroup(Alignment.LEADING)
+				.addGroup(layout.createSequentialGroup()
+					.addGroup(layout.createParallelGroup(Alignment.LEADING)
 						.addComponent(this.inputScrollPane, GroupLayout.PREFERRED_SIZE, 514, GroupLayout.PREFERRED_SIZE)
 						.addComponent(this.scheduleScrollPane, GroupLayout.PREFERRED_SIZE, 514, GroupLayout.PREFERRED_SIZE)
 						.addComponent(this.leagueScrollPane, GroupLayout.PREFERRED_SIZE, 514, GroupLayout.PREFERRED_SIZE))
 					.addPreferredGap(ComponentPlacement.UNRELATED)
-					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
+					.addGroup(layout.createParallelGroup(Alignment.LEADING)
+						.addGroup(layout.createParallelGroup(Alignment.BASELINE)
 							.addComponent(this.clearButton)
 							.addComponent(this.runButton))
-						.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
+						.addGroup(layout.createParallelGroup(Alignment.BASELINE)
 							.addComponent(this.roundsLabel)
 							.addComponent(this.roundsTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
 					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
 		);
-		this.contentPane.setLayout(gl_contentPane);
+		this.contentPane.setLayout(layout);
 	}
 	
-	public void actionPerformed(ActionEvent event) {
+	public void actionPerformed(final ActionEvent event) {
 		if (event.getSource() == this.runButton) {
 			if (this.parseInput()) {
 				this.displaySchedule();
@@ -273,7 +272,7 @@ public class SquareRobin extends JFrame implements ActionListener {
 		
 	}
 	
-	public static void main(String[] args) {
+	public static void main(final String[] args) {
 		EventQueue.invokeLater(new SwingStartUp());
 	}
 }

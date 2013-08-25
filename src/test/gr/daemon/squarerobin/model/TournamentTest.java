@@ -4,27 +4,32 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 public class TournamentTest {
+	
+	private static final String TOURNAMENT_A = "Greek Superleague";
+	private static final String TOURNAMENT_B = "Greek Cup";
+	private static final String SEASON_A = "2012";
+	private static final String SEASON_B = "2013";
 
 	@Test
 	public void testConstructor() {
-		String expected = "Greek Superleague";
-		Tournament tournament = new Tournament(expected);
+		final String expected = TournamentTest.TOURNAMENT_A;
+		final Tournament tournament = new Tournament(expected);
 		assertEquals(expected, tournament.getName());
 	}
 
 	@Test
 	public void testName() {
-		String expected = "Greek Superleague";
-		Tournament tournament = new Tournament("Greek Cup");
+		final String expected = TournamentTest.TOURNAMENT_A;
+		final Tournament tournament = new Tournament(TournamentTest.TOURNAMENT_B);
 		tournament.setName(expected);
 		assertEquals(expected, tournament.getName());
 	}
 
 	@Test 
 	public void testAddSeason() {
-		Season season2011 = new Season("2011");
-		Season season2012 = new Season("2012");
-		Tournament tournament = new Tournament("Greek Superleague");
+		final Season season2011 = new Season(TournamentTest.SEASON_A);
+		final Season season2012 = new Season(TournamentTest.SEASON_B);
+		final Tournament tournament = new Tournament("Greek Superleague");
 		tournament.addSeason(season2011);
 		tournament.addSeason(season2012);
 		assertSame(season2011, tournament.getSeason("2011"));
@@ -32,20 +37,20 @@ public class TournamentTest {
 
 	@Test
 	public void testRemoveSeason() {
-		Season season2011 = new Season("2011");
-		Season season2012 = new Season("2012");
-		Tournament tournament = new Tournament("Greek Superleague");
+		final Season season2011 = new Season(TournamentTest.SEASON_A);
+		final Season season2012 = new Season(TournamentTest.SEASON_B);
+		final Tournament tournament = new Tournament(TournamentTest.TOURNAMENT_A);
 		tournament.addSeason(season2011);
 		tournament.addSeason(season2012);
-		tournament.removeSeason("2011");
-		assertNull(tournament.getSeason("2011"));
+		tournament.removeSeason(TournamentTest.SEASON_A);
+		assertNull(tournament.getSeason(TournamentTest.SEASON_A));
 	}
 
 	@Test
 	public void testGetSeasons() {
-		Season season2011 = new Season("2011");
-		Season season2012 = new Season("2012");
-		Tournament tournament = new Tournament("Greek Superleague");
+		final Season season2011 = new Season(TournamentTest.SEASON_A);
+		final Season season2012 = new Season(TournamentTest.SEASON_B);
+		final Tournament tournament = new Tournament(TournamentTest.TOURNAMENT_A);
 		tournament.addSeason(season2011);
 		tournament.addSeason(season2012);
 		assertEquals(2, tournament.getSeasons().length);
@@ -53,9 +58,9 @@ public class TournamentTest {
 
 	@Test
 	public void testClearSeasons() {
-		Season season2011 = new Season("2011");
-		Season season2012 = new Season("2012");
-		Tournament tournament = new Tournament("Greek Superleague");
+		final Season season2011 = new Season(TournamentTest.SEASON_A);
+		final Season season2012 = new Season(TournamentTest.SEASON_B);
+		final Tournament tournament = new Tournament(TournamentTest.TOURNAMENT_A);
 		tournament.addSeason(season2011);
 		tournament.addSeason(season2012);
 		tournament.clearSeasons();
