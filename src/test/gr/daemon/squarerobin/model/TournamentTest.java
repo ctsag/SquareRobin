@@ -29,10 +29,10 @@ public class TournamentTest {
 	public void testAddSeason() {
 		final Season season2011 = new Season(TournamentTest.SEASON_A);
 		final Season season2012 = new Season(TournamentTest.SEASON_B);
-		final Tournament tournament = new Tournament("Greek Superleague");
+		final Tournament tournament = new Tournament(TournamentTest.TOURNAMENT_A);
 		tournament.addSeason(season2011);
 		tournament.addSeason(season2012);
-		assertSame(season2011, tournament.getSeason("2011"));
+		assertSame(season2011, tournament.getSeason(TournamentTest.SEASON_A));
 	}
 
 	@Test
