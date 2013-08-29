@@ -5,16 +5,16 @@ import java.util.HashMap;
 
 public class Season {
 
-	private String id;
+	private final String name;
 	private final HashMap<Integer, Round> rounds = new HashMap<>();
 	private final HashMap<String, Team> teams = new HashMap<>();
 
-	public Season(final String id) {
-		this.id = id;
+	public Season(final String name) {
+		this.name = name;
 	}
 
-	public String getId() {
-		return id;
+	public String getName() {
+		return this.name;
 	}
 
 	public Round[] getRounds() {

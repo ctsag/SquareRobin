@@ -2,7 +2,7 @@ package gr.daemon.squarerobin.model;
 
 public class Team {
 
-	private String name;
+	private final String name;
 	private int points;
 	private int games;
 	private int goalsFor;
