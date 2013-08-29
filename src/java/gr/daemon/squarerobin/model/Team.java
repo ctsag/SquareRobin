@@ -2,9 +2,9 @@ package gr.daemon.squarerobin.model;
 
 public class Team {
 
-	private String name = "";
+	private String name;
 	private int points;
-	private int position;
+	private int games;
 	private int goalsFor;
 	private int goalsAgainst;
 	private int goalAverage;
@@ -14,49 +14,27 @@ public class Team {
 	}
 
 	public String getName() {
-		return name;
-	}
-
-	public void setName(final String name) {
-		this.name = name;
+		return this.name;
 	}
 
 	public int getPoints() {
-		return points;
+		return this.points;
 	}
 
-	public void setPoints(final int points) {
-		this.points = points;
-	}
-
-	public int getPosition() {
-		return position;
-	}
-
-	public void setPosition(final int position) {
-		this.position = position;
+	public int getGames() {
+		return this.games;
 	}
 
 	public int getGoalsFor() {
-		return goalsFor;
-	}
-
-	public void setGoalsFor(final int goalsFor) {
-		this.goalsFor = goalsFor;
-		this.calculateGoalAverage();
+		return this.goalsFor;
 	}
 
 	public int getGoalsAgainst() {
-		return goalsAgainst;
-	}
-
-	public void setGoalsAgainst(final int goalsAgainst) {
-		this.goalsAgainst = goalsAgainst;
-		this.calculateGoalAverage();
+		return this.goalsAgainst;
 	}
 
 	public int getGoalAverage() {
-		return goalAverage;
+		return this.goalAverage;
 	}
 
 	public void win(final int goalsFor, final int goalsAgainst) {

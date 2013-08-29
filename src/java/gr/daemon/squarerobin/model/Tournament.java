@@ -5,7 +5,7 @@ import java.util.HashMap;
 
 public class Tournament {
 
-	private String name = "";
+	private String name;
 	private final HashMap<String, Season> seasons = new HashMap<>();
 
 	public Tournament(final String name) {
@@ -14,10 +14,6 @@ public class Tournament {
 
 	public String getName() {
 		return this.name;
-	}
-
-	public void setName(final String name) {
-		this.name = name;
 	}
 
 	public Season[] getSeasons() {
