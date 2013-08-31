@@ -1,13 +1,17 @@
 package gr.daemon.squarerobin.model;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 
 public class Round {
     
-    private int index;
-    private HashMap<Integer, Slot> slots;
+    private final int index;
+    private final HashMap<Integer, Slot> slots = new HashMap<>();
+    private Season season = null;
     
-    public Round(int index) {
+    public Round(final int index) {
         this.index = index;
     }
 
@@ -15,31 +19,48 @@ public class Round {
         return this.index;
     }
     
-    public void setIndex(int index) {
-        this.index = index;
-    }
+	public Season getSeason() {
+		return this.season;
+	}
+	
+	public void setSeason(final Season season) {
+		final List<Round> seasonRounds = Arrays.asList(season.getRounds());
+		if (!seasonRounds.contains(this)) {
+			season.addRound(this);
+		}
+		this.season = season;
+	}
     
-    public void addSlot(Slot slot) {
-        this.slots.put(slot.getIndex(), slot);
-    }
-    
-    public void removeSlot(Slot slot) {
-        this.slots.remove(slot.getIndex());
-    }
-    
-    public void removeSlot(int index) {
-        this.slots.remove(index);
-    }
-    
-    public void clearSlots() {
-        this.slots.clear();
-    }
-    
-    public Slot[] getSlots() {
-        return (Slot[]) this.slots.values().toArray();
-    }
-    
-    public Slot getSlot(int index) {
-        return this.slots.get(index);
-    }
+	public Slot[] getSlots() {
+		final Collection<Slot> slots = this.slots.values();
+		
+		return slots.toArray(new Slot[slots.size()]);
+	}
+
+	public Slot getSlot(final int index) {
+		return this.slots.get(index);
+	}
+
+	public void addSlot(final Slot slot) throws DuplicateEntryException {
+		final int index = slot.getIndex();
+		
+		if (!this.slots.containsKey(index)) {
+			this.slots.put(index, slot);
+		} else {
+			throw new DuplicateEntryException("A slot of index " + index + " already exists");
+		}
+	}
+
+	public void removeSlot(final int index) throws InexistentEntryException {
+		if (this.slots.containsKey(index)) {
+			this.slots.remove(index);
+		} else {
+			throw new InexistentEntryException("Slot " + index + " does not exist");
+		}
+	}
+
+	public void clearSlots() {
+		this.slots.clear();
+	}
+
 }

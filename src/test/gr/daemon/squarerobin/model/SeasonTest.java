@@ -124,19 +124,19 @@ public class SeasonTest {
 		assertEquals(expected, season.getRounds().length);
 	}
 	
-//	@Test
-//	public void testAddRoundSetsTournamentForRound() throws DuplicateEntryException {
-//		// Fixture
-//		final Season season = new Season(SeasonTest.SEASON_A);
-//		final Round roundA = new Round(SeasonTest.ROUND_A);
-//		final Season expected = season;
-//		
-//		// Match		
-//		season.addRound(roundA);
-//		
-//		// Assertion
-//		assertSame(expected, roundA.getSeason());
-//	}
+	@Test
+	public void testAddRoundSetsTournamentForRound() throws DuplicateEntryException {
+		// Fixture
+		final Season season = new Season(SeasonTest.SEASON_A);
+		final Round roundA = new Round(SeasonTest.ROUND_A);
+		final Season expected = season;
+		
+		// Match		
+		season.addRound(roundA);
+		
+		// Assertion
+		assertSame(expected, roundA.getSeason());
+	}
 	
 	@Test
 	public void testAddRoundThrowsExceptionForDuplicateRound() {

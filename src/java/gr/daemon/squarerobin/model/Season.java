@@ -46,6 +46,7 @@ public class Season {
 		
 		if (!this.rounds.containsKey(index)) {
 			this.rounds.put(index, round);
+			round.setSeason(this);
 		} else {
 			throw new DuplicateEntryException("A round of index " + index + " already exists");
 		}
