@@ -8,6 +8,8 @@ public class TournamentTest {
 	private static final String TOURNAMENT_A = "Greek Superleague";	
 	private static final String SEASON_A = "2012";
 	private static final String SEASON_B = "2013";
+	private static final int EMPTY_LIST = 0;
+	private static final int FULL_LIST = 2;
 
 	@Test
 	public void testConstructorSetsName() {
@@ -39,7 +41,7 @@ public class TournamentTest {
 		final Tournament tournament = new Tournament(TournamentTest.TOURNAMENT_A);
 		final Season seasonA = new Season(TournamentTest.SEASON_A);
 		final Season seasonB = new Season(TournamentTest.SEASON_B);
-		final int expected = 2;
+		final int expected = TournamentTest.FULL_LIST;
 		
 		// Match		
 		tournament.addSeason(seasonA);
@@ -84,7 +86,7 @@ public class TournamentTest {
 		final Tournament tournament = new Tournament(TournamentTest.TOURNAMENT_A);
 		final Season seasonA = new Season(TournamentTest.SEASON_A);
 		final Season seasonB = new Season(TournamentTest.SEASON_B);
-		final int expected = 2;
+		final int expected = TournamentTest.FULL_LIST;
 		
 		// Match		
 		tournament.addSeason(seasonA);
@@ -119,9 +121,9 @@ public class TournamentTest {
 		try {			
 			tournament.addSeason(seasonA);
 			fail("Exception not thrown for addition of duplicate season");
-		} catch(Exception e) {
+		} catch(DuplicateEntryException e) {
 			// Assertion
-			assertTrue(e instanceof DuplicateEntryException);
+			assertFalse(e.getMessage().isEmpty());
 		}
 	}
 	
@@ -150,9 +152,9 @@ public class TournamentTest {
 		try {
 			tournament.removeSeason(TournamentTest.SEASON_A);			
 			fail("Exception not thrown for removal of inexistent season");
-		} catch(Exception e) {
+		} catch(InexistentEntryException e) {
 			// Assertion
-			assertTrue(e instanceof InexistentEntryException);
+			assertFalse(e.getMessage().isEmpty());
 		}		
 	}
 	
@@ -162,7 +164,7 @@ public class TournamentTest {
 		final Tournament tournament = new Tournament(TournamentTest.TOURNAMENT_A);
 		final Season seasonA = new Season(TournamentTest.SEASON_A);
 		final Season seasonB = new Season(TournamentTest.SEASON_B);
-		final int expected = 0;
+		final int expected = TournamentTest.EMPTY_LIST;
 		
 		// Match
 		tournament.addSeason(seasonA);

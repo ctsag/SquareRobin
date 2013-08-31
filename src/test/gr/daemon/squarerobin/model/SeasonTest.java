@@ -10,6 +10,8 @@ public class SeasonTest {
 	private static final int ROUND_A = 1;
 	private static final int ROUND_B = 2;
 	private static final String TOURNAMENT_A = "Greek Superleague";
+	private static final int EMPTY_LIST = 0;
+	private static final int FULL_LIST = 2;
 
 	@Test
 	public void testConstructorSetsName() {
@@ -69,7 +71,7 @@ public class SeasonTest {
 		final Season season = new Season(SeasonTest.SEASON_A);
 		final Round roundA = new Round(SeasonTest.ROUND_A);
 		final Round roundB = new Round(SeasonTest.ROUND_B);
-		final int expected = 2;
+		final int expected = SeasonTest.FULL_LIST;
 		
 		// Match		
 		season.addRound(roundA);
@@ -114,7 +116,7 @@ public class SeasonTest {
 		final Season season = new Season(SeasonTest.SEASON_A);
 		final Round roundA = new Round(SeasonTest.ROUND_A);
 		final Round roundB = new Round(SeasonTest.ROUND_B);
-		final int expected = 2;
+		final int expected = SeasonTest.FULL_LIST;
 		
 		// Match		
 		season.addRound(roundA);
@@ -149,9 +151,9 @@ public class SeasonTest {
 		try {			
 			season.addRound(roundA);
 			fail("Exception not thrown for addition of duplicate round");
-		} catch(Exception e) {
+		} catch(DuplicateEntryException e) {
 			// Assertion
-			assertTrue(e instanceof DuplicateEntryException);
+			assertFalse(e.getMessage().isEmpty());
 		}
 	}
 	
@@ -180,9 +182,9 @@ public class SeasonTest {
 		try {
 			season.removeRound(SeasonTest.ROUND_A);			
 			fail("Exception not thrown for removal of inexistent round");
-		} catch(Exception e) {
+		} catch(InexistentEntryException e) {
 			// Assertion
-			assertTrue(e instanceof InexistentEntryException);
+			assertFalse(e.getMessage().isEmpty());
 		}		
 	}
 	
@@ -192,7 +194,7 @@ public class SeasonTest {
 		final Season season = new Season(SeasonTest.SEASON_A);
 		final Round roundA = new Round(SeasonTest.ROUND_A);
 		final Round roundB = new Round(SeasonTest.ROUND_B);
-		final int expected = 0;
+		final int expected = SeasonTest.EMPTY_LIST;
 		
 		// Match
 		season.addRound(roundA);

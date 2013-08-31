@@ -29,11 +29,11 @@ public class Tournament {
 	public void addSeason(final Season season) throws DuplicateEntryException {
 		final String name = season.getName();
 		
-		if (!this.seasons.containsKey(name)) {
+		if (this.seasons.containsKey(name)) {
+			throw new DuplicateEntryException("A season named " + name + " already exists");
+		} else {			
 			this.seasons.put(name, season);
 			season.setTournament(this);
-		} else {
-			throw new DuplicateEntryException("A season named " + name + " already exists");
 		}
 	}
 

@@ -9,7 +9,7 @@ public class Round {
     
     private final int index;
     private final HashMap<Integer, Slot> slots = new HashMap<>();
-    private Season season = null;
+    private Season season;
     
     public Round(final int index) {
         this.index = index;
@@ -44,10 +44,11 @@ public class Round {
 	public void addSlot(final Slot slot) throws DuplicateEntryException {
 		final int index = slot.getIndex();
 		
-		if (!this.slots.containsKey(index)) {
-			this.slots.put(index, slot);
+		if (this.slots.containsKey(index)) {
+			throw new DuplicateEntryException("A slot of index " + index + " already exists");			
 		} else {
-			throw new DuplicateEntryException("A slot of index " + index + " already exists");
+			this.slots.put(index, slot);
+			slot.setRound(this);
 		}
 	}
 

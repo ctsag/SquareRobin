@@ -10,9 +10,11 @@ public class RoundTest {
 	private static final int SLOT_A = 1;
 	private static final int SLOT_B = 2;
 	private static final String SEASON_A = "2013";
+	private static final int EMPTY_LIST = 0;
+	private static final int FULL_LIST = 2;
 
 	@Test
-	public void testConstructorSetsName() {
+	public void testConstructorSetsIndex() {
 		// Fixture
 		final int expected = RoundTest.ROUND_A;
 		
@@ -24,7 +26,7 @@ public class RoundTest {
 	}
 	
 	@Test
-	public void testGetNameReturnsExpectedName() {
+	public void testGetIndexReturnsExpectedIndex() {
 		// Fixture
 		final int expected = RoundTest.ROUND_A;
 		
@@ -69,7 +71,7 @@ public class RoundTest {
 		final Round round = new Round(RoundTest.ROUND_A);
 		final Slot slotA = new Slot(RoundTest.SLOT_A);
 		final Slot slotB = new Slot(RoundTest.SLOT_B);
-		final int expected = 2;
+		final int expected = RoundTest.FULL_LIST;
 		
 		// Match		
 		round.addSlot(slotA);
@@ -114,7 +116,7 @@ public class RoundTest {
 		final Round round = new Round(RoundTest.ROUND_A);
 		final Slot slotA = new Slot(RoundTest.SLOT_A);
 		final Slot slotB = new Slot(RoundTest.SLOT_B);
-		final int expected = 2;
+		final int expected = RoundTest.FULL_LIST;
 		
 		// Match		
 		round.addSlot(slotA);
@@ -124,19 +126,19 @@ public class RoundTest {
 		assertEquals(expected, round.getSlots().length);
 	}
 	
-//	@Test
-//	public void testAddSlotSetsTournamentForSlot() throws DuplicateEntryException {
-//		// Fixture
-//		final Round round = new Round(RoundTest.ROUND_A);
-//		final Slot slotA = new Slot(RoundTest.SLOT_A);
-//		final Round expected = round;
-//		
-//		// Match		
-//		round.addSlot(slotA);
-//		
-//		// Assertion
-//		assertSame(expected, slotA.getRound());
-//	}
+	@Test
+	public void testAddSlotSetsTournamentForSlot() throws DuplicateEntryException {
+		// Fixture
+		final Round round = new Round(RoundTest.ROUND_A);
+		final Slot slotA = new Slot(RoundTest.SLOT_A);
+		final Round expected = round;
+		
+		// Match		
+		round.addSlot(slotA);
+		
+		// Assertion
+		assertSame(expected, slotA.getRound());
+	}
 	
 	@Test
 	public void testAddSlotThrowsExceptionForDuplicateSlot() {
@@ -149,9 +151,9 @@ public class RoundTest {
 		try {			
 			round.addSlot(slotA);
 			fail("Exception not thrown for addition of duplicate slot");
-		} catch(Exception e) {
+		} catch(DuplicateEntryException e) {
 			// Assertion
-			assertTrue(e instanceof DuplicateEntryException);
+			assertFalse(e.getMessage().isEmpty());
 		}
 	}
 	
@@ -180,9 +182,9 @@ public class RoundTest {
 		try {
 			round.removeSlot(RoundTest.SLOT_A);			
 			fail("Exception not thrown for removal of inexistent slot");
-		} catch(Exception e) {
+		} catch(InexistentEntryException e) {
 			// Assertion
-			assertTrue(e instanceof InexistentEntryException);
+			assertFalse(e.getMessage().isEmpty());
 		}		
 	}
 	
@@ -192,7 +194,7 @@ public class RoundTest {
 		final Round round = new Round(RoundTest.ROUND_A);
 		final Slot slotA = new Slot(RoundTest.SLOT_A);
 		final Slot slotB = new Slot(RoundTest.SLOT_B);
-		final int expected = 0;
+		final int expected = RoundTest.EMPTY_LIST;
 		
 		// Match
 		round.addSlot(slotA);

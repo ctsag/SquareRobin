@@ -3,10 +3,10 @@ package gr.daemon.squarerobin.model;
 public class InexistentEntryException extends RuntimeException {
 
 	public InexistentEntryException() {
-		super();
+		super("");
 	}
 	
-	public InexistentEntryException(String message) {
+	public InexistentEntryException(final String message) {
 		super(message);
 	}
 
