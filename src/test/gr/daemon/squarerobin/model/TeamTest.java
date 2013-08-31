@@ -646,7 +646,7 @@ public class TeamTest {
 	public void testLoseAddsExpectedHomeGoalsFor() throws InvalidScoreException {
 		// Fixture
 		final Team team = new Team(TeamTest.TEAM_A);
-		final int expected = TeamTest.GOALS_A;
+		final int expected = TeamTest.GOALS_B;
 		
 		// Match
 		team.lose(TeamTest.GOALS_B, TeamTest.GOALS_A, true);
@@ -711,7 +711,7 @@ public class TeamTest {
 	public void testLoseAddsExpectedAwayGoalsFor() throws InvalidScoreException {
 		// Fixture
 		final Team team = new Team(TeamTest.TEAM_A);
-		final int expected = TeamTest.GOALS_A;
+		final int expected = TeamTest.GOALS_B;
 		
 		// Match
 		team.lose(TeamTest.GOALS_B, TeamTest.GOALS_A, false);

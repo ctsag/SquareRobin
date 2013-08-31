@@ -149,13 +149,13 @@ public class Team {
 		if (goalsFor == goalsAgainst) {
 			if (homeGame) {
 				this.homeGamesPlayed++;
-				this.homeWins++;
+				this.homeDraws++;
 				this.homeGoalsFor += goalsFor;
 				this.homeGoalsAgainst += goalsAgainst;
 				this.homePoints += Team.POINTS_FOR_DRAW;
 			} else {
 				this.awayGamesPlayed++;
-				this.awayWins++;
+				this.awayDraws++;
 				this.awayGoalsFor += goalsFor;
 				this.awayGoalsAgainst += goalsAgainst;
 				this.awayPoints += Team.POINTS_FOR_DRAW;
@@ -169,13 +169,13 @@ public class Team {
 		if (goalsFor < goalsAgainst) {
 			if (homeGame) {
 				this.homeGamesPlayed++;
-				this.homeWins++;
+				this.homeLosses++;
 				this.homeGoalsFor += goalsFor;
 				this.homeGoalsAgainst += goalsAgainst;
 				this.homePoints += Team.POINTS_FOR_LOSS;
 			} else {
 				this.awayGamesPlayed++;
-				this.awayWins++;
+				this.awayLosses++;
 				this.awayGoalsFor += goalsFor;
 				this.awayGoalsAgainst += goalsAgainst;
 				this.awayPoints += Team.POINTS_FOR_LOSS;
