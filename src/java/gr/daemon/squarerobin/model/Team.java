@@ -2,9 +2,9 @@ package gr.daemon.squarerobin.model;
 
 public class Team {
 
-	private static final int POINTS_FOR_WIN = 3;
-	private static final int POINTS_FOR_DRAW = 1;
-	private static final int POINTS_FOR_LOSS = 0;
+	public static final int POINTS_FOR_WIN = 3;
+	public static final int POINTS_FOR_DRAW = 1;
+	public static final int POINTS_FOR_LOSS = 0;
 	private final String name;
 	private int homeGoalsFor;
 	private int homeGoalsAgainst;
@@ -20,7 +20,6 @@ public class Team {
 	private int awayLosses;
 	private int homePoints;
 	private int awayPoints;
-	private int position;
 	
 	public Team(final String name) {
 		this.name = name;
@@ -86,10 +85,6 @@ public class Team {
 		return this.awayPoints;
 	}
 
-	public int getPosition() {
-		return this.position;
-	}
-	
 	public int getGoalsFor() {
 		return this.homeGoalsFor + this.awayGoalsFor;
 	}
@@ -130,51 +125,63 @@ public class Team {
 		return this.homePoints + this.awayPoints;
 	}
 	
-	public void win(final int goalsFor, final int goalsAgainst, final boolean homeGame) {
-		if (homeGame) {
-			this.homeGamesPlayed++;
-			this.homeWins++;
-			this.homeGoalsFor += goalsFor;
-			this.homeGoalsAgainst += goalsAgainst;
-			this.homePoints += Team.POINTS_FOR_WIN;
+	public void win(final int goalsFor, final int goalsAgainst, final boolean homeGame) throws InvalidScoreException {
+		if (goalsFor > goalsAgainst) {
+			if (homeGame) {
+				this.homeGamesPlayed++;
+				this.homeWins++;
+				this.homeGoalsFor += goalsFor;
+				this.homeGoalsAgainst += goalsAgainst;
+				this.homePoints += Team.POINTS_FOR_WIN;
+			} else {
+				this.awayGamesPlayed++;
+				this.awayWins++;
+				this.awayGoalsFor += goalsFor;
+				this.awayGoalsAgainst += goalsAgainst;
+				this.awayPoints += Team.POINTS_FOR_WIN;
+			}
 		} else {
-			this.awayGamesPlayed++;
-			this.awayWins++;
-			this.awayGoalsFor += goalsFor;
-			this.awayGoalsAgainst += goalsAgainst;
-			this.awayPoints += Team.POINTS_FOR_WIN;
+			throw new InvalidScoreException("Goals against cannot be more than the goals for on a win scenario");
 		}
 	}
 	
-	public void draw(final int goalsFor, final int goalsAgainst, final boolean homeGame) {
-		if (homeGame) {
-			this.homeGamesPlayed++;
-			this.homeWins++;
-			this.homeGoalsFor += goalsFor;
-			this.homeGoalsAgainst += goalsAgainst;
-			this.homePoints += Team.POINTS_FOR_DRAW;
+	public void draw(final int goalsFor, final int goalsAgainst, final boolean homeGame) throws InvalidScoreException {
+		if (goalsFor == goalsAgainst) {
+			if (homeGame) {
+				this.homeGamesPlayed++;
+				this.homeWins++;
+				this.homeGoalsFor += goalsFor;
+				this.homeGoalsAgainst += goalsAgainst;
+				this.homePoints += Team.POINTS_FOR_DRAW;
+			} else {
+				this.awayGamesPlayed++;
+				this.awayWins++;
+				this.awayGoalsFor += goalsFor;
+				this.awayGoalsAgainst += goalsAgainst;
+				this.awayPoints += Team.POINTS_FOR_DRAW;
+			}
 		} else {
-			this.awayGamesPlayed++;
-			this.awayWins++;
-			this.awayGoalsFor += goalsFor;
-			this.awayGoalsAgainst += goalsAgainst;
-			this.awayPoints += Team.POINTS_FOR_DRAW;
+			throw new InvalidScoreException("Goals for and goals against must be equal on a draw scenario");
 		}
 	}
 	
-	public void lose(final int goalsFor, final int goalsAgainst, final boolean homeGame) {
-		if (homeGame) {
-			this.homeGamesPlayed++;
-			this.homeWins++;
-			this.homeGoalsFor += goalsFor;
-			this.homeGoalsAgainst += goalsAgainst;
-			this.homePoints += Team.POINTS_FOR_LOSS;
+	public void lose(final int goalsFor, final int goalsAgainst, final boolean homeGame) throws InvalidScoreException {
+		if (goalsFor < goalsAgainst) {
+			if (homeGame) {
+				this.homeGamesPlayed++;
+				this.homeWins++;
+				this.homeGoalsFor += goalsFor;
+				this.homeGoalsAgainst += goalsAgainst;
+				this.homePoints += Team.POINTS_FOR_LOSS;
+			} else {
+				this.awayGamesPlayed++;
+				this.awayWins++;
+				this.awayGoalsFor += goalsFor;
+				this.awayGoalsAgainst += goalsAgainst;
+				this.awayPoints += Team.POINTS_FOR_LOSS;
+			}
 		} else {
-			this.awayGamesPlayed++;
-			this.awayWins++;
-			this.awayGoalsFor += goalsFor;
-			this.awayGoalsAgainst += goalsAgainst;
-			this.awayPoints += Team.POINTS_FOR_LOSS;
+			throw new InvalidScoreException("Goals for cannot be more than the goals against on a loss scenario");
 		}
 	}
 	
