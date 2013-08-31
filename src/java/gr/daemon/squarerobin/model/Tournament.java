@@ -31,6 +31,7 @@ public class Tournament {
 		
 		if (!this.seasons.containsKey(name)) {
 			this.seasons.put(name, season);
+			season.setTournament(this);
 		} else {
 			throw new DuplicateEntryException("A season named " + name + " already exists");
 		}

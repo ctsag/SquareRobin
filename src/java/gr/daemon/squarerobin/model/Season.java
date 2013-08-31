@@ -2,12 +2,14 @@ package gr.daemon.squarerobin.model;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Arrays;
+import java.util.List;
 
 public class Season {
 
 	private final String name;
 	private final HashMap<Integer, Round> rounds = new HashMap<>();
-	private final HashMap<String, Team> teams = new HashMap<>();
+	private Tournament tournament = null;
 
 	public Season(final String name) {
 		this.name = name;
@@ -17,46 +19,48 @@ public class Season {
 		return this.name;
 	}
 
+	public Tournament getTournament() {
+		return this.tournament;
+	}
+	
+	public void setTournament(final Tournament tournament) {
+		final List<Season> tournamentSeasons = Arrays.asList(tournament.getSeasons());
+		if (!tournamentSeasons.contains(this)) {
+			tournament.addSeason(this);
+		}
+		this.tournament = tournament;
+	}
+
 	public Round[] getRounds() {
 		final Collection<Round> rounds = this.rounds.values();
+		
 		return rounds.toArray(new Round[rounds.size()]);
 	}
 
 	public Round getRound(final int index) {
-		return this.rounds.get(index); 
+		return this.rounds.get(index);
 	}
 
-	public void addRound(final Round round) {
-		this.rounds.put(round.getIndex(), round);
+	public void addRound(final Round round) throws DuplicateEntryException {
+		final int index = round.getIndex();
+		
+		if (!this.rounds.containsKey(index)) {
+			this.rounds.put(index, round);
+		} else {
+			throw new DuplicateEntryException("A round of index " + index + " already exists");
+		}
 	}
 
-	public void removeRound(final int index) {
-		this.rounds.remove(index);
+	public void removeRound(final int index) throws InexistentEntryException {
+		if (this.rounds.containsKey(index)) {
+			this.rounds.remove(index);
+		} else {
+			throw new InexistentEntryException("Round " + index + " does not exist");
+		}
 	}
 
 	public void clearRounds() {
 		this.rounds.clear();
-	}
-	
-	public Team[] getTeams() {
-		final Collection<Team> teams = this.teams.values();
-		return teams.toArray(new Team[teams.size()]);
-	}
-
-	public Team getTeam(final int index) {
-		return this.teams.get(index); 
-	}
-
-	public void addTeam(final Team team) {
-		this.teams.put(team.getName(), team);
-	}
-
-	public void removeTeam(final String name) {
-		this.teams.remove(name);
-	}
-
-	public void clearTeams() {
-		this.teams.clear();
 	}
 
 }
