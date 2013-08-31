@@ -6,7 +6,6 @@ import org.junit.Test;
 public class StateTest {
 	
 	private static final State STATE_A = State.OK;
-	private static final String STATE_NAME_A = "OK";
 	private static final String EMPTY_STRING = "";
 
 	@Test
