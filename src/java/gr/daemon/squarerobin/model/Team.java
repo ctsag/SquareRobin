@@ -2,13 +2,26 @@ package gr.daemon.squarerobin.model;
 
 public class Team {
 
+	private static final int POINTS_FOR_WIN = 3;
+	private static final int POINTS_FOR_DRAW = 1;
+	private static final int POINTS_FOR_LOSS = 0;
 	private final String name;
-	private int points;
-	private int games;
-	private int goalsFor;
-	private int goalsAgainst;
-	private int goalAverage;
-
+	private int homeGoalsFor;
+	private int homeGoalsAgainst;
+	private int awayGoalsFor;
+	private int awayGoalsAgainst;
+	private int homeGamesPlayed;
+	private int awayGamesPlayed;
+	private int homeWins;
+	private int awayWins;
+	private int homeDraws;
+	private int awayDraws;
+	private int homeLosses;
+	private int awayLosses;
+	private int homePoints;
+	private int awayPoints;
+	private int position;
+	
 	public Team(final String name) {
 		this.name = name;
 	}
@@ -17,48 +30,152 @@ public class Team {
 		return this.name;
 	}
 
-	public int getPoints() {
-		return this.points;
+	public int getHomeGoalsFor() {
+		return this.homeGoalsFor;
 	}
 
-	public int getGames() {
-		return this.games;
+	public int getHomeGoalsAgainst() {
+		return this.homeGoalsAgainst;
 	}
 
+	public int getAwayGoalsFor() {
+		return this.awayGoalsFor;
+	}
+
+	public int getAwayGoalsAgainst() {
+		return this.awayGoalsAgainst;
+	}
+
+	public int getHomeGamesPlayed() {
+		return this.homeGamesPlayed;
+	}
+
+	public int getAwayGamesPlayed() {
+		return this.awayGamesPlayed;
+	}
+
+	public int getHomeWins() {
+		return this.homeWins;
+	}
+
+	public int getAwayWins() {
+		return this.awayWins;
+	}
+
+	public int getHomeDraws() {
+		return this.homeDraws;
+	}
+
+	public int getAwayDraws() {
+		return this.awayDraws;
+	}
+
+	public int getHomeLosses() {
+		return this.homeLosses;
+	}
+
+	public int getAwayLosses() {
+		return this.awayLosses;
+	}
+
+	public int getHomePoints() {
+		return this.homePoints;
+	}
+
+	public int getAwayPoints() {
+		return this.awayPoints;
+	}
+
+	public int getPosition() {
+		return this.position;
+	}
+	
 	public int getGoalsFor() {
-		return this.goalsFor;
+		return this.homeGoalsFor + this.awayGoalsFor;
 	}
-
+	
 	public int getGoalsAgainst() {
-		return this.goalsAgainst;
+		return this.homeGoalsAgainst + this.awayGoalsAgainst;
 	}
-
+	
+	public int getHomeGoalAverage() {
+		return this.homeGoalsFor - this.homeGoalsAgainst;
+	}
+	
+	public int getAwayGoalAverage() {
+		return this.awayGoalsFor - this.awayGoalsAgainst;
+	}
+	
 	public int getGoalAverage() {
-		return this.goalAverage;
+		return this.getGoalsFor() - this.getGoalsAgainst();
+	}
+	
+	public int getWins() {
+		return this.homeWins + this.awayWins;
+	}
+	
+	public int getDraws() {
+		return this.homeDraws + this.awayDraws;
 	}
 
-	public void win(final int goalsFor, final int goalsAgainst) {
-		this.points += 3;
-		this.addGoals(goalsFor, goalsAgainst);
+	public int getLosses() {
+		return this.homeLosses + this.awayLosses;
 	}
-
-	public void lose(final int goalsFor, final int goalsAgainst) {		
-		this.addGoals(goalsFor, goalsAgainst);
+	
+	public int getGamesPlayed() {
+		return this.homeGamesPlayed + this.awayGamesPlayed;
 	}
-
-	public void draw(final int goalsFor, final int goalsAgainst) {
-		this.points += 1;
-		this.addGoals(goalsFor, goalsAgainst);
+	
+	public int getPoints() {
+		return this.homePoints + this.awayPoints;
 	}
-
-	private void addGoals(final int goalsFor, final int goalsAgainst) {
-		this.goalsFor += goalsFor;
-		this.goalsAgainst += goalsAgainst;
-		this.calculateGoalAverage();
+	
+	public void win(final int goalsFor, final int goalsAgainst, final boolean homeGame) {
+		if (homeGame) {
+			this.homeGamesPlayed++;
+			this.homeWins++;
+			this.homeGoalsFor += goalsFor;
+			this.homeGoalsAgainst += goalsAgainst;
+			this.homePoints += Team.POINTS_FOR_WIN;
+		} else {
+			this.awayGamesPlayed++;
+			this.awayWins++;
+			this.awayGoalsFor += goalsFor;
+			this.awayGoalsAgainst += goalsAgainst;
+			this.awayPoints += Team.POINTS_FOR_WIN;
+		}
 	}
-
-	private void calculateGoalAverage() {
-		this.goalAverage = this.goalsFor - this.goalsAgainst;
+	
+	public void draw(final int goalsFor, final int goalsAgainst, final boolean homeGame) {
+		if (homeGame) {
+			this.homeGamesPlayed++;
+			this.homeWins++;
+			this.homeGoalsFor += goalsFor;
+			this.homeGoalsAgainst += goalsAgainst;
+			this.homePoints += Team.POINTS_FOR_DRAW;
+		} else {
+			this.awayGamesPlayed++;
+			this.awayWins++;
+			this.awayGoalsFor += goalsFor;
+			this.awayGoalsAgainst += goalsAgainst;
+			this.awayPoints += Team.POINTS_FOR_DRAW;
+		}
 	}
-
+	
+	public void lose(final int goalsFor, final int goalsAgainst, final boolean homeGame) {
+		if (homeGame) {
+			this.homeGamesPlayed++;
+			this.homeWins++;
+			this.homeGoalsFor += goalsFor;
+			this.homeGoalsAgainst += goalsAgainst;
+			this.homePoints += Team.POINTS_FOR_LOSS;
+		} else {
+			this.awayGamesPlayed++;
+			this.awayWins++;
+			this.awayGoalsFor += goalsFor;
+			this.awayGoalsAgainst += goalsAgainst;
+			this.awayPoints += Team.POINTS_FOR_LOSS;
+		}
+	}
+	
 }
