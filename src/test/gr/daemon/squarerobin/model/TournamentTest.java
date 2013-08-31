@@ -11,60 +11,153 @@ public class TournamentTest {
 	private static final String SEASON_B = "2013";
 
 	@Test
-	public void testConstructor() {
+	public void testConstructorSetsName() {
+		// Fixture
 		final String expected = TournamentTest.TOURNAMENT_A;
+		
+		// Match
 		final Tournament tournament = new Tournament(expected);
+		
+		// Assertion		
 		assertEquals(expected, tournament.getName());
 	}
-
+	
 	@Test
-	public void testName() {
+	public void testGetNameReturnsExpectedName() {
+		// Fixture
 		final String expected = TournamentTest.TOURNAMENT_A;
-		final Tournament tournament = new Tournament(TournamentTest.TOURNAMENT_B);
-		tournament.setName(expected);
+		
+		// Match
+		final Tournament tournament = new Tournament(TournamentTest.TOURNAMENT_A);		
+		
+		// Assertion
 		assertEquals(expected, tournament.getName());
 	}
-
+	
 	@Test
-	public void testAddSeason() {
-		final Season season2011 = new Season(TournamentTest.SEASON_A);
-		final Season season2012 = new Season(TournamentTest.SEASON_B);
+	public void testGetSeasonsReturnsExpectedArray() {
+		// Fixture
+		final Season seasonA = new Season(TournamentTest.SEASON_A);
+		final Season seasonB = new Season(TournamentTest.SEASON_B);
+		final int expected = 2;
+		
+		// Match
 		final Tournament tournament = new Tournament(TournamentTest.TOURNAMENT_A);
-		tournament.addSeason(season2011);
-		tournament.addSeason(season2012);
-		assertSame(season2011, tournament.getSeason(TournamentTest.SEASON_A));
+		tournament.addSeason(seasonA);
+		tournament.addSeason(seasonB);		
+		
+		// Assertion
+		assertEquals(expected, tournament.getSeasons().length);		
 	}
-
+	
 	@Test
-	public void testRemoveSeason() {
-		final Season season2011 = new Season(TournamentTest.SEASON_A);
-		final Season season2012 = new Season(TournamentTest.SEASON_B);
+	public void testGetSeasonReturnsExpectedSeason() {
+		// Fixture
+		final Season seasonA = new Season(TournamentTest.SEASON_A);
+		final Season seasonB = new Season(TournamentTest.SEASON_B);
+		final Season expected = seasonA;
+		
+		// Match
 		final Tournament tournament = new Tournament(TournamentTest.TOURNAMENT_A);
-		tournament.addSeason(season2011);
-		tournament.addSeason(season2012);
+		tournament.addSeason(seasonA);
+		tournament.addSeason(seasonB);
+		
+		// Assertion
+		assertSame(expected, tournament.getSeason(TournamentTest.SEASON_A));		
+	}
+	
+	@Test
+	public void testGetSeasonReturnsNullForInexistentSeason() {
+		// Fixture
+		final Season seasonA = new Season(TournamentTest.SEASON_A);		
+		
+		// Match
+		final Tournament tournament = new Tournament(TournamentTest.TOURNAMENT_A);
+		tournament.addSeason(seasonA);
+				
+		// Assertion
+		assertNull(tournament.getSeason(TournamentTest.SEASON_B));
+	}
+	
+	@Test
+	public void testAddSeasonAppendsUniqueSeason() throws DuplicateEntryException {
+		// Fixture
+		final Season seasonA = new Season(TournamentTest.SEASON_A);
+		final Season seasonB = new Season(TournamentTest.SEASON_B);
+		final int expected = 2;
+		
+		// Match
+		final Tournament tournament = new Tournament(TournamentTest.TOURNAMENT_A);
+		tournament.addSeason(seasonA);
+		tournament.addSeason(seasonB);
+		
+		// Assertion
+		assertEquals(expected, tournament.getSeasons().length);
+	}
+	
+	@Test
+	public void testAddSeasonThrowsExceptionForDuplicateSeason() {
+		// Fixture
+		final Season seasonA = new Season(TournamentTest.SEASON_A);
+		
+		// Match
+		final Tournament tournament = new Tournament(TournamentTest.TOURNAMENT_A);
+		tournament.addSeason(seasonA);
+		try {			
+			tournament.addSeason(seasonA);
+			fail("Exception not thrown for addition of duplicate season");
+		} catch(Exception e) {
+			// Assertion
+			assertTrue(e instanceof DuplicateEntryException);
+		}
+	}
+	
+	@Test
+	public void testRemoveSeasonRemovesExistentSeason() throws InexistentEntryException {
+		// Fixture
+		final Season seasonA = new Season(TournamentTest.SEASON_A);
+		final Season seasonB = new Season(TournamentTest.SEASON_B);
+		
+		// Match
+		final Tournament tournament = new Tournament(TournamentTest.TOURNAMENT_A);
+		tournament.addSeason(seasonA);
+		tournament.addSeason(seasonB);
 		tournament.removeSeason(TournamentTest.SEASON_A);
-		assertNull(tournament.getSeason(TournamentTest.SEASON_A));
+		
+		// Assertion
+		assertNull(tournament.getSeason(TournamentTest.SEASON_A));	
 	}
-
+	
 	@Test
-	public void testGetSeasons() {
-		final Season season2011 = new Season(TournamentTest.SEASON_A);
-		final Season season2012 = new Season(TournamentTest.SEASON_B);
-		final Tournament tournament = new Tournament(TournamentTest.TOURNAMENT_A);
-		tournament.addSeason(season2011);
-		tournament.addSeason(season2012);
-		assertEquals(2, tournament.getSeasons().length);
+	public void testRemoveSeasonThrowsExceptionForInexistentSeason() {
+		// Fixture		
+		
+		// Match
+		final Tournament tournament = new Tournament(TournamentTest.TOURNAMENT_A);		
+		try {
+			tournament.removeSeason(TournamentTest.SEASON_A);			
+			fail("Exception not thrown for removal of inexistent season");
+		} catch(Exception e) {
+			// Assertion
+			assertTrue(e instanceof InexistentEntryException);
+		}		
 	}
-
+	
 	@Test
-	public void testClearSeasons() {
-		final Season season2011 = new Season(TournamentTest.SEASON_A);
-		final Season season2012 = new Season(TournamentTest.SEASON_B);
+	public void testClearSeasonsEmptiesSeasonsCollection() {
+		// Fixture
+		final Season seasonA = new Season(TournamentTest.SEASON_A);
+		final Season seasonB = new Season(TournamentTest.SEASON_B);
+		final int expected = 0;
+		
+		// Match
 		final Tournament tournament = new Tournament(TournamentTest.TOURNAMENT_A);
-		tournament.addSeason(season2011);
-		tournament.addSeason(season2012);
+		tournament.addSeason(seasonA);
+		tournament.addSeason(seasonB);
 		tournament.clearSeasons();
-		assertEquals(0, tournament.getSeasons().length);
+		
+		// Assertion		
+		assertEquals(expected, tournament.getSeasons().length);
 	}
 
 }

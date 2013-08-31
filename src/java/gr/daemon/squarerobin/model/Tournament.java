@@ -8,7 +8,7 @@ public class Tournament {
 	private final String name;
 	private final HashMap<String, Season> seasons = new HashMap<>();
 
-	public Tournament(final String name) {
+	public Tournament(final String name) {		
 		this.name = name;
 	}
 
@@ -18,6 +18,7 @@ public class Tournament {
 
 	public Season[] getSeasons() {
 		final Collection<Season> seasons = this.seasons.values();
+		
 		return seasons.toArray(new Season[seasons.size()]);
 	}
 
@@ -25,12 +26,22 @@ public class Tournament {
 		return this.seasons.get(name);
 	}
 
-	public void addSeason(final Season season) {
-		this.seasons.put(season.getName(), season);
+	public void addSeason(final Season season) throws DuplicateEntryException {
+		final String name = season.getName();
+		
+		if (!this.seasons.containsKey(name)) {
+			this.seasons.put(name, season);
+		} else {
+			throw new DuplicateEntryException("A season named " + name + " already exists");
+		}
 	}
 
-	public void removeSeason(final String name) {
-		this.seasons.remove(name);
+	public void removeSeason(final String name) throws InexistentEntryException {
+		if (this.seasons.containsKey(name)) {
+			this.seasons.remove(name);	
+		} else {
+			throw new InexistentEntryException("Season " + name + " does not exist");
+		}		
 	}
 
 	public void clearSeasons() {
