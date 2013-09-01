@@ -20,6 +20,8 @@ public class Team {
 	private int awayLosses;
 	private int homePoints;
 	private int awayPoints;
+	private int absolutePosition;
+	private String relativePosition;
 	
 	public Team(final String name) {
 		this.name = name;
@@ -125,6 +127,22 @@ public class Team {
 		return this.homePoints + this.awayPoints;
 	}
 	
+	public int getAbsolutePosition() {
+		return this.absolutePosition;
+	}
+
+	protected void setAbsolutePosition(final int absolutePosition) {
+		this.absolutePosition = absolutePosition;
+	}
+
+	public String getRelativePosition() {
+		return this.relativePosition;
+	}
+
+	protected void setRelativePosition(final String relativePosition) {
+		this.relativePosition = relativePosition;
+	}
+
 	public void win(final int goalsFor, final int goalsAgainst, final boolean homeGame) throws InvalidScoreException {
 		if (goalsFor > goalsAgainst) {
 			if (homeGame) {

@@ -3,10 +3,8 @@ package gr.daemon.squarerobin.cli;
 public enum State {
 	
 	OK(0),
-	UNSPECIFIED_ERROR(1),
-	INVALID_ARGUMENTS(2),
-	INSUFFICIENT_CLUBS(3),
-	ODD_CLUBS(4);
+	SCHEDULE_ERROR(1),
+	INVALID_ARGUMENTS(2);
 
 	private int value;
 
@@ -25,17 +23,11 @@ public enum State {
 		switch (this) {
 			case OK :                               
 				break;
-			case UNSPECIFIED_ERROR :
-				message = "An error has occured";
+			case SCHEDULE_ERROR :
+				message = "An error has occured while generating the schedule";
 				break;
 			case INVALID_ARGUMENTS :
 				message = "Invalid arguments";
-				break;
-			case INSUFFICIENT_CLUBS :
-				message = "At least one club is required";
-				break;
-			case ODD_CLUBS :
-				message = "An even number of clubs are is required";
 				break;
 			default :                               
 				break;

@@ -10,7 +10,9 @@ public class TeamTest {
 	private static final int GOALS_A = 3;
 	private static final int GOALS_B = 1;
 	private static final int GAMES_A = 1;
-	private static final int RESULTS_A = 1;	
+	private static final int ABSOLUTE_POSITION_A = 4;
+	private static final String RELATIVE_POSITION_A = "-";
+	private static final int RESULTS_A = 1;
 
 	@Test
 	public void testConstructorSetsName() {
@@ -789,6 +791,58 @@ public class TeamTest {
 			// Assertion
 			assertFalse(e.getMessage().isEmpty());
 		}
+	}
+	
+	@Test
+	public void testGetAbsolutePositionReturnsExpectedAbsolutePosition() {
+		// Fixture
+		final Team team = new Team(TeamTest.TEAM_A);
+		final int expected = TeamTest.ABSOLUTE_POSITION_A;
+		
+		// Match
+		team.setAbsolutePosition(TeamTest.ABSOLUTE_POSITION_A);
+		
+		// Assertion
+		assertEquals(expected, team.getAbsolutePosition());
+	}
+	
+	@Test
+	public void testSetAbsolutePositionSetsExpectedAbsolutePosition() {
+		// Fixture
+		final Team team = new Team(TeamTest.TEAM_A);
+		final int expected = TeamTest.ABSOLUTE_POSITION_A;
+		
+		// Match
+		team.setAbsolutePosition(TeamTest.ABSOLUTE_POSITION_A);
+		
+		// Assertion
+		assertEquals(expected, team.getAbsolutePosition());
+	}
+	
+	@Test
+	public void testGetRelativePositionReturnsExpectedRelativePosition() {
+		// Fixture
+		final Team team = new Team(TeamTest.TEAM_A);
+		final String expected = TeamTest.RELATIVE_POSITION_A;
+		
+		// Match
+		team.setRelativePosition(TeamTest.RELATIVE_POSITION_A);
+		
+		// Assertion
+		assertEquals(expected, team.getRelativePosition());
+	}
+	
+	@Test
+	public void testSetRelativePositionReturnsExpectedRelativePosition() {
+		// Fixture
+		final Team team = new Team(TeamTest.TEAM_A);
+		final String expected = TeamTest.RELATIVE_POSITION_A;
+		
+		// Match
+		team.setRelativePosition(TeamTest.RELATIVE_POSITION_A);
+		
+		// Assertion
+		assertEquals(expected, team.getRelativePosition());
 	}
 
 }

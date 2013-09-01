@@ -1,6 +1,10 @@
 package gr.daemon.squarerobin.gui;
 
-import gr.daemon.squarerobin.engine.Scheduler;
+import gr.daemon.squarerobin.model.Game;
+import gr.daemon.squarerobin.model.Round;
+import gr.daemon.squarerobin.model.Scheduler;
+import gr.daemon.squarerobin.model.Season;
+import gr.daemon.squarerobin.model.Slot;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
@@ -8,8 +12,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.TreeMap;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
@@ -29,7 +31,7 @@ import javax.swing.table.DefaultTableModel;
 public class SquareRobin extends JFrame implements ActionListener {
 
 	private static final String APPLICATION_NAME = "Square Robin";
-	private final ArrayList<String> clubs = new ArrayList<>();
+	private final ArrayList<String> teams = new ArrayList<>();
 	private JPanel contentPane;
 	private JButton runButton;		
 	private JScrollPane inputScrollPane;
@@ -38,7 +40,7 @@ public class SquareRobin extends JFrame implements ActionListener {
 	private JTable inputTable;
 	private JTable scheduleTable;
 	private JTable leagueTable;
-	private Scheduler scheduler;
+	private Season season;
 	private JButton clearButton;
 	private JTextField roundsTextField;
 	private JLabel roundsLabel;
@@ -56,15 +58,17 @@ public class SquareRobin extends JFrame implements ActionListener {
 	private boolean parseInput() {
 		String cell;
 
-		this.clubs.clear();
+		this.teams.clear();
 		for (int i = 0; i < this.inputTable.getRowCount(); i++) {
 			cell = (String) this.inputTable.getValueAt(i, 0);
 			if (cell != null && !cell.equals("")) {
-				this.clubs.add(cell);
+				this.teams.add(cell);
 			}
 		}
 		try {
-			this.scheduler = new Scheduler(this.clubs, Integer.valueOf(this.roundsTextField.getText()));
+			final String[] teams = this.teams.toArray(new String[this.teams.size()]);
+			final Scheduler scheduler = new Scheduler("2013", teams, Integer.valueOf(this.roundsTextField.getText()));
+			this.season = scheduler.getSeason();			
 		} catch(IllegalArgumentException | IllegalStateException e) {
 			JOptionPane.showMessageDialog(this, e.getMessage());
 			return false;
@@ -72,26 +76,28 @@ public class SquareRobin extends JFrame implements ActionListener {
 		return true;
 	}
 
-	private void displaySchedule() {
-		HashMap<Integer, TreeMap<Integer, ArrayList<String[]>>> schedule;
+	private void displaySchedule() {		
 		DefaultTableModel model;
-		String[] values = new String[5];
+		String[] values = new String[6];
 
 		this.initScheduleModel();
 		model = (DefaultTableModel)this.scheduleTable.getModel();
-		try {
-			schedule = scheduler.getSchedule();
-			for (final int round : schedule.keySet()) {
+		try {			
+			for (final Round round : this.season.getRounds()) {
 				Arrays.fill(values, null);
-				values[0] = "Round " + round;
+				values[0] = "Round " + round.getIndex();
 				model.addRow(values);
-				for (final int slot : schedule.get(round).keySet()) {
-					values[1] = "Slot " + slot;
+				for (final Slot slot : round.getSlots()) {
+					Arrays.fill(values, null);
+					values[1] = "Slot " + slot.getIndex();
 					model.addRow(values);
-					for (final String[] pair : schedule.get(round).get(slot)) {
-						values[2] = pair[0];
-						values[3] = pair[1];
-						values[4] = pair[2] + " - " + pair[3];
+					for (final Game game : slot.getGames()) {
+						Arrays.fill(values, null);
+						values[2] = "Game " + game.getIndex();
+						model.addRow(values);
+						Arrays.fill(values, null);
+						values[3] = game.getHomeTeam().getName();
+						values[4] = game.getAwayTeam().getName();
 						model.addRow(values);
 					}
 				}
@@ -104,29 +110,29 @@ public class SquareRobin extends JFrame implements ActionListener {
 	}
 
 	private void displayLeagueTable() {
-		TreeMap<Integer, String[]> league;
-		DefaultTableModel model;
-		String[] values = new String[6];
-
-		this.initLeagueModel();
-		model = (DefaultTableModel)this.leagueTable.getModel();
-		try {
-			league = scheduler.getLeagueTable(true);
-			for (final int index : league.keySet()) {
-				Arrays.fill(values, null);
-				values[0] = league.get(index)[0];
-				values[1] = league.get(index)[1];
-				values[2] = league.get(index)[2];
-				values[3] = league.get(index)[3];
-				values[4] = league.get(index)[4];
-				values[5] = league.get(index)[5];
-				model.addRow(values);
-			}
-			this.leagueTable.setModel(model);
-			model.fireTableDataChanged();
-		} catch(IllegalArgumentException e) {
-			JOptionPane.showMessageDialog(this, e.getMessage());
-		}
+//		TreeMap<Integer, String[]> league;
+//		DefaultTableModel model;
+//		String[] values = new String[6];
+//
+//		this.initLeagueModel();
+//		model = (DefaultTableModel)this.leagueTable.getModel();
+//		try {
+//			league = scheduler.getLeagueTable(true);
+//			for (final int index : league.keySet()) {
+//				Arrays.fill(values, null);
+//				values[0] = league.get(index)[0];
+//				values[1] = league.get(index)[1];
+//				values[2] = league.get(index)[2];
+//				values[3] = league.get(index)[3];
+//				values[4] = league.get(index)[4];
+//				values[5] = league.get(index)[5];
+//				model.addRow(values);
+//			}
+//			this.leagueTable.setModel(model);
+//			model.fireTableDataChanged();
+//		} catch(IllegalArgumentException e) {
+//			JOptionPane.showMessageDialog(this, e.getMessage());
+//		}
 	}
 
 	private void initComponents() {
@@ -197,7 +203,7 @@ public class SquareRobin extends JFrame implements ActionListener {
 	}
 
 	private void initScheduleModel() {
-		final String[] headers = {"Round", "Day", "Home", "Away", "Score"};
+		final String[] headers = {"Round", "Day", "Game", "Home", "Away", "Score"};
 		final DefaultTableModel model = new NonEditableTableModel(0, headers.length);
 
 		model.setColumnIdentifiers(headers);
@@ -252,7 +258,7 @@ public class SquareRobin extends JFrame implements ActionListener {
 		);
 		this.contentPane.setLayout(layout);
 	}
-
+	
 	public void actionPerformed(final ActionEvent event) {
 		if (event.getSource() == this.runButton) {
 			if (this.parseInput()) {
@@ -265,7 +271,7 @@ public class SquareRobin extends JFrame implements ActionListener {
 	}
 
 	private static final class SwingStartUp implements Runnable {
-
+		
 		public void run() {
 			new SquareRobin().setVisible(true);
 		}

@@ -1,25 +1,30 @@
 package gr.daemon.squarerobin.cli;
 
-import gr.daemon.squarerobin.engine.Scheduler;
+import gr.daemon.squarerobin.model.DuplicateTeamsException;
+import gr.daemon.squarerobin.model.Game;
+import gr.daemon.squarerobin.model.InsufficientTeamsException;
+import gr.daemon.squarerobin.model.InvalidRoundsException;
+import gr.daemon.squarerobin.model.OddTeamNumberException;
+import gr.daemon.squarerobin.model.Round;
+import gr.daemon.squarerobin.model.Scheduler;
+import gr.daemon.squarerobin.model.Season;
+import gr.daemon.squarerobin.model.Slot;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Scanner;
-import java.util.TreeMap;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
-import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
 public class SquareRobin {
 
 	public static final String APPLICATION_NAME = "SquareRobin";
-	public static final String APPLICATION_VERSION = "v0.3.0";
-	private final ArrayList<String> clubs = new ArrayList<>();
+	public static final String APPLICATION_VERSION = "v0.5.0";
+	private final ArrayList<String> teams = new ArrayList<>();
 	private CommandLine cli;
 	private final Options options = new Options();
 
@@ -33,14 +38,14 @@ public class SquareRobin {
 
 	private void constructOptions() {
 		final Option noRounds = new Option("norounds", "do not print round number");
-		final Option noDays = new Option("nodays", "do not print day number");
-		final Option only = OptionBuilder.withArgName("club").hasArg().withDescription("only display schedule for this club").create("only");
+		final Option noSlots = new Option("noslots", "do not print slot number");
+		final Option noGames = new Option("nogames", "do not print game number");		
 		final Option version = new Option("version", "print the version information and exit");
 		final Option help = new Option("help", "print this message");
 
 		this.options.addOption(noRounds);
-		this.options.addOption(noDays);
-		this.options.addOption(only);
+		this.options.addOption(noSlots);
+		this.options.addOption(noGames);		
 		this.options.addOption(version);
 		this.options.addOption(help);
 	}
@@ -82,8 +87,8 @@ public class SquareRobin {
 		System.out.println(SquareRobin.APPLICATION_VERSION);
 	}
 
-	private void handleError(final State state, String message) {
-		switch (state) {
+	private void handleError(final State state, String message) {		
+		switch (state) {		
 			case OK :
 				break;
 			case INVALID_ARGUMENTS :				
@@ -91,22 +96,14 @@ public class SquareRobin {
 				this.printUsage();
 				System.exit(state.getValue());
 				break;
-			case UNSPECIFIED_ERROR :
-			case INSUFFICIENT_CLUBS :
-			case ODD_CLUBS :
-				if (message.isEmpty()) {
+			default :
+				if (!message.isEmpty()) {
 					message = " : " + message;
 				}
 				System.err.println(state.toString() + message);
 				System.exit(state.getValue());
 				break;
-			default :
-				break;
 		}
-	}
-
-	private void handleError(final State state) {
-		this.handleError(state, "");
 	}
 
 	private void getInput() {
@@ -119,41 +116,52 @@ public class SquareRobin {
 			if (club.isEmpty()) {
 				break;
 			}
-			this.clubs.add(club);
+			this.teams.add(club);
 		}
 		input.close();
-		if (this.clubs.size() == 0) {
-			handleError(State.INSUFFICIENT_CLUBS);
-		} else if (this.clubs.size() % 2 == 1) {
-			handleError(State.ODD_CLUBS);
+	}
+	
+	private String tabify(final int count) {
+		String tabs = "";
+		for (int i = 0; i < count; i++) {
+			tabs += "\t";
 		}
+		return tabs;
 	}
 
 	private void printDraw() {
+		int tabs = 0;
 		try {
-			final Scheduler scheduler = new Scheduler(this.clubs);
-			final HashMap<Integer, TreeMap<Integer, ArrayList<String[]>>> schedule = scheduler.getSchedule();
-			for (final int round : schedule.keySet()) {
+			final String[] teams = this.teams.toArray(new String[this.teams.size()]);
+			final Scheduler scheduler = new Scheduler("2013", teams);
+			final Season season = scheduler.getSeason();			
+			for (final Round round : season.getRounds()) {
 				if (!this.cli.hasOption("norounds")) {
-					System.out.println("Round " + round);
+					System.out.println(this.tabify(tabs++) + "Round " + round.getIndex());
 				}
-				for (final int day : schedule.get(round).keySet()) {
-					if (!this.cli.hasOption("nodays")) {
-						System.out.println("Day " + day);
+				for (final Slot slot : round.getSlots()) {
+					if (!this.cli.hasOption("noslots")) {
+						System.out.println(this.tabify(tabs++) + "Slot " + slot.getIndex());
 					}
-					for (final String[] pair : schedule.get(round).get(day)) {
-						if (this.cli.getOptionValue("only") == null) {
-							System.out.println(pair[0] + " - " + pair[1]);
-						} else {
-							if (Arrays.asList(pair).contains(this.cli.getOptionValue("only"))) {
-								System.out.println(pair[0] + " - " + pair[1]);
-							}
+					for (final Game game : slot.getGames()) {
+						if (!this.cli.hasOption("nogames")) {							
+							System.out.println(this.tabify(tabs++) + "Game" + game.getIndex());
+						}
+						System.out.println(this.tabify(tabs) + game.getHomeTeam().getName() + " - " + game.getAwayTeam().getName());
+						if (!this.cli.hasOption("nogames")) {
+							tabs--;
 						}
 					}
+					if (!this.cli.hasOption("noslots")) {
+						tabs--;
+					}
+				}
+				if (!this.cli.hasOption("norounds")) {
+					tabs--;
 				}
 			}
-		} catch(IllegalArgumentException e) {
-			handleError(State.UNSPECIFIED_ERROR, e.getMessage());
+		} catch(DuplicateTeamsException | InsufficientTeamsException | OddTeamNumberException | InvalidRoundsException e) {
+			handleError(State.SCHEDULE_ERROR, e.getMessage());
 		}
 	}
 

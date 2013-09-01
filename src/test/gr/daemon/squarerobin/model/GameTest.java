@@ -298,5 +298,38 @@ public class GameTest {
 			assertFalse(e.getMessage().isEmpty());
 		}
 	}
+	
+	@Test
+	public void testResetTeamsResetsTeamsWhenNotSettled() throws GameAlreadySettledException{
+		// Fixture
+		final Team teamA = new Team(GameTest.TEAM_A);
+		final Team teamB = new Team(GameTest.TEAM_B);
+		final Game game = new Game(GameTest.GAME_A, teamA, teamB);
+		final Team expected = teamB;
+		
+		// Match
+		game.resetTeams(teamB, teamA);
+		
+		// Assertion
+		assertSame(expected, game.getHomeTeam());		
+	}
+	
+	@Test
+	public void testResetTeamsThrowsExceptionWhenSettled() {
+		// Fixture
+		final Team teamA = new Team(GameTest.TEAM_A);
+		final Team teamB = new Team(GameTest.TEAM_B);
+		final Game game = new Game(GameTest.GAME_A, teamA, teamB);
+		
+		// Match
+		try {
+			game.settle();
+			game.resetTeams(teamB, teamA);
+			fail("Exception not thrown for attempting to reset teams for an unsettled game");
+		} catch(GameAlreadySettledException e) {
+			// Assertion
+			assertFalse(e.getMessage().isEmpty());
+		}
+	}
 
 }

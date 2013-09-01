@@ -10,7 +10,6 @@ import org.junit.Test;
 public class SquareRobinTest {
 	
 	private static final String NL = "\n";
-	private static final String CRNL = "\r\n";
 	private static final String EXIT = SquareRobinTest.NL + SquareRobinTest.NL;
 	private static final String VS = " - ";	
 	private static final String SYSTEM_EXIT_MESSAGE = "System.exit() expected";
@@ -21,7 +20,6 @@ public class SquareRobinTest {
 	private static final String[] TEAM_SET_EVEN = {SquareRobinTest.TEAM_A, SquareRobinTest.TEAM_B, SquareRobinTest.TEAM_C, SquareRobinTest.TEAM_D};
 	private static final String[] TEAM_SET_ODD = {SquareRobinTest.TEAM_A, SquareRobinTest.TEAM_B, SquareRobinTest.TEAM_C};
 	private static final String[] TEAM_SET_NOT_UNIQUE = {SquareRobinTest.TEAM_A, SquareRobinTest.TEAM_A, SquareRobinTest.TEAM_B, SquareRobinTest.TEAM_C};
-	private static final String LEFT_OUT_TEAM = SquareRobinTest.TEAM_D;
 	private static final int NO_OCCURENCES = 0;
 	private static final int SINGLE_OCCURENCE = 1;
 
@@ -77,39 +75,39 @@ public class SquareRobinTest {
 	@Test
 	public void testMainProducesFullOutputWithDefaultInput() {
 		// Fixture
-		final String[] arguments = new String[]{};
+		final String[] arguments = {};
 		final ByteArrayOutputStream systemOut = new ByteArrayOutputStream();		
-		final String[] clubs = SquareRobinTest.TEAM_SET_EVEN;
+		final String[] teams = SquareRobinTest.TEAM_SET_EVEN;
 		String systemIn = "";
-		for (final String club : clubs) {
-			systemIn += club + SquareRobinTest.NL;
+		for (final String team : teams) {
+			systemIn += team + SquareRobinTest.NL;
 		}
 		systemIn += SquareRobinTest.NL;
 		System.setIn(new ByteArrayInputStream(systemIn.getBytes()));
 		System.setOut(new PrintStream(systemOut));
-		final int expected = (clubs.length - 1) * 2;
+		final int expected = (teams.length - 1) * 2;
 		
 		// Match
 		SquareRobin.main(arguments);
 		
 		// Assertion
-		for (final String club : clubs) {
-			final int homeOccurences = this.countOccurences(systemOut.toString(), SquareRobinTest.CRNL + club + SquareRobinTest.VS);
-			final int awayOccurences = this.countOccurences(systemOut.toString(), SquareRobinTest.VS + club + SquareRobinTest.CRNL);
+		for (final String team : teams) {
+			final int homeOccurences = this.countOccurences(systemOut.toString(), team + SquareRobinTest.VS);
+			final int awayOccurences = this.countOccurences(systemOut.toString(), SquareRobinTest.VS + team);
 			final int totalOccurences = homeOccurences  + awayOccurences;
 			assertEquals(expected, totalOccurences);
 		}
 	}
 	
 	@Test
-	public void testMainDoesNotDisplayDayLinesWhenTheNoDaysSwitchIsOn() {
+	public void testMainDoesNotDisplaySlotLinesWhenTheNoDaysSwitchIsOn() {
 		// Fixture
-		final String[] arguments = new String[]{"-nodays"};
+		final String[] arguments = {"-noslots"};
 		final ByteArrayOutputStream systemOut = new ByteArrayOutputStream();
-		final String[] clubs = SquareRobinTest.TEAM_SET_EVEN;
+		final String[] teams = SquareRobinTest.TEAM_SET_EVEN;
 		String systemIn = "";
-		for (final String club : clubs) {
-			systemIn += club + SquareRobinTest.NL;
+		for (final String team : teams) {
+			systemIn += team + SquareRobinTest.NL;
 		}
 		systemIn += SquareRobinTest.NL;
 		System.setIn(new ByteArrayInputStream(systemIn.getBytes()));
@@ -120,21 +118,21 @@ public class SquareRobinTest {
 		SquareRobin.main(arguments);
 
 		// Assertion
-		for (int i = 1; i < clubs.length; i++) {
-			final int dayOccurences = this.countOccurences(systemOut.toString(), "Day " + i);
-			assertEquals(expected, dayOccurences);
+		for (int i = 1; i < teams.length; i++) {
+			final int slotOccurences = this.countOccurences(systemOut.toString(), "Slot " + i);
+			assertEquals(expected, slotOccurences);
 		}
 	}
 
 	@Test
 	public void testMainDoesNotDisplayRoundLinesWhenTheNoRoundsSwitchIsOn() {
 		// Fixture
-		final String[] arguments = new String[]{"-norounds"};
+		final String[] arguments = {"-norounds"};
 		final ByteArrayOutputStream systemOut = new ByteArrayOutputStream();
-		final String[] clubs = SquareRobinTest.TEAM_SET_EVEN;
+		final String[] teams = SquareRobinTest.TEAM_SET_EVEN;
 		String systemIn = "";
-		for (final String club : clubs) {
-			systemIn += club + SquareRobinTest.NL;
+		for (final String team : teams) {
+			systemIn += team + SquareRobinTest.NL;
 		}
 		systemIn += SquareRobinTest.NL;
 		System.setIn(new ByteArrayInputStream(systemIn.getBytes()));
@@ -145,45 +143,67 @@ public class SquareRobinTest {
 		SquareRobin.main(arguments);
 
 		// Assertion
-		for (int i = 1; i <= 2; i++) {
+		for (int i = 1; i <= teams.length; i++) {
 			final int roundOccurences = this.countOccurences(systemOut.toString(), "Round " + i); 
 			assertEquals(expected, roundOccurences);
 		}
 	}
-
+	
 	@Test
-	public void testMainOnlyDisplaysGamesForOneClubWhenTheOnlySwitchIsOn() {
+	public void testMainDoesNotDisplayGameLinesWhenTheNoGamesSwitchIsOn() {
 		// Fixture
+		final String[] arguments = {"-nogames"};
 		final ByteArrayOutputStream systemOut = new ByteArrayOutputStream();
-		final String[] clubs = SquareRobinTest.TEAM_SET_EVEN;
-		final String[] otherClubs = SquareRobinTest.TEAM_SET_ODD;
-		final String onlyForClub = SquareRobinTest.LEFT_OUT_TEAM;
-		final String[] arguments = new String[]{"-only", onlyForClub};
+		final String[] teams = SquareRobinTest.TEAM_SET_EVEN;
 		String systemIn = "";
-		for (final String club : clubs) {
-			systemIn += club + SquareRobinTest.NL;
+		for (final String team : teams) {
+			systemIn += team + SquareRobinTest.NL;
 		}
 		systemIn += SquareRobinTest.NL;
 		System.setIn(new ByteArrayInputStream(systemIn.getBytes()));
 		System.setOut(new PrintStream(systemOut));
-		final int expected = SquareRobinTest.SINGLE_OCCURENCE * 2;
+		final int expected = SquareRobinTest.NO_OCCURENCES;
 
 		// Match
 		SquareRobin.main(arguments);
 
 		// Assertion
-		for (final String club : otherClubs) {
-			final int homeOccurences = this.countOccurences(systemOut.toString(), SquareRobinTest.CRNL + club + SquareRobinTest.VS);
-			final int awayOccurences = this.countOccurences(systemOut.toString(), SquareRobinTest.VS + club + SquareRobinTest.CRNL);
-			final int totalOccurences = homeOccurences  + awayOccurences;
-			assertEquals(expected, totalOccurences);
+		for (int i = 1; i <= teams.length; i++) {
+			final int gameOccurences = this.countOccurences(systemOut.toString(), "Game " + i); 
+			assertEquals(expected, gameOccurences);
+		}
+	}
+	
+	@Test
+	public void testMainDisplaysNeitherRoundNorSlotLinesWhenTheBothSwitchesAreOn() {
+		// Fixture
+		final String[] arguments = {"-norounds", "-noslots"};
+		final ByteArrayOutputStream systemOut = new ByteArrayOutputStream();
+		final String[] teams = SquareRobinTest.TEAM_SET_EVEN;
+		String systemIn = "";
+		for (final String team : teams) {
+			systemIn += team + SquareRobinTest.NL;
+		}
+		systemIn += SquareRobinTest.NL;
+		System.setIn(new ByteArrayInputStream(systemIn.getBytes()));
+		System.setOut(new PrintStream(systemOut));
+		final int expected = SquareRobinTest.NO_OCCURENCES;
+
+		// Match
+		SquareRobin.main(arguments);
+
+		// Assertion
+		for (int i = 1; i <= teams.length; i++) {
+			final int roundOccurences = this.countOccurences(systemOut.toString(), "Round " + i);
+			final int slotOccurences = this.countOccurences(systemOut.toString(), "Slot " + i);
+			assertEquals(expected, roundOccurences + slotOccurences);
 		}
 	}
 
 	@Test
 	public void testMainProducesUsageOutputWhenTheHelpSwitchIsOn() {
 		// Fixture
-		final String[] arguments = new String[]{"-help"};
+		final String[] arguments = {"-help"};
 		final ByteArrayOutputStream systemOut = new ByteArrayOutputStream();
 		System.setOut(new PrintStream(systemOut));
 		final int expected = SquareRobinTest.SINGLE_OCCURENCE;
@@ -199,7 +219,7 @@ public class SquareRobinTest {
 	@Test
 	public void testMainProducesVersionOutputWhenTheVersionSwitchIsOn() {
 		// Fixture
-		final String[] arguments = new String[]{"-version"};
+		final String[] arguments = {"-version"};
 		final ByteArrayOutputStream systemOut = new ByteArrayOutputStream();
 		System.setOut(new PrintStream(systemOut));
 		final int expected = SquareRobinTest.SINGLE_OCCURENCE;
@@ -213,17 +233,17 @@ public class SquareRobinTest {
 	}
 
 	@Test
-	public void testMainProducesExpectedExitCodeWhenTheNumberOfClubsIsOdd() {
+	public void testMainExitsWhenTheNumberOfClubsIsOdd() {
 		// Fixture
-		final String[] arguments = new String[]{};
-		final String[] clubs = SquareRobinTest.TEAM_SET_ODD;
+		final String[] arguments = {};
+		final String[] teams = SquareRobinTest.TEAM_SET_ODD;
 		String systemIn = "";
-		for (final String club : clubs) {
-			systemIn += club + SquareRobinTest.NL;
+		for (final String team : teams) {
+			systemIn += team + SquareRobinTest.NL;
 		}
 		systemIn += SquareRobinTest.NL;
 		System.setIn(new ByteArrayInputStream(systemIn.getBytes()));
-		final int expected = State.ODD_CLUBS.getValue();
+		final int expected = State.SCHEDULE_ERROR.getValue();
 
 		// Match		
 		try {
@@ -239,12 +259,12 @@ public class SquareRobinTest {
 	}
 
 	@Test
-	public void testMainProducesExpectedExitCodeWhenThereAreInsufficientClubs() {
+	public void testMainExitsWhenThereAreInsufficientClubs() {
 		// Fixture
-		final String[] arguments = new String[]{};
+		final String[] arguments = {};
 		final String systemIn = SquareRobinTest.EXIT;
 		System.setIn(new ByteArrayInputStream(systemIn.getBytes()));
-		final int expected = State.INSUFFICIENT_CLUBS.getValue();
+		final int expected = State.SCHEDULE_ERROR.getValue();
 
 		// Match		
 		try {
@@ -260,9 +280,9 @@ public class SquareRobinTest {
 	}
 
 	@Test
-	public void testMainProducesExpectedExitCodeWhenInvalidNonGNUArgumentsAreDetected() {
+	public void testMainExitsWhenInvalidNonGNUArgumentsAreDetected() {
 		// Fixture
-		final String[] arguments = new String[]{"invalid arguments"};
+		final String[] arguments = {"invalid arguments"};
 		final int expected = State.INVALID_ARGUMENTS.getValue();
 		
 		// Match		
@@ -279,9 +299,9 @@ public class SquareRobinTest {
 	}
 
 	@Test
-	public void testMainProducesExpectedExitCodeWhenInvalidGNUArgumentsAreDetected() {
+	public void testMainExitsWhenInvalidGNUArgumentsAreDetected() {
 		// Fixture
-		final String[] arguments = new String[]{"-invalid"};
+		final String[] arguments = {"-invalid"};
 		final int expected = State.INVALID_ARGUMENTS.getValue();
 
 		// Match		
@@ -297,17 +317,17 @@ public class SquareRobinTest {
 	}
 
 	@Test
-	public void testMainProducesExpectedExitCodeWhenAnUnspecifiedErrorHasOccured() {
+	public void testMainExitsWhenDuplicateTeamsAreDetected() {
 		// Fixture
-		final String[] arguments = new String[]{};
-		final String[] clubs = SquareRobinTest.TEAM_SET_NOT_UNIQUE;
+		final String[] arguments = {};
+		final String[] teams = SquareRobinTest.TEAM_SET_NOT_UNIQUE;
 		String systemIn = "";
-		for (final String club : clubs) {
-			systemIn += club + SquareRobinTest.NL;
+		for (final String team : teams) {
+			systemIn += team + SquareRobinTest.NL;
 		}
 		systemIn += SquareRobinTest.NL;
 		System.setIn(new ByteArrayInputStream(systemIn.getBytes()));
-		final int expected = State.UNSPECIFIED_ERROR.getValue(); 
+		final int expected = State.SCHEDULE_ERROR.getValue(); 
 
 		// Match		
 		try {
