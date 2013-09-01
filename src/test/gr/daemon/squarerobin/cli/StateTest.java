@@ -57,17 +57,5 @@ public class StateTest {
 		// Assertion		
 		assertEquals(expected, ok.toString());
 	}
-	
-	@Test
-	public void testValueOfReturnsExpectedState() {
-		// Fixtures
-		final State expected = StateTest.STATE_A;
-		
-		// Match
-		final State state = State.valueOf("OK");
-		
-		// Assertion
-		assertSame(expected, state);
-	}
 
 }

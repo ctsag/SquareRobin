@@ -20,18 +20,25 @@ public enum State {
 
 	@Override
 	public String toString() {
-		String message;
+		String message = "";
 
-		if (this == UNSPECIFIED_ERROR) {
-			message = "An error has occured";			
-		} else if (this == INVALID_ARGUMENTS) {
-			message = "Invalid arguments";
-		} else if (this == INSUFFICIENT_CLUBS) {
-			message = "At least one club is required";
-		} else if (this == ODD_CLUBS) {
-			message = "An even number of clubs are is required";
-		} else {
-			message = "";
+		switch (this) {
+			case OK :                               
+				break;
+			case UNSPECIFIED_ERROR :
+				message = "An error has occured";
+				break;
+			case INVALID_ARGUMENTS :
+				message = "Invalid arguments";
+				break;
+			case INSUFFICIENT_CLUBS :
+				message = "At least one club is required";
+				break;
+			case ODD_CLUBS :
+				message = "An even number of clubs are is required";
+				break;
+			default :                               
+				break;
 		}
 		return message;
 	}

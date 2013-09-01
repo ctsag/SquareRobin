@@ -99,6 +99,7 @@ public class SquareRobin {
 				}
 				System.err.println(state.toString() + message);
 				System.exit(state.getValue());
+				break;
 			default :
 				break;
 		}

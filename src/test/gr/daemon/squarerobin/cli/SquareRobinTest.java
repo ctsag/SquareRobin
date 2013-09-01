@@ -22,6 +22,8 @@ public class SquareRobinTest {
 	private static final String[] TEAM_SET_ODD = {SquareRobinTest.TEAM_A, SquareRobinTest.TEAM_B, SquareRobinTest.TEAM_C};
 	private static final String[] TEAM_SET_NOT_UNIQUE = {SquareRobinTest.TEAM_A, SquareRobinTest.TEAM_A, SquareRobinTest.TEAM_B, SquareRobinTest.TEAM_C};
 	private static final String LEFT_OUT_TEAM = SquareRobinTest.TEAM_D;
+	private static final int NO_OCCURENCES = 0;
+	private static final int SINGLE_OCCURENCE = 1;
 
 	private class ExitException extends SecurityException {
 
@@ -73,210 +75,251 @@ public class SquareRobinTest {
 	}
 
 	@Test
-	public void testDefaultUsage() {
-		final ByteArrayOutputStream systemOut = new ByteArrayOutputStream();
+	public void testMainProducesFullOutputWithDefaultInput() {
+		// Fixture
+		final String[] arguments = new String[]{};
+		final ByteArrayOutputStream systemOut = new ByteArrayOutputStream();		
 		final String[] clubs = SquareRobinTest.TEAM_SET_EVEN;
 		String systemIn = "";
-
-		// Setup input and output.
 		for (final String club : clubs) {
 			systemIn += club + SquareRobinTest.NL;
 		}
 		systemIn += SquareRobinTest.NL;
 		System.setIn(new ByteArrayInputStream(systemIn.getBytes()));
 		System.setOut(new PrintStream(systemOut));
-
-		SquareRobin.main(new String[]{});
-
-        // Assert number of occurences per club
-		for (final String club : clubs) {			
-			assertEquals((clubs.length - 1) * 2, this.countOccurences(systemOut.toString(), SquareRobinTest.CRNL + club + SquareRobinTest.VS) + this.countOccurences(systemOut.toString(), SquareRobinTest.VS + club + SquareRobinTest.CRNL));
+		final int expected = (clubs.length - 1) * 2;
+		
+		// Match
+		SquareRobin.main(arguments);
+		
+		// Assertion
+		for (final String club : clubs) {
+			final int homeOccurences = this.countOccurences(systemOut.toString(), SquareRobinTest.CRNL + club + SquareRobinTest.VS);
+			final int awayOccurences = this.countOccurences(systemOut.toString(), SquareRobinTest.VS + club + SquareRobinTest.CRNL);
+			final int totalOccurences = homeOccurences  + awayOccurences;
+			assertEquals(expected, totalOccurences);
 		}
 	}
-
+	
 	@Test
-	public void testNoDays() {
+	public void testMainDoesNotDisplayDayLinesWhenTheNoDaysSwitchIsOn() {
+		// Fixture
+		final String[] arguments = new String[]{"-nodays"};
 		final ByteArrayOutputStream systemOut = new ByteArrayOutputStream();
 		final String[] clubs = SquareRobinTest.TEAM_SET_EVEN;
 		String systemIn = "";
-
-		// Setup input and output.
 		for (final String club : clubs) {
 			systemIn += club + SquareRobinTest.NL;
 		}
 		systemIn += SquareRobinTest.NL;
 		System.setIn(new ByteArrayInputStream(systemIn.getBytes()));
 		System.setOut(new PrintStream(systemOut));
+		final int expected = SquareRobinTest.NO_OCCURENCES;
 
-		SquareRobin.main(new String[]{"-nodays"});
+		// Match
+		SquareRobin.main(arguments);
 
-		// Assert days are not printed
+		// Assertion
 		for (int i = 1; i < clubs.length; i++) {
-			assertEquals(0, this.countOccurences(systemOut.toString(), "Day " + i));
+			final int dayOccurences = this.countOccurences(systemOut.toString(), "Day " + i);
+			assertEquals(expected, dayOccurences);
 		}
 	}
 
 	@Test
-	public void testNoRounds() {
+	public void testMainDoesNotDisplayRoundLinesWhenTheNoRoundsSwitchIsOn() {
+		// Fixture
+		final String[] arguments = new String[]{"-norounds"};
 		final ByteArrayOutputStream systemOut = new ByteArrayOutputStream();
 		final String[] clubs = SquareRobinTest.TEAM_SET_EVEN;
 		String systemIn = "";
-
-		// Setup input and output.
 		for (final String club : clubs) {
 			systemIn += club + SquareRobinTest.NL;
 		}
 		systemIn += SquareRobinTest.NL;
 		System.setIn(new ByteArrayInputStream(systemIn.getBytes()));
 		System.setOut(new PrintStream(systemOut));
+		final int expected = SquareRobinTest.NO_OCCURENCES;
 
-		SquareRobin.main(new String[]{"-norounds"});
+		// Match
+		SquareRobin.main(arguments);
 
-		// Assert rounds are not printed
+		// Assertion
 		for (int i = 1; i <= 2; i++) {
-			assertEquals(0, this.countOccurences(systemOut.toString(), "Round " + i));
+			final int roundOccurences = this.countOccurences(systemOut.toString(), "Round " + i); 
+			assertEquals(expected, roundOccurences);
 		}
 	}
 
 	@Test
-	public void testOnlyOneClub() {
+	public void testMainOnlyDisplaysGamesForOneClubWhenTheOnlySwitchIsOn() {
+		// Fixture
 		final ByteArrayOutputStream systemOut = new ByteArrayOutputStream();
 		final String[] clubs = SquareRobinTest.TEAM_SET_EVEN;
 		final String[] otherClubs = SquareRobinTest.TEAM_SET_ODD;
 		final String onlyForClub = SquareRobinTest.LEFT_OUT_TEAM;
-
+		final String[] arguments = new String[]{"-only", onlyForClub};
 		String systemIn = "";
-
-		// Setup input and output.
 		for (final String club : clubs) {
 			systemIn += club + SquareRobinTest.NL;
 		}
 		systemIn += SquareRobinTest.NL;
 		System.setIn(new ByteArrayInputStream(systemIn.getBytes()));
 		System.setOut(new PrintStream(systemOut));
+		final int expected = SquareRobinTest.SINGLE_OCCURENCE * 2;
 
-		SquareRobin.main(new String[]{"-only", onlyForClub});
+		// Match
+		SquareRobin.main(arguments);
 
-		// Assert only the matches of the specified club are printed
+		// Assertion
 		for (final String club : otherClubs) {
-			assertEquals(1 * 2, this.countOccurences(systemOut.toString(), SquareRobinTest.CRNL + club + SquareRobinTest.VS) + this.countOccurences(systemOut.toString(), SquareRobinTest.VS + club + SquareRobinTest.CRNL));
+			final int homeOccurences = this.countOccurences(systemOut.toString(), SquareRobinTest.CRNL + club + SquareRobinTest.VS);
+			final int awayOccurences = this.countOccurences(systemOut.toString(), SquareRobinTest.VS + club + SquareRobinTest.CRNL);
+			final int totalOccurences = homeOccurences  + awayOccurences;
+			assertEquals(expected, totalOccurences);
 		}
 	}
 
 	@Test
-	public void testHelp() {
+	public void testMainProducesUsageOutputWhenTheHelpSwitchIsOn() {
+		// Fixture
+		final String[] arguments = new String[]{"-help"};
 		final ByteArrayOutputStream systemOut = new ByteArrayOutputStream();
-
-		// Setup input and output.
 		System.setOut(new PrintStream(systemOut));
+		final int expected = SquareRobinTest.SINGLE_OCCURENCE;
 
-		SquareRobin.main(new String[]{"-help"});
+		// Match
+		SquareRobin.main(arguments);
 
-		// Assert help is printed
-		assertEquals(1, this.countOccurences(systemOut.toString(), "usage: " + SquareRobin.APPLICATION_NAME));
+		// Assertion
+		final int usageOccurences = this.countOccurences(systemOut.toString(), "usage: " + SquareRobin.APPLICATION_NAME); 
+		assertEquals(expected, usageOccurences);
 	}
 
 	@Test
-	public void testVersion() {
+	public void testMainProducesVersionOutputWhenTheVersionSwitchIsOn() {
+		// Fixture
+		final String[] arguments = new String[]{"-version"};
 		final ByteArrayOutputStream systemOut = new ByteArrayOutputStream();
-
-		// Setup input and output.
 		System.setOut(new PrintStream(systemOut));
+		final int expected = SquareRobinTest.SINGLE_OCCURENCE;
 
-		SquareRobin.main(new String[]{"-version"});
+		// Match
+		SquareRobin.main(arguments);
 
-		// Assert help is printed
-		assertEquals(1, this.countOccurences(systemOut.toString(), SquareRobin.APPLICATION_VERSION));
+		// Assertion
+		final int versionOccurences = this.countOccurences(systemOut.toString(), SquareRobin.APPLICATION_VERSION); 
+		assertEquals(expected, versionOccurences);
 	}
 
 	@Test
-	public void testOddClubs() {
+	public void testMainProducesExpectedExitCodeWhenTheNumberOfClubsIsOdd() {
+		// Fixture
+		final String[] arguments = new String[]{};
 		final String[] clubs = SquareRobinTest.TEAM_SET_ODD;
 		String systemIn = "";
-
-		// Setup input and output.
 		for (final String club : clubs) {
 			systemIn += club + SquareRobinTest.NL;
 		}
 		systemIn += SquareRobinTest.NL;
 		System.setIn(new ByteArrayInputStream(systemIn.getBytes()));
+		final int expected = State.ODD_CLUBS.getValue();
 
-		// Assert odd number of clubs produces appropriate exit code
-		System.setSecurityManager(new NoExitSecurityManager());
+		// Match		
 		try {
-			SquareRobin.main(new String[]{});
+			System.setSecurityManager(new NoExitSecurityManager());
+			SquareRobin.main(arguments);
 			fail(SquareRobinTest.SYSTEM_EXIT_MESSAGE);
 		} catch(ExitException e) {
-			assertEquals(State.ODD_CLUBS.getValue(), e.getExitCode());
+			// Assertion
+			assertEquals(expected, e.getExitCode());
+		} finally {
+			System.setSecurityManager(null);
 		}
-		System.setSecurityManager(null);
 	}
 
 	@Test
-	public void testInsufficientClubs() {
+	public void testMainProducesExpectedExitCodeWhenThereAreInsufficientClubs() {
+		// Fixture
+		final String[] arguments = new String[]{};
 		final String systemIn = SquareRobinTest.EXIT;
-
-		// Setup input and output.
 		System.setIn(new ByteArrayInputStream(systemIn.getBytes()));
+		final int expected = State.INSUFFICIENT_CLUBS.getValue();
 
-		// Assert insufficient number of clubs produces appropriate exit code
-		System.setSecurityManager(new NoExitSecurityManager());
+		// Match		
 		try {
-			SquareRobin.main(new String[]{});
+			System.setSecurityManager(new NoExitSecurityManager());
+			SquareRobin.main(arguments);
 			fail(SquareRobinTest.SYSTEM_EXIT_MESSAGE);
 		} catch(ExitException e) {
-			assertEquals(State.INSUFFICIENT_CLUBS.getValue(), e.getExitCode());
+			// Assertion
+			assertEquals(expected, e.getExitCode());
+		} finally {
+			System.setSecurityManager(null);
 		}
-		System.setSecurityManager(null);
 	}
 
 	@Test
-	public void testInvalidNonGNUArguments() {
-		// Assert invalid non-GNU arguments produce appropriate exit code
-		System.setSecurityManager(new NoExitSecurityManager());
+	public void testMainProducesExpectedExitCodeWhenInvalidNonGNUArgumentsAreDetected() {
+		// Fixture
+		final String[] arguments = new String[]{"invalid arguments"};
+		final int expected = State.INVALID_ARGUMENTS.getValue();
+		
+		// Match		
 		try {
-			SquareRobin.main(new String[]{"invalid arguments"});
+			System.setSecurityManager(new NoExitSecurityManager());
+			SquareRobin.main(arguments);
 			fail(SquareRobinTest.SYSTEM_EXIT_MESSAGE);
 		} catch(ExitException e) {
-			assertEquals(State.INVALID_ARGUMENTS.getValue(), e.getExitCode());
+			// Assertion
+			assertEquals(expected, e.getExitCode());
+		} finally {
+			System.setSecurityManager(null);
 		}
-		System.setSecurityManager(null);
 	}
 
 	@Test
-	public void testInvalidGNUArguments() {
-		// Assert invalid GNU arguments produce appropriate exit code
-		System.setSecurityManager(new NoExitSecurityManager());
+	public void testMainProducesExpectedExitCodeWhenInvalidGNUArgumentsAreDetected() {
+		// Fixture
+		final String[] arguments = new String[]{"-invalid"};
+		final int expected = State.INVALID_ARGUMENTS.getValue();
+
+		// Match		
 		try {
-			SquareRobin.main(new String[]{"-invalid"});
+			System.setSecurityManager(new NoExitSecurityManager());
+			SquareRobin.main(arguments);
 			fail(SquareRobinTest.SYSTEM_EXIT_MESSAGE);
 		} catch(ExitException e) {
-			assertEquals(State.INVALID_ARGUMENTS.getValue(), e.getExitCode());
+			assertEquals(expected, e.getExitCode());
+		} finally {
+			System.setSecurityManager(null);
 		}
-		System.setSecurityManager(null);
 	}
 
 	@Test
-	public void testUnspecifiedError() {
+	public void testMainProducesExpectedExitCodeWhenAnUnspecifiedErrorHasOccured() {
+		// Fixture
+		final String[] arguments = new String[]{};
 		final String[] clubs = SquareRobinTest.TEAM_SET_NOT_UNIQUE;
 		String systemIn = "";
-
-		// Setup input and output.
 		for (final String club : clubs) {
 			systemIn += club + SquareRobinTest.NL;
 		}
 		systemIn += SquareRobinTest.NL;
 		System.setIn(new ByteArrayInputStream(systemIn.getBytes()));
+		final int expected = State.UNSPECIFIED_ERROR.getValue(); 
 
-		// Assert an uncaught exception produces the appropriate exit code
-		System.setSecurityManager(new NoExitSecurityManager());
+		// Match		
 		try {
-			SquareRobin.main(new String[]{});
+			System.setSecurityManager(new NoExitSecurityManager());
+			SquareRobin.main(arguments);
 			fail(SquareRobinTest.SYSTEM_EXIT_MESSAGE);
 		} catch(ExitException e) {
-			assertEquals(State.UNSPECIFIED_ERROR.getValue(), e.getExitCode());
+			// Assertion
+			assertEquals(expected , e.getExitCode());
+		} finally {
+			System.setSecurityManager(null);
 		}
-		System.setSecurityManager(null);
 	}
 
 }
