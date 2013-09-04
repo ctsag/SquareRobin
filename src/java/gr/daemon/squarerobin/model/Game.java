@@ -37,7 +37,7 @@ public class Game {
 		return this.slot;
 	}
 
-	public void setSlot(final Slot slot) {
+	public void setSlot(final Slot slot) throws DuplicateEntryException {
 		final List<Game> slotGames = Arrays.asList(slot.getGames());
 		if (!slotGames.contains(this)) {
 			slot.addGame(this);
@@ -73,7 +73,7 @@ public class Game {
 		}
 	}
 
-	protected void settle() {
+	protected void settle() throws GameAlreadySettledException {
 		final Random generator = new Random();
 		final int homeGoals = generator.nextInt(Game.MAX_GOALS);
 		final int awayGoals = generator.nextInt(Game.MAX_GOALS);

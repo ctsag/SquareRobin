@@ -82,7 +82,7 @@ public class SeasonTest {
 	}
 	
 	@Test
-	public void testGetRoundReturnsExpectedRound() {
+	public void testGetRoundReturnsExpectedRound() throws DuplicateEntryException {
 		// Fixture
 		final Season season = new Season(SeasonTest.SEASON_A);
 		final Round roundA = new Round(SeasonTest.ROUND_A);
@@ -98,7 +98,7 @@ public class SeasonTest {
 	}
 	
 	@Test
-	public void testGetRoundReturnsNullForInexistentRound() {
+	public void testGetRoundReturnsNullForInexistentRound() throws DuplicateEntryException {
 		// Fixture
 		final Season season = new Season(SeasonTest.SEASON_A);
 		final Round roundA = new Round(SeasonTest.ROUND_A);		
@@ -141,7 +141,7 @@ public class SeasonTest {
 	}
 	
 	@Test
-	public void testAddRoundThrowsExceptionForDuplicateRound() {
+	public void testAddRoundThrowsExceptionForDuplicateRound() throws DuplicateEntryException {
 		// Fixture
 		final Season season = new Season(SeasonTest.SEASON_A);
 		final Round roundA = new Round(SeasonTest.ROUND_A);
@@ -158,7 +158,7 @@ public class SeasonTest {
 	}
 	
 	@Test
-	public void testRemoveRoundRemovesExistentRound() throws InexistentEntryException {
+	public void testRemoveRoundRemovesExistentRound() throws InexistentEntryException, DuplicateEntryException {
 		// Fixture
 		final Season season = new Season(SeasonTest.SEASON_A);
 		final Round roundA = new Round(SeasonTest.ROUND_A);
@@ -189,7 +189,7 @@ public class SeasonTest {
 	}
 	
 	@Test
-	public void testClearRoundsEmptiesRoundsCollection() {
+	public void testClearRoundsEmptiesRoundsCollection() throws DuplicateEntryException {
 		// Fixture
 		final Season season = new Season(SeasonTest.SEASON_A);
 		final Round roundA = new Round(SeasonTest.ROUND_A);

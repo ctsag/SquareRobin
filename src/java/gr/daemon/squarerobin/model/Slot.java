@@ -23,7 +23,7 @@ public class Slot {
 		return this.round;
 	}
 	
-	public void setRound(final Round round) {
+	public void setRound(final Round round) throws DuplicateEntryException {
 		final List<Slot> roundSlots = Arrays.asList(round.getSlots());
 		if (!roundSlots.contains(this)) {
 			round.addSlot(this);

@@ -38,7 +38,7 @@ public class RoundTest {
 	}
 	
 	@Test
-	public void testGetSeasonReturnsExpectedSeason() {
+	public void testGetSeasonReturnsExpectedSeason() throws DuplicateEntryException {
 		// Fixture
 		final Season season = new Season(RoundTest.SEASON_A);
 		final Round round = new Round(RoundTest.ROUND_A);
@@ -52,7 +52,7 @@ public class RoundTest {
 	}
 
 	@Test
-	public void testSetSeasonSetsExpectedSeason() {
+	public void testSetSeasonSetsExpectedSeason() throws DuplicateEntryException {
 		// Fixture
 		final Season season = new Season(RoundTest.SEASON_A);
 		final Round round = new Round(RoundTest.ROUND_A);
@@ -82,7 +82,7 @@ public class RoundTest {
 	}
 	
 	@Test
-	public void testGetSlotReturnsExpectedSlot() {
+	public void testGetSlotReturnsExpectedSlot() throws DuplicateEntryException {
 		// Fixture
 		final Round round = new Round(RoundTest.ROUND_A);
 		final Slot slotA = new Slot(RoundTest.SLOT_A);
@@ -98,7 +98,7 @@ public class RoundTest {
 	}
 	
 	@Test
-	public void testGetSlotReturnsNullForInexistentSlot() {
+	public void testGetSlotReturnsNullForInexistentSlot() throws DuplicateEntryException {
 		// Fixture
 		final Round round = new Round(RoundTest.ROUND_A);
 		final Slot slotA = new Slot(RoundTest.SLOT_A);		
@@ -141,7 +141,7 @@ public class RoundTest {
 	}
 	
 	@Test
-	public void testAddSlotThrowsExceptionForDuplicateSlot() {
+	public void testAddSlotThrowsExceptionForDuplicateSlot() throws DuplicateEntryException {
 		// Fixture
 		final Round round = new Round(RoundTest.ROUND_A);
 		final Slot slotA = new Slot(RoundTest.SLOT_A);
@@ -158,7 +158,7 @@ public class RoundTest {
 	}
 	
 	@Test
-	public void testRemoveSlotRemovesExistentSlot() throws InexistentEntryException {
+	public void testRemoveSlotRemovesExistentSlot() throws InexistentEntryException, DuplicateEntryException {
 		// Fixture
 		final Round round = new Round(RoundTest.ROUND_A);
 		final Slot slotA = new Slot(RoundTest.SLOT_A);
@@ -189,7 +189,7 @@ public class RoundTest {
 	}
 	
 	@Test
-	public void testClearSlotsEmptiesSlotsCollection() {
+	public void testClearSlotsEmptiesSlotsCollection() throws DuplicateEntryException {
 		// Fixture
 		final Round round = new Round(RoundTest.ROUND_A);
 		final Slot slotA = new Slot(RoundTest.SLOT_A);

@@ -90,7 +90,7 @@ public class SlotTest {
 	}
 	
 	@Test
-	public void testGetGameReturnsExpectedGame() {
+	public void testGetGameReturnsExpectedGame() throws DuplicateEntryException {
 		// Fixture
 		final Slot slot = new Slot(SlotTest.SLOT_A);
 		final Team teamA = new Team(SlotTest.TEAM_A);
@@ -110,7 +110,7 @@ public class SlotTest {
 	}
 	
 	@Test
-	public void testGetGameReturnsNullForInexistentGame() {
+	public void testGetGameReturnsNullForInexistentGame() throws DuplicateEntryException {
 		// Fixture
 		final Slot slot = new Slot(SlotTest.SLOT_A);
 		final Team teamA = new Team(SlotTest.TEAM_A);
@@ -161,7 +161,7 @@ public class SlotTest {
 	}
 	
 	@Test
-	public void testAddGameThrowsExceptionForDuplicateGame() {
+	public void testAddGameThrowsExceptionForDuplicateGame() throws DuplicateEntryException {
 		// Fixture
 		final Slot slot = new Slot(SlotTest.SLOT_A);
 		final Team teamA = new Team(SlotTest.TEAM_A);
@@ -180,7 +180,7 @@ public class SlotTest {
 	}
 	
 	@Test
-	public void testRemoveGameRemovesExistentGame() throws InexistentEntryException {
+	public void testRemoveGameRemovesExistentGame() throws InexistentEntryException, DuplicateEntryException {
 		// Fixture
 		final Slot slot = new Slot(SlotTest.SLOT_A);
 		final Team teamA = new Team(SlotTest.TEAM_A);
@@ -215,7 +215,7 @@ public class SlotTest {
 	}
 	
 	@Test
-	public void testClearGamesEmptiesGamesCollection() {
+	public void testClearGamesEmptiesGamesCollection() throws DuplicateEntryException {
 		// Fixture
 		final Slot slot = new Slot(SlotTest.SLOT_A);
 		final Team teamA = new Team(SlotTest.TEAM_A);

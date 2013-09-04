@@ -51,7 +51,7 @@ public class SquareRobinTest {
 		}
 
 		@Override
-		public void checkExit(final int status) {
+		public void checkExit(final int status) throws ExitException {
 			super.checkExit(status);
 			throw new ExitException(status);
 		}
@@ -310,10 +310,20 @@ public class SquareRobinTest {
 			SquareRobin.main(arguments);
 			fail(SquareRobinTest.SYSTEM_EXIT_MESSAGE);
 		} catch(ExitException e) {
+			// Assertion
 			assertEquals(expected, e.getExitCode());
 		} finally {
 			System.setSecurityManager(null);
 		}
+	}
+	
+	@Test
+	public void testMainExitsWhenThreeInARowConditionIsDetected() {
+		// Fixture
+
+		// Match		
+
+		// Assertion
 	}
 
 	@Test

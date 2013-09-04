@@ -23,7 +23,7 @@ public class Season {
 		return this.tournament;
 	}
 	
-	public void setTournament(final Tournament tournament) {
+	public void setTournament(final Tournament tournament) throws DuplicateEntryException {
 		final List<Season> tournamentSeasons = Arrays.asList(tournament.getSeasons());
 		if (!tournamentSeasons.contains(this)) {
 			tournament.addSeason(this);

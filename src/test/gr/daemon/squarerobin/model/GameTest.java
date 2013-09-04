@@ -98,7 +98,7 @@ public class GameTest {
 	}
 	
 	@Test
-	public void testGetSlotReturnsExpectedSlot() {
+	public void testGetSlotReturnsExpectedSlot() throws DuplicateEntryException {
 		// Fixture
 		final Slot slot = new Slot(GameTest.SLOT_A);
 		final Team teamA = new Team(GameTest.TEAM_A);
@@ -114,7 +114,7 @@ public class GameTest {
 	}
 
 	@Test
-	public void testSetSlotSetsExpectedSlot() {
+	public void testSetSlotSetsExpectedSlot() throws DuplicateEntryException {
 		// Fixture
 		final Slot slot = new Slot(GameTest.SLOT_A);
 		final Team teamA = new Team(GameTest.TEAM_A);
@@ -130,7 +130,7 @@ public class GameTest {
 	}
 	
 	@Test
-	public void testIsSettledReturnsTrueWhenSettled() {
+	public void testIsSettledReturnsTrueWhenSettled() throws GameAlreadySettledException {
 		// Fixture		
 		final Team teamA = new Team(GameTest.TEAM_A);
 		final Team teamB = new Team(GameTest.TEAM_B);
@@ -186,7 +186,7 @@ public class GameTest {
 	}
 	
 	@Test
-	public void testSettleSetsExpectedHomeGoals() throws GameAlreadySettledException {
+	public void testSettleSetsExpectedHomeGoals() throws GameAlreadySettledException, GameNotSettledException {
 		// Fixture
 		final Team teamA = new Team(GameTest.TEAM_A);
 		final Team teamB = new Team(GameTest.TEAM_B);
@@ -201,7 +201,7 @@ public class GameTest {
 	}
 	
 	@Test
-	public void testSettleSetsExpectedAwayGoals() throws GameAlreadySettledException {
+	public void testSettleSetsExpectedAwayGoals() throws GameAlreadySettledException, GameNotSettledException {
 		// Fixture
 		final Team teamA = new Team(GameTest.TEAM_A);
 		final Team teamB = new Team(GameTest.TEAM_B);
@@ -216,7 +216,7 @@ public class GameTest {
 	}
 	
 	@Test
-	public void testSettleThrowsExceptionWhenSettled() {
+	public void testSettleThrowsExceptionWhenSettled() throws GameAlreadySettledException {
 		// Fixture
 		final Team teamA = new Team(GameTest.TEAM_A);
 		final Team teamB = new Team(GameTest.TEAM_B);
@@ -234,7 +234,7 @@ public class GameTest {
 	}
 	
 	@Test
-	public void testGetScoreReturnsExpectedScore() throws GameNotSettledException {
+	public void testGetScoreReturnsExpectedScore() throws GameNotSettledException, GameAlreadySettledException {
 		// Fixture
 		final Team teamA = new Team(GameTest.TEAM_A);
 		final Team teamB = new Team(GameTest.TEAM_B);
@@ -249,7 +249,7 @@ public class GameTest {
 	}
 	
 	@Test
-	public void testGetHomeGoalsThrowsExceptionWhenNotSettled(){
+	public void testGetHomeGoalsThrowsExceptionWhenNotSettled() {
 		// Fixture
 		final Team teamA = new Team(GameTest.TEAM_A);
 		final Team teamB = new Team(GameTest.TEAM_B);
@@ -315,15 +315,15 @@ public class GameTest {
 	}
 	
 	@Test
-	public void testResetTeamsThrowsExceptionWhenSettled() {
+	public void testResetTeamsThrowsExceptionWhenSettled() throws GameAlreadySettledException {
 		// Fixture
 		final Team teamA = new Team(GameTest.TEAM_A);
 		final Team teamB = new Team(GameTest.TEAM_B);
 		final Game game = new Game(GameTest.GAME_A, teamA, teamB);
 		
 		// Match
-		try {
-			game.settle();
+		game.settle();
+		try {			
 			game.resetTeams(teamB, teamA);
 			fail("Exception not thrown for attempting to reset teams for an unsettled game");
 		} catch(GameAlreadySettledException e) {

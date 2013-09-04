@@ -23,7 +23,7 @@ public class Round {
 		return this.season;
 	}
 	
-	public void setSeason(final Season season) {
+	public void setSeason(final Season season) throws DuplicateEntryException {
 		final List<Round> seasonRounds = Arrays.asList(season.getRounds());
 		if (!seasonRounds.contains(this)) {
 			season.addRound(this);

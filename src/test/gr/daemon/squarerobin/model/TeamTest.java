@@ -39,7 +39,7 @@ public class TeamTest {
 	}
 	
 	@Test
-	public void testGetHomeGoalsForReturnsExpectedHomeGoalsFor() {
+	public void testGetHomeGoalsForReturnsExpectedHomeGoalsFor() throws InvalidScoreException {
 		// Fixture
 		final Team team = new Team(TeamTest.TEAM_A);
 		final int expected = TeamTest.GOALS_A;
@@ -52,7 +52,7 @@ public class TeamTest {
 	}
 	
 	@Test
-	public void testGetHomeGoalsAgainstReturnsExpectedHomeGoalsAgainst() {
+	public void testGetHomeGoalsAgainstReturnsExpectedHomeGoalsAgainst() throws InvalidScoreException {
 		// Fixture
 		final Team team = new Team(TeamTest.TEAM_A);
 		final int expected = TeamTest.GOALS_B;
@@ -65,7 +65,7 @@ public class TeamTest {
 	}
 	
 	@Test
-	public void testGetAwayGoalsForReturnsExpectedAwayGoalsFor() {
+	public void testGetAwayGoalsForReturnsExpectedAwayGoalsFor() throws InvalidScoreException {
 		// Fixture
 		final Team team = new Team(TeamTest.TEAM_A);
 		final int expected = TeamTest.GOALS_A;
@@ -78,7 +78,7 @@ public class TeamTest {
 	}
 
 	@Test
-	public void testGetAwayGoalsAgainstReturnsExpectedAwayGoalsAgainst() {
+	public void testGetAwayGoalsAgainstReturnsExpectedAwayGoalsAgainst() throws InvalidScoreException {
 		// Fixture
 		final Team team = new Team(TeamTest.TEAM_A);
 		final int expected = TeamTest.GOALS_B;
@@ -91,7 +91,7 @@ public class TeamTest {
 	}
 	
 	@Test
-	public void testGetHomeGamesPlayedReturnsExpectedHomeGamesPlayed() {
+	public void testGetHomeGamesPlayedReturnsExpectedHomeGamesPlayed() throws InvalidScoreException {
 		// Fixture
 		final Team team = new Team(TeamTest.TEAM_A);
 		final int expected = TeamTest.GAMES_A;
@@ -104,7 +104,7 @@ public class TeamTest {
 	}
 	
 	@Test
-	public void testGetAwayGamesPlayedReturnsExpectedAwayGamesPlayed() {
+	public void testGetAwayGamesPlayedReturnsExpectedAwayGamesPlayed() throws InvalidScoreException {
 		// Fixture
 		final Team team = new Team(TeamTest.TEAM_A);
 		final int expected = TeamTest.GAMES_A;

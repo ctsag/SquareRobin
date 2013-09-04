@@ -8,17 +8,17 @@ import java.util.HashSet;
 
 public class Scheduler {
 
-	private static final int DEFAULT_ROUND_COUNT = 2;
+	public static final int DEFAULT_ROUNDS = 2;
 	private static final int FIXED_TEAM = 0;
 	private final Season season;
 	private final int rounds;
 	private final ArrayList<Team> teams = new ArrayList<>();
 
-	public Scheduler(final String season, final String[] teams) {
-		this(season, teams, Scheduler.DEFAULT_ROUND_COUNT);
+	public Scheduler(final String season, final String[] teams) throws DuplicateTeamsException, InsufficientTeamsException, OddTeamNumberException, InvalidRoundsException, ThreeInARowException, DuplicateEntryException, GameAlreadySettledException {
+		this(season, teams, Scheduler.DEFAULT_ROUNDS);
 	}
 
-	public Scheduler(final String season, final String[] teams, final int rounds) throws DuplicateTeamsException, InsufficientTeamsException, OddTeamNumberException, InvalidRoundsException {
+	public Scheduler(final String season, final String[] teams, final int rounds) throws DuplicateTeamsException, InsufficientTeamsException, OddTeamNumberException, InvalidRoundsException, ThreeInARowException, DuplicateEntryException, GameAlreadySettledException {
 		this.validateTeams(teams);
 		this.validateRounds(rounds);
 		this.season = new Season(season);
@@ -31,6 +31,14 @@ public class Scheduler {
 	
 	public Season getSeason() {
 		return this.season;
+	}
+	
+	public ArrayList<Team> getTeams() {
+		return this.teams;
+	}
+	
+	public int getRounds() {
+		return this.rounds;
 	}
 
 	private void validateTeams(final String[] teams) throws DuplicateTeamsException, InsufficientTeamsException, OddTeamNumberException {
@@ -63,7 +71,7 @@ public class Scheduler {
 		}
 	}
 
-	private void generateFirstRound() {
+	private void generateFirstRound() throws DuplicateEntryException {
 		final Round firstRound = new Round(1);
 		final ArrayList<Team> teams = new ArrayList<>(this.teams);
 		final Team fixedTeam = this.teams.get(Scheduler.FIXED_TEAM);
@@ -86,7 +94,7 @@ public class Scheduler {
 		this.season.addRound(firstRound);
 	}
 
-	private void calculateBreaks(final HashMap<Team, Integer> breaksCounter, final Team team, final boolean home) {
+	private void calculateBreaks(final HashMap<Team, Integer> breaksCounter, final Team team, final boolean home) throws ThreeInARowException{
 		int breaks = breaksCounter.get(team);
 		if (breaks >= 0) {
 			if (home) {
@@ -105,9 +113,12 @@ public class Scheduler {
 				breaksCounter.put(team, --breaks);
 			}
 		}
+		if (Math.abs(breaksCounter.get(team)) == 3) {
+			throw new ThreeInARowException("A team has reached three consecutive games in a row at home or away");
+		}
 	}
 	
-	private void normalizeFirstRound() throws ThreeInARowException {
+	private void normalizeFirstRound() throws ThreeInARowException, GameAlreadySettledException {
 		final HashMap<Team, Integer> breaksCounter = new HashMap<>();
 
 		for (final Team team : this.teams) {
@@ -132,15 +143,12 @@ public class Scheduler {
 					}
 				}
 				this.calculateBreaks(breaksCounter, game.getHomeTeam(), true);
-				this.calculateBreaks(breaksCounter, game.getAwayTeam(), false);
-				if (Math.abs(breaksCounter.get(game.getHomeTeam())) == 3 || Math.abs(breaksCounter.get(game.getAwayTeam())) == 3) {
-					throw new ThreeInARowException("A team has reached three consecutive games in a row at home or away");
-				}
+				this.calculateBreaks(breaksCounter, game.getAwayTeam(), false);				
 			}
 		}
 	}
 
-	private void generateAdditionalRounds() {
+	private void generateAdditionalRounds() throws DuplicateEntryException {
 		int currentRound = 1;
 		
 		while (currentRound < this.rounds) {

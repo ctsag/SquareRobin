@@ -52,7 +52,7 @@ public class TournamentTest {
 	}
 	
 	@Test
-	public void testGetSeasonReturnsExpectedSeason() {
+	public void testGetSeasonReturnsExpectedSeason() throws DuplicateEntryException {
 		// Fixture
 		final Tournament tournament = new Tournament(TournamentTest.TOURNAMENT_A);
 		final Season seasonA = new Season(TournamentTest.SEASON_A);
@@ -68,7 +68,7 @@ public class TournamentTest {
 	}
 	
 	@Test
-	public void testGetSeasonReturnsNullForInexistentSeason() {
+	public void testGetSeasonReturnsNullForInexistentSeason() throws DuplicateEntryException {
 		// Fixture
 		final Tournament tournament = new Tournament(TournamentTest.TOURNAMENT_A);
 		final Season seasonA = new Season(TournamentTest.SEASON_A);		
@@ -111,7 +111,7 @@ public class TournamentTest {
 	}
 	
 	@Test
-	public void testAddSeasonThrowsExceptionForDuplicateSeason() {
+	public void testAddSeasonThrowsExceptionForDuplicateSeason() throws DuplicateEntryException {
 		// Fixture
 		final Tournament tournament = new Tournament(TournamentTest.TOURNAMENT_A);
 		final Season seasonA = new Season(TournamentTest.SEASON_A);
@@ -128,7 +128,7 @@ public class TournamentTest {
 	}
 	
 	@Test
-	public void testRemoveSeasonRemovesExistentSeason() throws InexistentEntryException {
+	public void testRemoveSeasonRemovesExistentSeason() throws InexistentEntryException, DuplicateEntryException {
 		// Fixture
 		final Tournament tournament = new Tournament(TournamentTest.TOURNAMENT_A);
 		final Season seasonA = new Season(TournamentTest.SEASON_A);
@@ -159,7 +159,7 @@ public class TournamentTest {
 	}
 	
 	@Test
-	public void testClearSeasonsEmptiesSeasonsCollection() {
+	public void testClearSeasonsEmptiesSeasonsCollection() throws DuplicateEntryException {
 		// Fixture
 		final Tournament tournament = new Tournament(TournamentTest.TOURNAMENT_A);
 		final Season seasonA = new Season(TournamentTest.SEASON_A);

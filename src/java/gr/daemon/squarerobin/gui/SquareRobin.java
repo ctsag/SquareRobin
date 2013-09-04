@@ -1,10 +1,18 @@
 package gr.daemon.squarerobin.gui;
 
+import gr.daemon.squarerobin.model.DuplicateEntryException;
+import gr.daemon.squarerobin.model.DuplicateTeamsException;
 import gr.daemon.squarerobin.model.Game;
+import gr.daemon.squarerobin.model.GameAlreadySettledException;
+import gr.daemon.squarerobin.model.GameNotSettledException;
+import gr.daemon.squarerobin.model.InsufficientTeamsException;
+import gr.daemon.squarerobin.model.InvalidRoundsException;
+import gr.daemon.squarerobin.model.OddTeamNumberException;
 import gr.daemon.squarerobin.model.Round;
 import gr.daemon.squarerobin.model.Scheduler;
 import gr.daemon.squarerobin.model.Season;
 import gr.daemon.squarerobin.model.Slot;
+import gr.daemon.squarerobin.model.ThreeInARowException;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
@@ -69,14 +77,14 @@ public class SquareRobin extends JFrame implements ActionListener {
 			final String[] teams = this.teams.toArray(new String[this.teams.size()]);
 			final Scheduler scheduler = new Scheduler("2013", teams, Integer.valueOf(this.roundsTextField.getText()));
 			this.season = scheduler.getSeason();			
-		} catch(IllegalArgumentException | IllegalStateException e) {
+		} catch(DuplicateTeamsException | InsufficientTeamsException | OddTeamNumberException | InvalidRoundsException | ThreeInARowException | DuplicateEntryException | GameAlreadySettledException e) {
 			JOptionPane.showMessageDialog(this, e.getMessage());
 			return false;
 		}
 		return true;
 	}
 
-	private void displaySchedule() {		
+	private void displaySchedule() throws GameNotSettledException {		
 		DefaultTableModel model;
 		String[] values = new String[6];
 
@@ -98,6 +106,9 @@ public class SquareRobin extends JFrame implements ActionListener {
 						Arrays.fill(values, null);
 						values[3] = game.getHomeTeam().getName();
 						values[4] = game.getAwayTeam().getName();
+						if (game.isSettled()) {
+							values[5] = game.getScore();
+						}
 						model.addRow(values);
 					}
 				}
