@@ -1,5 +1,8 @@
 package gr.daemon.squarerobin.model;
 
+import gr.daemon.squarerobin.model.exceptions.DuplicateEntryException;
+import gr.daemon.squarerobin.model.exceptions.GameAlreadySettledException;
+import gr.daemon.squarerobin.model.exceptions.GameNotSettledException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
@@ -15,7 +18,7 @@ public class Game {
 	private Slot slot;
 	private boolean settled;
 
-	public Game(final int index, final Team homeTeam, final Team awayTeam) {
+	protected Game(final int index, final Team homeTeam, final Team awayTeam) {
 		this.index = index;
 		this.homeTeam = homeTeam;
 		this.awayTeam = awayTeam;
@@ -37,7 +40,7 @@ public class Game {
 		return this.slot;
 	}
 
-	public void setSlot(final Slot slot) throws DuplicateEntryException {
+	protected void setSlot(final Slot slot) throws DuplicateEntryException {
 		final List<Game> slotGames = Arrays.asList(slot.getGames());
 		if (!slotGames.contains(this)) {
 			slot.addGame(this);
@@ -73,17 +76,27 @@ public class Game {
 		}
 	}
 
-	protected void settle() throws GameAlreadySettledException {
+	public void settle() throws GameAlreadySettledException {
 		final Random generator = new Random();
 		final int homeGoals = generator.nextInt(Game.MAX_GOALS);
 		final int awayGoals = generator.nextInt(Game.MAX_GOALS);
 		this.settle(homeGoals, awayGoals);
 	}
 
-	protected void settle(final int homeGoals, final int awayGoals) throws GameAlreadySettledException {
+	public void settle(final int homeGoals, final int awayGoals) throws GameAlreadySettledException {
 		if (this.settled) {
 			throw new GameAlreadySettledException("Unable to settle an already settled game");
-		} else {
+		} else {						
+			if (homeGoals > awayGoals) {
+				this.homeTeam.win(homeGoals, awayGoals, true);
+				this.awayTeam.lose(awayGoals, homeGoals, false);
+			} else if (homeGoals == awayGoals) {
+				this.homeTeam.draw(homeGoals, true);
+				this.awayTeam.draw(awayGoals, false);
+			} else {
+				this.homeTeam.lose(homeGoals, awayGoals, true);
+				this.awayTeam.win(awayGoals, homeGoals, false);
+			}
 			this.homeGoals = homeGoals;
 			this.awayGoals = awayGoals;
 			this.settled = true;

@@ -1,7 +1,11 @@
 package gr.daemon.squarerobin.model;
 
-import static org.junit.Assert.*;
+import gr.daemon.squarerobin.model.exceptions.DuplicateEntryException;
+import gr.daemon.squarerobin.model.exceptions.InexistentEntryException;
+import java.util.ArrayList;
+import java.util.Arrays;
 
+import static org.junit.Assert.*;
 import org.junit.Test;
 
 public class SeasonTest {
@@ -12,6 +16,9 @@ public class SeasonTest {
 	private static final String TOURNAMENT_A = "Greek Superleague";
 	private static final int EMPTY_LIST = 0;
 	private static final int FULL_LIST = 2;
+	private static final ArrayList<Team> NULL_TEAMS = null;
+	private static final String TEAM_A = "Panathinaikos";
+	private static final String TEAM_B = "Olympiakos";
 
 	@Test
 	public void testConstructorSetsName() {
@@ -19,7 +26,7 @@ public class SeasonTest {
 		final String expected = SeasonTest.SEASON_A;
 		
 		// Match
-		final Season season = new Season(expected);
+		final Season season = new Season(expected, SeasonTest.NULL_TEAMS);
 		
 		// Assertion
 		assertEquals(expected, season.getName());
@@ -31,7 +38,7 @@ public class SeasonTest {
 		final String expected = SeasonTest.SEASON_A;
 		
 		// Match
-		final Season season = new Season(SeasonTest.SEASON_A);		
+		final Season season = new Season(SeasonTest.SEASON_A, SeasonTest.NULL_TEAMS);		
 		
 		// Assertion
 		assertEquals(expected, season.getName());
@@ -41,7 +48,7 @@ public class SeasonTest {
 	public void testGetTournamentReturnsExpectedTournament() {
 		// Fixture
 		final Tournament tournament = new Tournament(SeasonTest.TOURNAMENT_A);
-		final Season season = new Season(SeasonTest.SEASON_A);
+		final Season season = new Season(SeasonTest.SEASON_A, SeasonTest.NULL_TEAMS);
 		final Tournament expected = tournament;
 
 		// Match
@@ -55,7 +62,7 @@ public class SeasonTest {
 	public void testSetTournamentSetsExpectedTournament() {
 		// Fixture
 		final Tournament tournament = new Tournament(SeasonTest.TOURNAMENT_A);
-		final Season season = new Season(SeasonTest.SEASON_A);
+		final Season season = new Season(SeasonTest.SEASON_A, SeasonTest.NULL_TEAMS);
 		final Tournament expected = tournament;
 
 		// Match
@@ -68,7 +75,7 @@ public class SeasonTest {
 	@Test
 	public void testGetRoundsReturnsExpectedArray() throws DuplicateEntryException {
 		// Fixture
-		final Season season = new Season(SeasonTest.SEASON_A);
+		final Season season = new Season(SeasonTest.SEASON_A, SeasonTest.NULL_TEAMS);
 		final Round roundA = new Round(SeasonTest.ROUND_A);
 		final Round roundB = new Round(SeasonTest.ROUND_B);
 		final int expected = SeasonTest.FULL_LIST;
@@ -84,7 +91,7 @@ public class SeasonTest {
 	@Test
 	public void testGetRoundReturnsExpectedRound() throws DuplicateEntryException {
 		// Fixture
-		final Season season = new Season(SeasonTest.SEASON_A);
+		final Season season = new Season(SeasonTest.SEASON_A, SeasonTest.NULL_TEAMS);
 		final Round roundA = new Round(SeasonTest.ROUND_A);
 		final Round roundB = new Round(SeasonTest.ROUND_B);
 		final Round expected = roundA;
@@ -100,7 +107,7 @@ public class SeasonTest {
 	@Test
 	public void testGetRoundReturnsNullForInexistentRound() throws DuplicateEntryException {
 		// Fixture
-		final Season season = new Season(SeasonTest.SEASON_A);
+		final Season season = new Season(SeasonTest.SEASON_A, SeasonTest.NULL_TEAMS);
 		final Round roundA = new Round(SeasonTest.ROUND_A);		
 		
 		// Match
@@ -113,7 +120,7 @@ public class SeasonTest {
 	@Test
 	public void testAddRoundAppendsUniqueRound() throws DuplicateEntryException {
 		// Fixture
-		final Season season = new Season(SeasonTest.SEASON_A);
+		final Season season = new Season(SeasonTest.SEASON_A, SeasonTest.NULL_TEAMS);
 		final Round roundA = new Round(SeasonTest.ROUND_A);
 		final Round roundB = new Round(SeasonTest.ROUND_B);
 		final int expected = SeasonTest.FULL_LIST;
@@ -129,7 +136,7 @@ public class SeasonTest {
 	@Test
 	public void testAddRoundSetsTournamentForRound() throws DuplicateEntryException {
 		// Fixture
-		final Season season = new Season(SeasonTest.SEASON_A);
+		final Season season = new Season(SeasonTest.SEASON_A, SeasonTest.NULL_TEAMS);
 		final Round roundA = new Round(SeasonTest.ROUND_A);
 		final Season expected = season;
 		
@@ -143,7 +150,7 @@ public class SeasonTest {
 	@Test
 	public void testAddRoundThrowsExceptionForDuplicateRound() throws DuplicateEntryException {
 		// Fixture
-		final Season season = new Season(SeasonTest.SEASON_A);
+		final Season season = new Season(SeasonTest.SEASON_A, SeasonTest.NULL_TEAMS);
 		final Round roundA = new Round(SeasonTest.ROUND_A);
 		
 		// Match
@@ -160,7 +167,7 @@ public class SeasonTest {
 	@Test
 	public void testRemoveRoundRemovesExistentRound() throws InexistentEntryException, DuplicateEntryException {
 		// Fixture
-		final Season season = new Season(SeasonTest.SEASON_A);
+		final Season season = new Season(SeasonTest.SEASON_A, SeasonTest.NULL_TEAMS);
 		final Round roundA = new Round(SeasonTest.ROUND_A);
 		final Round roundB = new Round(SeasonTest.ROUND_B);
 		
@@ -176,7 +183,7 @@ public class SeasonTest {
 	@Test
 	public void testRemoveRoundThrowsExceptionForInexistentRound() {
 		// Fixture		
-		final Season season = new Season(SeasonTest.SEASON_A);
+		final Season season = new Season(SeasonTest.SEASON_A, SeasonTest.NULL_TEAMS);
 		
 		// Match		
 		try {
@@ -191,7 +198,7 @@ public class SeasonTest {
 	@Test
 	public void testClearRoundsEmptiesRoundsCollection() throws DuplicateEntryException {
 		// Fixture
-		final Season season = new Season(SeasonTest.SEASON_A);
+		final Season season = new Season(SeasonTest.SEASON_A, SeasonTest.NULL_TEAMS);
 		final Round roundA = new Round(SeasonTest.ROUND_A);
 		final Round roundB = new Round(SeasonTest.ROUND_B);
 		final int expected = SeasonTest.EMPTY_LIST;
@@ -203,6 +210,22 @@ public class SeasonTest {
 		
 		// Assertion		
 		assertEquals(expected, season.getRounds().length);
+	}
+	
+	@Test
+	public void testGetLeagueTableReturnsExpectedLeagueTable() {
+		// Fixture		
+		final Team teamA = new Team(SeasonTest.TEAM_A);
+		final Team teamB = new Team(SeasonTest.TEAM_B);
+		final ArrayList<Team> teams;
+		final Team[] expected = {teamA, teamB};		
+		
+		// Match		
+		teams = new ArrayList<>(Arrays.asList(expected));
+		final Season season = new Season(SeasonTest.SEASON_A, teams);		
+		
+		// Assertion		
+		assertArrayEquals(expected, season.getLeagueTable().getTeams());
 	}
 
 }

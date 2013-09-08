@@ -1,5 +1,12 @@
 package gr.daemon.squarerobin.model;
 
+import gr.daemon.squarerobin.model.exceptions.DuplicateEntryException;
+import gr.daemon.squarerobin.model.exceptions.DuplicateTeamsException;
+import gr.daemon.squarerobin.model.exceptions.GameAlreadySettledException;
+import gr.daemon.squarerobin.model.exceptions.InsufficientTeamsException;
+import gr.daemon.squarerobin.model.exceptions.InvalidRoundsException;
+import gr.daemon.squarerobin.model.exceptions.OddTeamNumberException;
+import gr.daemon.squarerobin.model.exceptions.BreaksLimitException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -9,19 +16,20 @@ import java.util.HashSet;
 public class Scheduler {
 
 	public static final int DEFAULT_ROUNDS = 2;
+	public static final int BREAKS_LIMIT = 3;
 	private static final int FIXED_TEAM = 0;
 	private final Season season;
 	private final int rounds;
 	private final ArrayList<Team> teams = new ArrayList<>();
 
-	public Scheduler(final String season, final String[] teams) throws DuplicateTeamsException, InsufficientTeamsException, OddTeamNumberException, InvalidRoundsException, ThreeInARowException, DuplicateEntryException, GameAlreadySettledException {
+	public Scheduler(final String season, final String[] teams) throws DuplicateTeamsException, InsufficientTeamsException, OddTeamNumberException, InvalidRoundsException, BreaksLimitException, DuplicateEntryException, GameAlreadySettledException {
 		this(season, teams, Scheduler.DEFAULT_ROUNDS);
 	}
 
-	public Scheduler(final String season, final String[] teams, final int rounds) throws DuplicateTeamsException, InsufficientTeamsException, OddTeamNumberException, InvalidRoundsException, ThreeInARowException, DuplicateEntryException, GameAlreadySettledException {
+	public Scheduler(final String season, final String[] teams, final int rounds) throws DuplicateTeamsException, InsufficientTeamsException, OddTeamNumberException, InvalidRoundsException, BreaksLimitException, DuplicateEntryException, GameAlreadySettledException {
 		this.validateTeams(teams);
 		this.validateRounds(rounds);
-		this.season = new Season(season);
+		this.season = new Season(season, this.teams);
 		this.rounds = rounds;
 		this.generateTeams(teams);
 		this.generateFirstRound();
@@ -94,8 +102,9 @@ public class Scheduler {
 		this.season.addRound(firstRound);
 	}
 
-	private void calculateBreaks(final HashMap<Team, Integer> breaksCounter, final Team team, final boolean home) throws ThreeInARowException{
+	private void calculateBreaks(final HashMap<Team, Integer> breaksCounter, final Team team, final boolean home) throws BreaksLimitException{		
 		int breaks = breaksCounter.get(team);
+		int limit = Scheduler.BREAKS_LIMIT;
 		if (breaks >= 0) {
 			if (home) {
 				// if home team previously played home, points increased by 1
@@ -113,13 +122,14 @@ public class Scheduler {
 				breaksCounter.put(team, --breaks);
 			}
 		}
-		if (Math.abs(breaksCounter.get(team)) == 3) {
-			throw new ThreeInARowException("A team has reached three consecutive games in a row at home or away");
+		if (Math.abs(breaksCounter.get(team)) == limit) {
+			throw new BreaksLimitException("A team has reached three consecutive games in a row at home or away");
 		}
 	}
 	
-	private void normalizeFirstRound() throws ThreeInARowException, GameAlreadySettledException {
+	private void normalizeFirstRound() throws BreaksLimitException, GameAlreadySettledException {
 		final HashMap<Team, Integer> breaksCounter = new HashMap<>();
+		final int limit = Scheduler.BREAKS_LIMIT;
 
 		for (final Team team : this.teams) {
 			breaksCounter.put(team, 0);
@@ -129,14 +139,14 @@ public class Scheduler {
 				final Team home = game.getHomeTeam();
 				final Team away = game.getAwayTeam();
 				// Can the home team become away? And CAN the away team become home?
-				if (breaksCounter.get(home) > -2 && breaksCounter.get(away) < 2) {
+				if (breaksCounter.get(home) > -1 * (limit - 1) && breaksCounter.get(away) < limit - 1) {
 					// Yes, both can. But should the home team become away? 
 					if (breaksCounter.get(home) > 0) {
 						// Yes, reverse
 						game.resetTeams(away, home);
 					} else {
 						// No the home team should not become away. But should the away team become home?
-						if (breaksCounter.get(away) < -1) {
+						if (breaksCounter.get(away) < -1 * (limit - 2)) {
 							// Yes, reverse
 							game.resetTeams(away, home);
 						}
@@ -154,12 +164,12 @@ public class Scheduler {
 		while (currentRound < this.rounds) {
 			final Round nextRound = new Round(currentRound + 1);
 			for (final Slot slot : this.season.getRound(currentRound).getSlots()) {
-				final int slotIndex = (currentRound) * (this.teams.size() - 1) + slot.getIndex();
+				final int slotIndex = this.teams.size() - 1 + slot.getIndex();
 				final Slot nextSlot = new Slot(slotIndex);
 				for (final Game game : slot.getGames()) {
 					final int gameIndex = nextRound.getIndex() * nextSlot.getIndex() + nextSlot.getGames().length - 1;
 					final Game nextGame = new Game(gameIndex, game.getAwayTeam(), game.getHomeTeam());
-					nextSlot.addGame(nextGame);
+					nextSlot.addGame(nextGame);				
 				}
 				nextRound.addSlot(nextSlot);
 			}

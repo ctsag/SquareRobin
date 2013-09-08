@@ -1,5 +1,7 @@
 package gr.daemon.squarerobin.model;
 
+import gr.daemon.squarerobin.model.exceptions.DuplicateEntryException;
+import gr.daemon.squarerobin.model.exceptions.InexistentEntryException;
 import java.util.Collection;
 import java.util.HashMap;
 

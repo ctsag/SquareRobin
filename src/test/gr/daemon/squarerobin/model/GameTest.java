@@ -1,7 +1,9 @@
 package gr.daemon.squarerobin.model;
 
+import gr.daemon.squarerobin.model.exceptions.DuplicateEntryException;
+import gr.daemon.squarerobin.model.exceptions.GameAlreadySettledException;
+import gr.daemon.squarerobin.model.exceptions.GameNotSettledException;
 import static org.junit.Assert.*;
-
 import org.junit.Test;
 
 public class GameTest {
@@ -11,6 +13,7 @@ public class GameTest {
 	private static final String TEAM_B = "Olympiakos";
 	private static final int GOALS_A = 3;
 	private static final int GOALS_B = 1;
+	private static final int RESULT_COUNTER = 1;	
 	private static final int SLOT_A = 1;
 
 	@Test
@@ -213,6 +216,51 @@ public class GameTest {
 		
 		// Assertion
 		assertEquals(expected, game.getAwayGoals());
+	}
+	
+	@Test
+	public void testSettleSetsExpectedWinner() throws GameAlreadySettledException, GameNotSettledException {
+		// Fixture
+		final Team teamA = new Team(GameTest.TEAM_A);
+		final Team teamB = new Team(GameTest.TEAM_B);
+		final Game game = new Game(GameTest.GAME_A, teamA, teamB);
+		final int expected = GameTest.RESULT_COUNTER;
+		
+		// Match
+		game.settle(GameTest.GOALS_A, GameTest.GOALS_B);
+		
+		// Assertion
+		assertEquals(expected, teamA.getWins());
+	}
+	
+	@Test
+	public void testSettleSetsExpectedLoser() throws GameAlreadySettledException, GameNotSettledException {
+		// Fixture
+		final Team teamA = new Team(GameTest.TEAM_A);
+		final Team teamB = new Team(GameTest.TEAM_B);
+		final Game game = new Game(GameTest.GAME_A, teamA, teamB);
+		final int expected = GameTest.RESULT_COUNTER;
+		
+		// Match
+		game.settle(GameTest.GOALS_A, GameTest.GOALS_B);
+		
+		// Assertion
+		assertEquals(expected, teamB.getLosses());
+	}
+	
+	@Test
+	public void testSettleSetsExpectedDraw() throws GameAlreadySettledException, GameNotSettledException {
+		// Fixture
+		final Team teamA = new Team(GameTest.TEAM_A);
+		final Team teamB = new Team(GameTest.TEAM_B);
+		final Game game = new Game(GameTest.GAME_A, teamA, teamB);
+		final int expected = GameTest.RESULT_COUNTER;
+		
+		// Match
+		game.settle(GameTest.GOALS_A, GameTest.GOALS_A);
+		
+		// Assertion
+		assertEquals(expected, teamA.getDraws());
 	}
 	
 	@Test

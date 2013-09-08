@@ -1,4 +1,4 @@
-package gr.daemon.squarerobin.model;
+package gr.daemon.squarerobin.model.exceptions;
 
 public class InvalidScoreException extends RuntimeException {
 

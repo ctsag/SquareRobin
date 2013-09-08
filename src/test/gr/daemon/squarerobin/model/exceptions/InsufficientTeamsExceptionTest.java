@@ -1,10 +1,9 @@
-package gr.daemon.squarerobin.model;
+package gr.daemon.squarerobin.model.exceptions;
 
 import static org.junit.Assert.*;
-
 import org.junit.Test;
 
-public class DuplicateTeamsExceptionTest {
+public class InsufficientTeamsExceptionTest {
 
 	private static final String MESSAGE_A = "Duplicate teams";	
 
@@ -13,7 +12,7 @@ public class DuplicateTeamsExceptionTest {
 		// Fixture		
 		
 		// Match
-		final DuplicateTeamsException e = new DuplicateTeamsException();
+		final InsufficientTeamsException e = new InsufficientTeamsException();
 		
 		// Assertion
 		assertTrue(e.getMessage().isEmpty());
@@ -22,10 +21,10 @@ public class DuplicateTeamsExceptionTest {
 	@Test
 	public void testNonEmptyConstructorReturnsMessage() {
 		// Fixture
-		final String expected = DuplicateTeamsExceptionTest.MESSAGE_A;
+		final String expected = InsufficientTeamsExceptionTest.MESSAGE_A;
 		
 		// Match
-		final DuplicateTeamsException e = new DuplicateTeamsException(DuplicateTeamsExceptionTest.MESSAGE_A);
+		final InsufficientTeamsException e = new InsufficientTeamsException(InsufficientTeamsExceptionTest.MESSAGE_A);
 		
 		// Assertion
 		assertEquals(expected, e.getMessage());

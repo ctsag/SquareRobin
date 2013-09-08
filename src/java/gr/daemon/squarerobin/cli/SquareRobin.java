@@ -1,17 +1,17 @@
 package gr.daemon.squarerobin.cli;
 
-import gr.daemon.squarerobin.model.DuplicateEntryException;
-import gr.daemon.squarerobin.model.DuplicateTeamsException;
 import gr.daemon.squarerobin.model.Game;
-import gr.daemon.squarerobin.model.GameAlreadySettledException;
-import gr.daemon.squarerobin.model.InsufficientTeamsException;
-import gr.daemon.squarerobin.model.InvalidRoundsException;
-import gr.daemon.squarerobin.model.OddTeamNumberException;
 import gr.daemon.squarerobin.model.Round;
 import gr.daemon.squarerobin.model.Scheduler;
 import gr.daemon.squarerobin.model.Season;
 import gr.daemon.squarerobin.model.Slot;
-import gr.daemon.squarerobin.model.ThreeInARowException;
+import gr.daemon.squarerobin.model.exceptions.DuplicateEntryException;
+import gr.daemon.squarerobin.model.exceptions.DuplicateTeamsException;
+import gr.daemon.squarerobin.model.exceptions.GameAlreadySettledException;
+import gr.daemon.squarerobin.model.exceptions.InsufficientTeamsException;
+import gr.daemon.squarerobin.model.exceptions.InvalidRoundsException;
+import gr.daemon.squarerobin.model.exceptions.OddTeamNumberException;
+import gr.daemon.squarerobin.model.exceptions.BreaksLimitException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
@@ -163,7 +163,7 @@ public class SquareRobin {
 					tabs--;
 				}
 			}
-		} catch(DuplicateTeamsException | InsufficientTeamsException | OddTeamNumberException | InvalidRoundsException | ThreeInARowException | DuplicateEntryException | GameAlreadySettledException e) {
+		} catch(DuplicateTeamsException | InsufficientTeamsException | OddTeamNumberException | InvalidRoundsException | BreaksLimitException | DuplicateEntryException | GameAlreadySettledException e) {
 			handleError(State.SCHEDULE_ERROR, e.getMessage());
 		}
 	}

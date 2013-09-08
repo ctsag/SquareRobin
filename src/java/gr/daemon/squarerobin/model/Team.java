@@ -1,5 +1,7 @@
 package gr.daemon.squarerobin.model;
 
+import gr.daemon.squarerobin.model.exceptions.InvalidScoreException;
+
 public class Team {
 
 	public static final int POINTS_FOR_WIN = 3;
@@ -23,7 +25,7 @@ public class Team {
 	private int absolutePosition;
 	private String relativePosition;
 	
-	public Team(final String name) {
+	protected Team(final String name) {
 		this.name = name;
 	}
 
@@ -143,7 +145,7 @@ public class Team {
 		this.relativePosition = relativePosition;
 	}
 
-	public void win(final int goalsFor, final int goalsAgainst, final boolean homeGame) throws InvalidScoreException {
+	protected void win(final int goalsFor, final int goalsAgainst, final boolean homeGame) throws InvalidScoreException {
 		if (goalsFor > goalsAgainst) {
 			if (homeGame) {
 				this.homeGamesPlayed++;
@@ -163,27 +165,23 @@ public class Team {
 		}
 	}
 	
-	public void draw(final int goalsFor, final int goalsAgainst, final boolean homeGame) throws InvalidScoreException {
-		if (goalsFor == goalsAgainst) {
-			if (homeGame) {
-				this.homeGamesPlayed++;
-				this.homeDraws++;
-				this.homeGoalsFor += goalsFor;
-				this.homeGoalsAgainst += goalsAgainst;
-				this.homePoints += Team.POINTS_FOR_DRAW;
-			} else {
-				this.awayGamesPlayed++;
-				this.awayDraws++;
-				this.awayGoalsFor += goalsFor;
-				this.awayGoalsAgainst += goalsAgainst;
-				this.awayPoints += Team.POINTS_FOR_DRAW;
-			}
+	protected void draw(final int goals, final boolean homeGame) throws InvalidScoreException {
+		if (homeGame) {
+			this.homeGamesPlayed++;
+			this.homeDraws++;
+			this.homeGoalsFor += goals;
+			this.homeGoalsAgainst += goals;
+			this.homePoints += Team.POINTS_FOR_DRAW;
 		} else {
-			throw new InvalidScoreException("Goals for and goals against must be equal on a draw scenario");
+			this.awayGamesPlayed++;
+			this.awayDraws++;
+			this.awayGoalsFor += goals;
+			this.awayGoalsAgainst += goals;
+			this.awayPoints += Team.POINTS_FOR_DRAW;
 		}
 	}
 	
-	public void lose(final int goalsFor, final int goalsAgainst, final boolean homeGame) throws InvalidScoreException {
+	protected void lose(final int goalsFor, final int goalsAgainst, final boolean homeGame) throws InvalidScoreException {
 		if (goalsFor < goalsAgainst) {
 			if (homeGame) {
 				this.homeGamesPlayed++;

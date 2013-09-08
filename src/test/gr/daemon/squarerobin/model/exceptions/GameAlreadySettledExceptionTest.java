@@ -1,7 +1,6 @@
-package gr.daemon.squarerobin.model;
+package gr.daemon.squarerobin.model.exceptions;
 
 import static org.junit.Assert.*;
-
 import org.junit.Test;
 
 public class GameAlreadySettledExceptionTest {

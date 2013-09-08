@@ -1,7 +1,9 @@
 package gr.daemon.squarerobin.model;
 
+import gr.daemon.squarerobin.model.exceptions.DuplicateEntryException;
+import gr.daemon.squarerobin.model.exceptions.InexistentEntryException;
+import java.util.ArrayList;
 import static org.junit.Assert.*;
-
 import org.junit.Test;
 
 public class RoundTest {
@@ -12,6 +14,7 @@ public class RoundTest {
 	private static final String SEASON_A = "2013";
 	private static final int EMPTY_LIST = 0;
 	private static final int FULL_LIST = 2;
+	private static final ArrayList<Team> NULL_TEAMS = null;
 
 	@Test
 	public void testConstructorSetsIndex() {
@@ -40,7 +43,7 @@ public class RoundTest {
 	@Test
 	public void testGetSeasonReturnsExpectedSeason() throws DuplicateEntryException {
 		// Fixture
-		final Season season = new Season(RoundTest.SEASON_A);
+		final Season season = new Season(RoundTest.SEASON_A, RoundTest.NULL_TEAMS);
 		final Round round = new Round(RoundTest.ROUND_A);
 		final Season expected = season;
 
@@ -54,7 +57,7 @@ public class RoundTest {
 	@Test
 	public void testSetSeasonSetsExpectedSeason() throws DuplicateEntryException {
 		// Fixture
-		final Season season = new Season(RoundTest.SEASON_A);
+		final Season season = new Season(RoundTest.SEASON_A, RoundTest.NULL_TEAMS);
 		final Round round = new Round(RoundTest.ROUND_A);
 		final Season expected = season;
 

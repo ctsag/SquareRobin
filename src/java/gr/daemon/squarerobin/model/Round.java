@@ -1,5 +1,7 @@
 package gr.daemon.squarerobin.model;
 
+import gr.daemon.squarerobin.model.exceptions.DuplicateEntryException;
+import gr.daemon.squarerobin.model.exceptions.InexistentEntryException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -11,7 +13,7 @@ public class Round {
     private final HashMap<Integer, Slot> slots = new HashMap<>();
     private Season season;
     
-    public Round(final int index) {
+    protected Round(final int index) {
         this.index = index;
     }
 
@@ -23,7 +25,7 @@ public class Round {
 		return this.season;
 	}
 	
-	public void setSeason(final Season season) throws DuplicateEntryException {
+	protected void setSeason(final Season season) throws DuplicateEntryException {
 		final List<Round> seasonRounds = Arrays.asList(season.getRounds());
 		if (!seasonRounds.contains(this)) {
 			season.addRound(this);
@@ -41,7 +43,7 @@ public class Round {
 		return this.slots.get(index);
 	}
 
-	public void addSlot(final Slot slot) throws DuplicateEntryException {
+	protected void addSlot(final Slot slot) throws DuplicateEntryException {
 		final int index = slot.getIndex();
 		
 		if (this.slots.containsKey(index)) {
@@ -52,7 +54,7 @@ public class Round {
 		}
 	}
 
-	public void removeSlot(final int index) throws InexistentEntryException {
+	protected void removeSlot(final int index) throws InexistentEntryException {
 		if (this.slots.containsKey(index)) {
 			this.slots.remove(index);
 		} else {
@@ -60,7 +62,7 @@ public class Round {
 		}
 	}
 
-	public void clearSlots() {
+	protected void clearSlots() {
 		this.slots.clear();
 	}
 

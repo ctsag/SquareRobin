@@ -1,5 +1,9 @@
 package gr.daemon.squarerobin.model;
 
+import gr.daemon.squarerobin.model.exceptions.DuplicateEntryException;
+import gr.daemon.squarerobin.model.exceptions.DuplicateGamesFoundException;
+import gr.daemon.squarerobin.model.exceptions.InexistentEntryException;
+import gr.daemon.squarerobin.model.exceptions.NoGamesFoundException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -11,7 +15,7 @@ public class Slot {
     private final HashMap<Integer, Game> games = new HashMap<>();
     private Round round;
     
-    public Slot(final int index) {
+    protected Slot(final int index) {
         this.index = index;
     }
 
@@ -23,7 +27,7 @@ public class Slot {
 		return this.round;
 	}
 	
-	public void setRound(final Round round) throws DuplicateEntryException {
+	protected void setRound(final Round round) throws DuplicateEntryException {
 		final List<Slot> roundSlots = Arrays.asList(round.getSlots());
 		if (!roundSlots.contains(this)) {
 			round.addSlot(this);
@@ -40,8 +44,44 @@ public class Slot {
 	public Game getGame(final int index) {
 		return this.games.get(index);
 	}
+	
+	public Game getGame(final Team home, final Team away) throws DuplicateGamesFoundException, NoGamesFoundException {
+		Game gameFound = null;
+		for (final Game game : games.values()) {
+			if (game.getHomeTeam().equals(home) && game.getAwayTeam().equals(away)) {
+				if (gameFound == null) {
+					gameFound = game;
+				} else {
+					throw new DuplicateGamesFoundException("More than one games found for the provided teams");
+				}
+			}
+		}
+		if (gameFound  == null) {
+			throw new NoGamesFoundException("No games found for the provided teams");
+		} else {
+			return gameFound;
+		}
+	}
+	
+	public Game getGame(final Team team) throws DuplicateGamesFoundException, NoGamesFoundException {
+		Game gameFound = null;
+		for (final Game game : games.values()) {
+			if (game.getHomeTeam().equals(team) || game.getAwayTeam().equals(team)) {
+				if (gameFound == null) {
+					gameFound = game;
+				} else {
+					throw new DuplicateGamesFoundException("More than one games found for the provided team");
+				}
+			}
+		}
+		if (gameFound  == null) {
+			throw new NoGamesFoundException("No games found for the provided team");
+		} else {
+			return gameFound;
+		}
+	}
 
-	public void addGame(final Game game) throws DuplicateEntryException {
+	protected void addGame(final Game game) throws DuplicateEntryException {
 		final int index = game.getIndex();
 		
 		if (this.games.containsKey(index)) {
@@ -52,7 +92,7 @@ public class Slot {
 		}
 	}
 
-	public void removeGame(final int index) throws InexistentEntryException {
+	protected void removeGame(final int index) throws InexistentEntryException {
 		if (this.games.containsKey(index)) {
 			this.games.remove(index);
 		} else {
@@ -60,7 +100,7 @@ public class Slot {
 		}
 	}
 
-	public void clearGames() {
+	protected void clearGames() {
 		this.games.clear();
 	}
 

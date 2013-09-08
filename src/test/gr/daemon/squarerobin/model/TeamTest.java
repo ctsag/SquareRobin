@@ -1,7 +1,7 @@
 package gr.daemon.squarerobin.model;
 
+import gr.daemon.squarerobin.model.exceptions.InvalidScoreException;
 import static org.junit.Assert.*;
-
 import org.junit.Test;
 
 public class TeamTest {
@@ -149,7 +149,7 @@ public class TeamTest {
 		final int expected = TeamTest.RESULTS_A;
 		
 		// Match
-		team.draw(TeamTest.GOALS_A, TeamTest.GOALS_A, true);
+		team.draw(TeamTest.GOALS_A, true);
 		
 		// Assertion
 		assertEquals(expected, team.getHomeDraws());
@@ -162,7 +162,7 @@ public class TeamTest {
 		final int expected = TeamTest.RESULTS_A;
 		
 		// Match
-		team.draw(TeamTest.GOALS_A, TeamTest.GOALS_A, false);
+		team.draw(TeamTest.GOALS_A, false);
 		
 		// Assertion
 		assertEquals(expected, team.getAwayDraws());
@@ -309,8 +309,8 @@ public class TeamTest {
 		final int expected = TeamTest.RESULTS_A * 2;
 		
 		// Match
-		team.draw(TeamTest.GOALS_A, TeamTest.GOALS_A, true);
-		team.draw(TeamTest.GOALS_A, TeamTest.GOALS_A, false);
+		team.draw(TeamTest.GOALS_A, true);
+		team.draw(TeamTest.GOALS_A, false);
 		
 		// Assertion
 		assertEquals(expected, team.getDraws());
@@ -352,7 +352,7 @@ public class TeamTest {
 		
 		// Match
 		team.win(TeamTest.GOALS_A, TeamTest.GOALS_B, true);
-		team.draw(TeamTest.GOALS_B, TeamTest.GOALS_B, false);
+		team.draw(TeamTest.GOALS_B, false);
 		
 		// Assertion
 		assertEquals(expected, team.getPoints());
@@ -495,7 +495,7 @@ public class TeamTest {
 		final int expected = TeamTest.GAMES_A;
 		
 		// Match
-		team.draw(TeamTest.GOALS_A, TeamTest.GOALS_A, true);
+		team.draw(TeamTest.GOALS_A, true);
 		
 		// Assertion
 		assertEquals(expected, team.getHomeGamesPlayed());
@@ -508,7 +508,7 @@ public class TeamTest {
 		final int expected = TeamTest.GAMES_A;
 		
 		// Match
-		team.draw(TeamTest.GOALS_A, TeamTest.GOALS_A, true);
+		team.draw(TeamTest.GOALS_A, true);
 		
 		// Assertion
 		assertEquals(expected, team.getHomeDraws());
@@ -521,7 +521,7 @@ public class TeamTest {
 		final int expected = TeamTest.GOALS_A;
 		
 		// Match
-		team.draw(TeamTest.GOALS_A, TeamTest.GOALS_A, true);
+		team.draw(TeamTest.GOALS_A, true);
 		
 		// Assertion
 		assertEquals(expected, team.getHomeGoalsFor());
@@ -534,7 +534,7 @@ public class TeamTest {
 		final int expected = TeamTest.GOALS_A;
 		
 		// Match
-		team.draw(TeamTest.GOALS_A, TeamTest.GOALS_A, true);
+		team.draw(TeamTest.GOALS_A, true);
 		
 		// Assertion
 		assertEquals(expected, team.getHomeGoalsAgainst());
@@ -547,7 +547,7 @@ public class TeamTest {
 		final int expected = Team.POINTS_FOR_DRAW;
 		
 		// Match
-		team.draw(TeamTest.GOALS_A, TeamTest.GOALS_A, true);
+		team.draw(TeamTest.GOALS_A, true);
 		
 		// Assertion
 		assertEquals(expected, team.getHomePoints());
@@ -560,7 +560,7 @@ public class TeamTest {
 		final int expected = TeamTest.GAMES_A;
 		
 		// Match
-		team.draw(TeamTest.GOALS_A, TeamTest.GOALS_A, false);
+		team.draw(TeamTest.GOALS_A, false);
 		
 		// Assertion
 		assertEquals(expected, team.getAwayGamesPlayed());
@@ -573,7 +573,7 @@ public class TeamTest {
 		final int expected = TeamTest.GAMES_A;
 		
 		// Match
-		team.draw(TeamTest.GOALS_A, TeamTest.GOALS_A, false);
+		team.draw(TeamTest.GOALS_A, false);
 		
 		// Assertion
 		assertEquals(expected, team.getAwayDraws());
@@ -586,7 +586,7 @@ public class TeamTest {
 		final int expected = TeamTest.GOALS_A;
 		
 		// Match
-		team.draw(TeamTest.GOALS_A, TeamTest.GOALS_A, false);
+		team.draw(TeamTest.GOALS_A, false);
 		
 		// Assertion
 		assertEquals(expected, team.getAwayGoalsFor());
@@ -599,7 +599,7 @@ public class TeamTest {
 		final int expected = TeamTest.GOALS_A;
 		
 		// Match
-		team.draw(TeamTest.GOALS_A, TeamTest.GOALS_A, false);
+		team.draw(TeamTest.GOALS_A, false);
 		
 		// Assertion
 		assertEquals(expected, team.getAwayGoalsAgainst());
@@ -612,7 +612,7 @@ public class TeamTest {
 		final int expected = Team.POINTS_FOR_DRAW;
 		
 		// Match
-		team.draw(TeamTest.GOALS_A, TeamTest.GOALS_A, false);
+		team.draw(TeamTest.GOALS_A, false);
 		
 		// Assertion
 		assertEquals(expected, team.getAwayPoints());
@@ -757,21 +757,6 @@ public class TeamTest {
 		try {			
 			team.win(TeamTest.GOALS_B, TeamTest.GOALS_A, false);
 			fail("Exception not thrown for goals against being more than goals for on a win scenario");
-		} catch(InvalidScoreException e) {
-			// Assertion
-			assertFalse(e.getMessage().isEmpty());
-		}
-	}
-	
-	@Test
-	public void testDrawThrowsExceptionWhenGoalsForAreNotEqualToGoalsAgainst() {
-		// Fixture
-		final Team team = new Team(TeamTest.TEAM_A);
-		
-		// Match		
-		try {			
-			team.draw(TeamTest.GOALS_A, TeamTest.GOALS_B, false);
-			fail("Exception not thrown for goals for being not equal to goals against on a draw scenario");
 		} catch(InvalidScoreException e) {
 			// Assertion
 			assertFalse(e.getMessage().isEmpty());

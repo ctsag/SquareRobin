@@ -1,7 +1,10 @@
 package gr.daemon.squarerobin.model;
 
+import gr.daemon.squarerobin.model.exceptions.DuplicateEntryException;
+import gr.daemon.squarerobin.model.exceptions.DuplicateGamesFoundException;
+import gr.daemon.squarerobin.model.exceptions.InexistentEntryException;
+import gr.daemon.squarerobin.model.exceptions.NoGamesFoundException;
 import static org.junit.Assert.*;
-
 import org.junit.Test;
 
 public class SlotTest {
@@ -233,6 +236,121 @@ public class SlotTest {
 		
 		// Assertion		
 		assertEquals(expected, slot.getGames().length);
+	}
+	
+	@Test
+	public void testGetGameReturnsExpectedGameWhenOneTeamIsProvidedAndGameExists() throws DuplicateGamesFoundException, NoGamesFoundException {
+		// Fixture
+		final Slot slot = new Slot(SlotTest.SLOT_A);
+		final Team teamA = new Team(SlotTest.TEAM_A);
+		final Team teamB = new Team(SlotTest.TEAM_B);
+		final Game gameA = new Game(SlotTest.GAME_A, teamA, teamB);
+		final Game expected = gameA;
+		
+		// Match
+		slot.addGame(gameA);
+		
+		// Assertion
+		assertSame(expected, slot.getGame(teamA));
+	}
+	
+	@Test
+	public void testGetGameThrowsExceptionWhenWhenOneTeamIsProvidedAndGameDoesNotExist() throws DuplicateGamesFoundException {
+		// Fixture
+		final Slot slot = new Slot(SlotTest.SLOT_A);
+		final Team teamA = new Team(SlotTest.TEAM_A);
+		final Team teamB = new Team(SlotTest.TEAM_B);
+		final Team teamC = new Team(SlotTest.TEAM_C);
+		final Game gameA = new Game(SlotTest.GAME_A, teamA, teamB);		
+		
+		// Match
+		slot.addGame(gameA);
+		try {
+			slot.getGame(teamC);
+			fail("Exception not thrown for game not found");
+		} catch(NoGamesFoundException e) {
+			// Assertion
+			assertFalse(e.getMessage().isEmpty());			
+		}
+	}
+	
+	@Test
+	public void testGetGameThrowsExceptionWhenWhenOneTeamIsProvidedAndTwoGamesExist() throws NoGamesFoundException {
+		// Fixture
+		final Slot slot = new Slot(SlotTest.SLOT_A);
+		final Team teamA = new Team(SlotTest.TEAM_A);
+		final Team teamB = new Team(SlotTest.TEAM_B);
+		final Team teamC = new Team(SlotTest.TEAM_C);
+		final Game gameA = new Game(SlotTest.GAME_A, teamA, teamB);
+		final Game gameB = new Game(SlotTest.GAME_B, teamC, teamA);		
+		
+		// Match
+		slot.addGame(gameA);
+		slot.addGame(gameB);
+		try {
+			slot.getGame(teamA);
+			fail("Exception not thrown for duplicate games found");
+		} catch(DuplicateGamesFoundException e) {
+			// Assertion
+			assertFalse(e.getMessage().isEmpty());
+		}
+	}
+	
+	@Test
+	public void testGetGameReturnsExpectedGameWhenTwoTeamsAreProvidedAndGameExists() throws DuplicateGamesFoundException, NoGamesFoundException {
+		// Fixture
+		final Slot slot = new Slot(SlotTest.SLOT_A);
+		final Team teamA = new Team(SlotTest.TEAM_A);
+		final Team teamB = new Team(SlotTest.TEAM_B);
+		final Game gameA = new Game(SlotTest.GAME_A, teamA, teamB);
+		final Game expected = gameA;
+		
+		// Match
+		slot.addGame(gameA);
+		
+		// Assertion
+		assertSame(expected, slot.getGame(teamA, teamB));
+	}
+	
+	@Test
+	public void testGetGameThrowsExceptionWhenWhenTwoTeamsAreProvidedAndGameDoesNotExist() throws DuplicateGamesFoundException {
+		// Fixture
+		final Slot slot = new Slot(SlotTest.SLOT_A);
+		final Team teamA = new Team(SlotTest.TEAM_A);
+		final Team teamB = new Team(SlotTest.TEAM_B);
+		final Team teamC = new Team(SlotTest.TEAM_C);
+		final Game gameA = new Game(SlotTest.GAME_A, teamA, teamB);		
+		
+		// Match
+		slot.addGame(gameA);
+		try {
+			slot.getGame(teamA, teamC);
+			fail("Exception not thrown for game not found");
+		} catch(NoGamesFoundException e) {
+			// Assertion
+			assertFalse(e.getMessage().isEmpty());			
+		}
+	}
+	
+	@Test
+	public void testGetGameThrowsExceptionWhenWhenTwoTeamsAreProvidedAndTwoGamesExist() throws NoGamesFoundException {
+		// Fixture
+		final Slot slot = new Slot(SlotTest.SLOT_A);
+		final Team teamA = new Team(SlotTest.TEAM_A);
+		final Team teamB = new Team(SlotTest.TEAM_B);		
+		final Game gameA = new Game(SlotTest.GAME_A, teamA, teamB);
+		final Game gameB = new Game(SlotTest.GAME_B, teamA, teamB);		
+		
+		// Match
+		slot.addGame(gameA);
+		slot.addGame(gameB);
+		try {
+			slot.getGame(teamA, teamB);
+			fail("Exception not thrown for duplicate games found");
+		} catch(DuplicateGamesFoundException e) {
+			// Assertion
+			assertFalse(e.getMessage().isEmpty());
+		}
 	}
 
 }

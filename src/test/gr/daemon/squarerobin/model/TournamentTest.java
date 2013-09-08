@@ -1,5 +1,8 @@
 package gr.daemon.squarerobin.model;
 
+import gr.daemon.squarerobin.model.exceptions.DuplicateEntryException;
+import gr.daemon.squarerobin.model.exceptions.InexistentEntryException;
+import java.util.ArrayList;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -10,6 +13,7 @@ public class TournamentTest {
 	private static final String SEASON_B = "2013";
 	private static final int EMPTY_LIST = 0;
 	private static final int FULL_LIST = 2;
+	private static final ArrayList<Team> NULL_TEAMS = null;
 
 	@Test
 	public void testConstructorSetsName() {
@@ -39,8 +43,8 @@ public class TournamentTest {
 	public void testGetSeasonsReturnsExpectedArray() throws DuplicateEntryException {
 		// Fixture
 		final Tournament tournament = new Tournament(TournamentTest.TOURNAMENT_A);
-		final Season seasonA = new Season(TournamentTest.SEASON_A);
-		final Season seasonB = new Season(TournamentTest.SEASON_B);
+		final Season seasonA = new Season(TournamentTest.SEASON_A, TournamentTest.NULL_TEAMS);
+		final Season seasonB = new Season(TournamentTest.SEASON_B, TournamentTest.NULL_TEAMS);
 		final int expected = TournamentTest.FULL_LIST;
 		
 		// Match		
@@ -55,8 +59,8 @@ public class TournamentTest {
 	public void testGetSeasonReturnsExpectedSeason() throws DuplicateEntryException {
 		// Fixture
 		final Tournament tournament = new Tournament(TournamentTest.TOURNAMENT_A);
-		final Season seasonA = new Season(TournamentTest.SEASON_A);
-		final Season seasonB = new Season(TournamentTest.SEASON_B);
+		final Season seasonA = new Season(TournamentTest.SEASON_A, TournamentTest.NULL_TEAMS);
+		final Season seasonB = new Season(TournamentTest.SEASON_B, TournamentTest.NULL_TEAMS);
 		final Season expected = seasonA;
 		
 		// Match
@@ -71,7 +75,7 @@ public class TournamentTest {
 	public void testGetSeasonReturnsNullForInexistentSeason() throws DuplicateEntryException {
 		// Fixture
 		final Tournament tournament = new Tournament(TournamentTest.TOURNAMENT_A);
-		final Season seasonA = new Season(TournamentTest.SEASON_A);		
+		final Season seasonA = new Season(TournamentTest.SEASON_A, TournamentTest.NULL_TEAMS);		
 		
 		// Match
 		tournament.addSeason(seasonA);
@@ -84,8 +88,8 @@ public class TournamentTest {
 	public void testAddSeasonAppendsUniqueSeason() throws DuplicateEntryException {
 		// Fixture
 		final Tournament tournament = new Tournament(TournamentTest.TOURNAMENT_A);
-		final Season seasonA = new Season(TournamentTest.SEASON_A);
-		final Season seasonB = new Season(TournamentTest.SEASON_B);
+		final Season seasonA = new Season(TournamentTest.SEASON_A, TournamentTest.NULL_TEAMS);
+		final Season seasonB = new Season(TournamentTest.SEASON_B, TournamentTest.NULL_TEAMS);
 		final int expected = TournamentTest.FULL_LIST;
 		
 		// Match		
@@ -100,7 +104,7 @@ public class TournamentTest {
 	public void testAddSeasonSetsTournamentForSeason() throws DuplicateEntryException {
 		// Fixture
 		final Tournament tournament = new Tournament(TournamentTest.TOURNAMENT_A);
-		final Season seasonA = new Season(TournamentTest.SEASON_A);
+		final Season seasonA = new Season(TournamentTest.SEASON_A, TournamentTest.NULL_TEAMS);
 		final Tournament expected = tournament;
 		
 		// Match		
@@ -114,7 +118,7 @@ public class TournamentTest {
 	public void testAddSeasonThrowsExceptionForDuplicateSeason() throws DuplicateEntryException {
 		// Fixture
 		final Tournament tournament = new Tournament(TournamentTest.TOURNAMENT_A);
-		final Season seasonA = new Season(TournamentTest.SEASON_A);
+		final Season seasonA = new Season(TournamentTest.SEASON_A, TournamentTest.NULL_TEAMS);
 		
 		// Match
 		tournament.addSeason(seasonA);
@@ -131,8 +135,8 @@ public class TournamentTest {
 	public void testRemoveSeasonRemovesExistentSeason() throws InexistentEntryException, DuplicateEntryException {
 		// Fixture
 		final Tournament tournament = new Tournament(TournamentTest.TOURNAMENT_A);
-		final Season seasonA = new Season(TournamentTest.SEASON_A);
-		final Season seasonB = new Season(TournamentTest.SEASON_B);
+		final Season seasonA = new Season(TournamentTest.SEASON_A, TournamentTest.NULL_TEAMS);
+		final Season seasonB = new Season(TournamentTest.SEASON_B, TournamentTest.NULL_TEAMS);
 		
 		// Match
 		tournament.addSeason(seasonA);
@@ -162,8 +166,8 @@ public class TournamentTest {
 	public void testClearSeasonsEmptiesSeasonsCollection() throws DuplicateEntryException {
 		// Fixture
 		final Tournament tournament = new Tournament(TournamentTest.TOURNAMENT_A);
-		final Season seasonA = new Season(TournamentTest.SEASON_A);
-		final Season seasonB = new Season(TournamentTest.SEASON_B);
+		final Season seasonA = new Season(TournamentTest.SEASON_A, TournamentTest.NULL_TEAMS);
+		final Season seasonB = new Season(TournamentTest.SEASON_B, TournamentTest.NULL_TEAMS);
 		final int expected = TournamentTest.EMPTY_LIST;
 		
 		// Match

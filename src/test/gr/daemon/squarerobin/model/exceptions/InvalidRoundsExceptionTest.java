@@ -1,10 +1,9 @@
-package gr.daemon.squarerobin.model;
+package gr.daemon.squarerobin.model.exceptions;
 
 import static org.junit.Assert.*;
-
 import org.junit.Test;
 
-public class GameNotSettledExceptionTest {
+public class InvalidRoundsExceptionTest {
 
 	private static final String MESSAGE_A = "Game not yet settled";	
 
@@ -13,7 +12,7 @@ public class GameNotSettledExceptionTest {
 		// Fixture		
 		
 		// Match
-		final GameNotSettledException e = new GameNotSettledException();
+		final InvalidRoundsException e = new InvalidRoundsException();
 		
 		// Assertion
 		assertTrue(e.getMessage().isEmpty());
@@ -22,10 +21,10 @@ public class GameNotSettledExceptionTest {
 	@Test
 	public void testNonEmptyConstructorReturnsMessage() {
 		// Fixture
-		final String expected = GameNotSettledExceptionTest.MESSAGE_A;
+		final String expected = InvalidRoundsExceptionTest.MESSAGE_A;
 		
 		// Match
-		final GameNotSettledException e = new GameNotSettledException(GameNotSettledExceptionTest.MESSAGE_A);
+		final InvalidRoundsException e = new InvalidRoundsException(InvalidRoundsExceptionTest.MESSAGE_A);
 		
 		// Assertion
 		assertEquals(expected, e.getMessage());
