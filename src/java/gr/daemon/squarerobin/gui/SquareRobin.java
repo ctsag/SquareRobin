@@ -52,6 +52,7 @@ public class SquareRobin extends JFrame implements ActionListener {
 	private JButton clearButton;
 	private JTextField roundsTextField;
 	private JLabel roundsLabel;
+	private JButton nextGameButton;
 
 	public SquareRobin() {
 		try {
@@ -161,10 +162,11 @@ public class SquareRobin extends JFrame implements ActionListener {
 		this.initTextFields();
 	}
 
-	private void clearTables() {
+	private void clearView() {
 		this.initInputModel();
 		this.initScheduleModel();
 		this.initLeagueModel();
+		this.nextGameButton.setEnabled(false);
 	}
 
 	private void initInputTable() {
@@ -196,6 +198,10 @@ public class SquareRobin extends JFrame implements ActionListener {
 		this.clearButton = new JButton("Clear");
 		this.clearButton.addActionListener(this);
 		this.clearButton.setMnemonic(KeyEvent.VK_C);
+		this.nextGameButton = new JButton("Next Game");
+		this.nextGameButton.setEnabled(false);
+		this.nextGameButton.addActionListener(this);
+		this.nextGameButton.setMnemonic(KeyEvent.VK_N);
 	}
 
 	private void initTextFields() {
@@ -238,15 +244,17 @@ public class SquareRobin extends JFrame implements ActionListener {
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(this.scheduleScrollPane, GroupLayout.PREFERRED_SIZE, 455, GroupLayout.PREFERRED_SIZE)
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(this.leagueScrollPane, GroupLayout.DEFAULT_SIZE, 443, Short.MAX_VALUE))
+					.addComponent(this.leagueScrollPane, GroupLayout.DEFAULT_SIZE, 445, Short.MAX_VALUE))
 				.addGroup(layout.createSequentialGroup()
 					.addGap(2)
 					.addComponent(this.roundsLabel)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(this.roundsTextField, GroupLayout.PREFERRED_SIZE, 23, GroupLayout.PREFERRED_SIZE)
-					.addGap(450)
+					.addGap(370)
 					.addComponent(this.runButton, GroupLayout.PREFERRED_SIZE, 67, GroupLayout.PREFERRED_SIZE)
-					.addGap(31)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(this.nextGameButton, GroupLayout.PREFERRED_SIZE, 99, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(this.clearButton, GroupLayout.PREFERRED_SIZE, 67, GroupLayout.PREFERRED_SIZE)
 					.addGap(523))
 		);
@@ -261,6 +269,7 @@ public class SquareRobin extends JFrame implements ActionListener {
 					.addGroup(layout.createParallelGroup(Alignment.LEADING)
 						.addGroup(layout.createParallelGroup(Alignment.BASELINE)
 							.addComponent(this.clearButton)
+							.addComponent(this.nextGameButton)
 							.addComponent(this.runButton))
 						.addGroup(layout.createParallelGroup(Alignment.BASELINE)
 							.addComponent(this.roundsLabel)
@@ -275,9 +284,14 @@ public class SquareRobin extends JFrame implements ActionListener {
 			if (this.parseInput()) {
 				this.displaySchedule();
 				this.displayLeagueTable();
+				this.nextGameButton.setEnabled(true);
 			}
 		} else if (event.getSource() == this.clearButton) {
-			this.clearTables();
+			this.clearView();
+		} else if (event.getSource() == this.nextGameButton) {			
+			this.season.getLeagueRunner().runGame();
+			this.displaySchedule();
+			this.displayLeagueTable();
 		}
 	}
 
