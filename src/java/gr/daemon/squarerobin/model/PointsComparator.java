@@ -5,7 +5,7 @@ import java.util.Comparator;
 public class PointsComparator implements Comparator<Team> {
 	
 	@Override
-	public int compare(Team first, Team second) {
+	public int compare(final Team first, final Team second) {
 		return first.getPoints() - second.getPoints();
 	}
 

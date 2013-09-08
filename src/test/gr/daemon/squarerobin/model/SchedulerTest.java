@@ -18,9 +18,9 @@ public class SchedulerTest {
 
 	private static final String SEASON_A = "2013";
 	private static final String[] TEAMS_EVEN = {"Panathinaikos", "Olympiakos", "AEK", "PAOK"};
-	private static final String[] TEAMS_ODD = {"Panathinaikos", "Olympiakos", "AEK"};
+	private static final String[] TEAMS_ODD = {"Panathinaikos", "Olympiakos", "OFI"};
 	private static final String[] TEAMS_DUPLICATE = {"Panathinaikos", "Olympiakos", "AEK", "AEK"};
-	private static final String[] TEAMS_INSUFFICIENT = {"Panathinaikos"};
+	private static final String[] TEAMS_INSUFFICIENT = {"PAOK"};
 	private static final int ROUNDS_A = 3;
 	private static final int ROUNDS_B = 0;
 	private static final int ROUNDS_C = 4;

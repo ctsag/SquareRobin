@@ -10,11 +10,11 @@ public class LeagueRunner {
 	private final Season season;
 	private Slot slot;
 	
-	protected LeagueRunner(Season season) {
+	protected LeagueRunner(final Season season) {
 		this.season = season;
 	}
 	
-	private Slot getNextSlot(Slot slot) throws NoNextSlotException, SlotNotFoundException {
+	private Slot getNextSlot(final Slot slot) throws NoNextSlotException, SlotNotFoundException {
 		final Round round = slot.getRound();
 		final Slot[] slots = round.getSlots();
 		final int index = Arrays.asList(slots).indexOf(slot);		
@@ -31,7 +31,9 @@ public class LeagueRunner {
 	}
 	
 	private void setCurrentSlot() throws NoNextSlotException, SlotNotFoundException {		
-		if (this.slot != null) {
+		if (this.slot == null) {
+			this.slot = this.season.getRounds()[0].getSlots()[0];
+		} else {
 			Slot slot = null;
 			for (final Game game : this.slot.getGames()) {
 				if (!game.isSettled()) {
@@ -42,8 +44,6 @@ public class LeagueRunner {
 			if (slot == null) {
 				this.slot = this.getNextSlot(this.slot);
 			}
-		} else {
-			this.slot = this.season.getRounds()[0].getSlots()[0];
 		}
 	}
 	
@@ -56,11 +56,11 @@ public class LeagueRunner {
 				foundGame = game; 
 			}
 		}
-		if (foundGame != null) {
-			return foundGame;
-		} else {
+		if (foundGame == null) {		
 			throw new EndOfLeagueException("No games remaining");
-		}
+		} else {
+			return foundGame;
+		}		
 	}
 	
 	public Game runGame() {

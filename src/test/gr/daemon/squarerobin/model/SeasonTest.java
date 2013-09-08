@@ -217,11 +217,10 @@ public class SeasonTest {
 		// Fixture		
 		final Team teamA = new Team(SeasonTest.TEAM_A);
 		final Team teamB = new Team(SeasonTest.TEAM_B);
-		final ArrayList<Team> teams;
-		final Team[] expected = {teamA, teamB};		
+		final Team[] expected = {teamA, teamB};
+		final ArrayList<Team> teams = new ArrayList<>(Arrays.asList(expected));				
 		
-		// Match		
-		teams = new ArrayList<>(Arrays.asList(expected));
+		// Match
 		final Season season = new Season(SeasonTest.SEASON_A, teams);		
 		
 		// Assertion		

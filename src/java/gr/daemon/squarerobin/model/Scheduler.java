@@ -103,8 +103,8 @@ public class Scheduler {
 	}
 
 	private void calculateBreaks(final HashMap<Team, Integer> breaksCounter, final Team team, final boolean home) throws BreaksLimitException{		
-		int breaks = breaksCounter.get(team);
-		int limit = Scheduler.BREAKS_LIMIT;
+		final int limit = Scheduler.BREAKS_LIMIT;
+		int breaks = breaksCounter.get(team);		
 		if (breaks >= 0) {
 			if (home) {
 				// if home team previously played home, points increased by 1

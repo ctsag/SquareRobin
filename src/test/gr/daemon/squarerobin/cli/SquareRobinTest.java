@@ -316,15 +316,6 @@ public class SquareRobinTest {
 			System.setSecurityManager(null);
 		}
 	}
-	
-	@Test
-	public void testMainExitsWhenThreeInARowConditionIsDetected() {
-		// Fixture
-
-		// Match		
-
-		// Assertion
-	}
 
 	@Test
 	public void testMainExitsWhenDuplicateTeamsAreDetected() {

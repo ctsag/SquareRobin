@@ -7,7 +7,7 @@ public class LeagueTable {
 	
 	private final ArrayList<Team> teams;
 
-	protected LeagueTable(ArrayList<Team> teams) {
+	protected LeagueTable(final ArrayList<Team> teams) {
 		this.teams = teams;
 	}
 	
@@ -20,7 +20,7 @@ public class LeagueTable {
 	}
 
 	public Team[] sortByPoints() {
-		PointsComparator comparator = new PointsComparator();
+		final PointsComparator comparator = new PointsComparator();
 		Collections.sort(teams, comparator);
 		return this.toArray();
 	}

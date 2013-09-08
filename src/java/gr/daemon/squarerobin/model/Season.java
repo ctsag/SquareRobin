@@ -13,10 +13,10 @@ public class Season {
 	private final String name;
 	private final HashMap<Integer, Round> rounds = new HashMap<>();
 	private Tournament tournament;
-	private LeagueTable leagueTable;
-	private LeagueRunner leagueRunner;
+	private final LeagueTable leagueTable;
+	private final LeagueRunner leagueRunner;
 
-	protected Season(final String name, ArrayList<Team> teams) {
+	protected Season(final String name, final ArrayList<Team> teams) {
 		this.name = name;
 		this.leagueTable = new LeagueTable(teams);
 		this.leagueRunner = new LeagueRunner(this);
