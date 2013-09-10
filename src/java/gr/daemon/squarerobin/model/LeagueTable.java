@@ -2,6 +2,7 @@ package gr.daemon.squarerobin.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 
 public class LeagueTable {
 	
@@ -18,16 +19,9 @@ public class LeagueTable {
 	public Team[] getTeams() {
 		return this.toArray();		
 	}
-
-	public Team[] sortByPoints() {
-		final PointsComparator comparator = new PointsComparator();
-		
-		Collections.sort(teams, comparator);		
-		return this.toArray();
-	}
 	
 	public Team[] sortFormally() {
-		final PointsComparator comparator = new PointsComparator();
+		final LeagueTable.FormalComparator comparator = new LeagueTable.FormalComparator();
 		
 		Collections.sort(teams, comparator);		
 		return this.toArray();
@@ -47,6 +41,15 @@ public class LeagueTable {
 			previousPoints = team.getPoints();
 			position++;
 		}
+	}
+	
+	protected static class FormalComparator implements Comparator<Team> {
+		
+		@Override
+		public int compare(final Team first, final Team second) {
+			return second.getPoints() - first.getPoints();
+		}
+
 	}
 
 }
