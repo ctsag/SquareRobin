@@ -67,7 +67,7 @@ public class LeagueRunner {
 		}		
 	}	
 		
-	public Game runGame() {
+	public Game runGame() throws EndOfLeagueException {
 		final Game game = this.getNextGame();		
 		
 		game.settle();
@@ -75,20 +75,41 @@ public class LeagueRunner {
 		return game;
 	}
 	
-//	public Game[] runGames(final int count) {
-//		
-//	}
-//	
-//	public Game[] runSlot() {
-//		
-//	}
-//	
-//	public Game[] runSlots(final int count) {
-//		
-//	}
-//	
-//	public Game[] runSeason() {
-//		
-//	}
+	public Game[] runSlot() throws EndOfLeagueException {
+		final ArrayList<Game> games = new ArrayList<>();
+		final Slot startingSlot = this.currentSlot;
+		Game currentGame = this.getNextGame();
+		
+		while (this.currentSlot.equals(startingSlot)) {			
+			currentGame.settle();
+			games.add(currentGame);
+			currentGame = this.getNextGame();
+		} 
+		this.season.getLeagueTable().update();
+		return games.toArray(new Game[games.size()]);
+	}
+
+	public Game[] runSeason() throws EndOfLeagueException {
+		final ArrayList<Game> games = new ArrayList<>();		
+		boolean endReached = false;
+		int gamesFound = 0;
+		
+		while (!endReached) {
+			try {
+				Game currentGame = this.getNextGame();
+				games.add(currentGame);
+				currentGame.settle();
+				gamesFound++;
+			} catch(EndOfLeagueException e) {
+				endReached = true;
+			}
+		}
+		if (gamesFound > 0) {
+			this.season.getLeagueTable().update();
+			return games.toArray(new Game[games.size()]);
+		} else {
+			throw new EndOfLeagueException("No games remaining");
+		}
+	}
 
 }

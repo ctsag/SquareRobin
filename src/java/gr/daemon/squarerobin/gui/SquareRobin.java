@@ -54,7 +54,9 @@ public class SquareRobin extends JFrame implements ActionListener {
 	private JButton clearButton;
 	private JTextField roundsTextField;
 	private JLabel roundsLabel;
-	private JButton nextGameButton;
+	private JButton runGameButton;
+	private JButton runSlotButton;
+	private JButton runSeasonButton;
 
 	public SquareRobin() {
 		try {
@@ -163,7 +165,7 @@ public class SquareRobin extends JFrame implements ActionListener {
 		this.initInputModel();
 		this.initScheduleModel();
 		this.initLeagueModel();
-		this.nextGameButton.setEnabled(false);
+		this.runGameButton.setEnabled(false);
 	}
 
 	private void initInputTable() {
@@ -195,10 +197,18 @@ public class SquareRobin extends JFrame implements ActionListener {
 		this.clearButton = new JButton("Clear");
 		this.clearButton.addActionListener(this);
 		this.clearButton.setMnemonic(KeyEvent.VK_C);
-		this.nextGameButton = new JButton("Next Game");
-		this.nextGameButton.setEnabled(false);
-		this.nextGameButton.addActionListener(this);
-		this.nextGameButton.setMnemonic(KeyEvent.VK_N);
+		this.runGameButton = new JButton("Run Game");
+		this.runGameButton.setEnabled(false);
+		this.runGameButton.addActionListener(this);
+		this.runGameButton.setMnemonic(KeyEvent.VK_A);
+		this.runSlotButton = new JButton("Run Slot");
+		this.runSlotButton.addActionListener(this);
+		this.runSlotButton.setMnemonic(KeyEvent.VK_L);
+		this.runSlotButton.setEnabled(false);
+		this.runSeasonButton = new JButton("Run Season");
+		this.runSeasonButton.addActionListener(this);
+		this.runSeasonButton.setMnemonic(KeyEvent.VK_E);
+		this.runSeasonButton.setEnabled(false);
 	}
 
 	private void initTextFields() {
@@ -234,26 +244,32 @@ public class SquareRobin extends JFrame implements ActionListener {
 
 	private void initLayoutManager() {
 		final GroupLayout layout = new GroupLayout(this.contentPane);
+		
 		layout.setHorizontalGroup(
 			layout.createParallelGroup(Alignment.LEADING)
 				.addGroup(layout.createSequentialGroup()
-					.addComponent(this.inputScrollPane, GroupLayout.PREFERRED_SIZE, 291, GroupLayout.PREFERRED_SIZE)
+					.addGroup(layout.createParallelGroup(Alignment.TRAILING)
+						.addGroup(layout.createSequentialGroup()
+							.addGap(2)
+							.addComponent(this.roundsLabel)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(this.roundsTextField, GroupLayout.PREFERRED_SIZE, 23, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(ComponentPlacement.RELATED, 232, Short.MAX_VALUE)
+							.addComponent(this.runButton, GroupLayout.PREFERRED_SIZE, 67, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(this.runGameButton, GroupLayout.PREFERRED_SIZE, 99, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(this.runSlotButton, GroupLayout.PREFERRED_SIZE, 99, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(this.runSeasonButton, GroupLayout.PREFERRED_SIZE, 99, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(this.clearButton, GroupLayout.PREFERRED_SIZE, 67, GroupLayout.PREFERRED_SIZE))
+						.addGroup(Alignment.LEADING, layout.createSequentialGroup()
+							.addComponent(this.inputScrollPane, GroupLayout.PREFERRED_SIZE, 291, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(this.scheduleScrollPane, GroupLayout.PREFERRED_SIZE, 455, GroupLayout.PREFERRED_SIZE)))
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(this.scheduleScrollPane, GroupLayout.PREFERRED_SIZE, 455, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(this.leagueScrollPane, GroupLayout.DEFAULT_SIZE, 445, Short.MAX_VALUE))
-				.addGroup(layout.createSequentialGroup()
-					.addGap(2)
-					.addComponent(this.roundsLabel)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(this.roundsTextField, GroupLayout.PREFERRED_SIZE, 23, GroupLayout.PREFERRED_SIZE)
-					.addGap(370)
-					.addComponent(this.runButton, GroupLayout.PREFERRED_SIZE, 67, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(this.nextGameButton, GroupLayout.PREFERRED_SIZE, 99, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(this.clearButton, GroupLayout.PREFERRED_SIZE, 67, GroupLayout.PREFERRED_SIZE)
-					.addGap(523))
+					.addComponent(this.leagueScrollPane, GroupLayout.DEFAULT_SIZE, 566, Short.MAX_VALUE))
 		);
 		layout.setVerticalGroup(
 			layout.createParallelGroup(Alignment.LEADING)
@@ -265,29 +281,49 @@ public class SquareRobin extends JFrame implements ActionListener {
 					.addPreferredGap(ComponentPlacement.UNRELATED)
 					.addGroup(layout.createParallelGroup(Alignment.LEADING)
 						.addGroup(layout.createParallelGroup(Alignment.BASELINE)
-							.addComponent(this.clearButton)
-							.addComponent(this.nextGameButton)
-							.addComponent(this.runButton))
-						.addGroup(layout.createParallelGroup(Alignment.BASELINE)
 							.addComponent(this.roundsLabel)
-							.addComponent(this.roundsTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+							.addComponent(this.roundsTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addComponent(this.clearButton)
+						.addGroup(layout.createParallelGroup(Alignment.BASELINE)
+							.addComponent(this.runButton)
+							.addComponent(this.runGameButton)
+							.addComponent(this.runSlotButton)
+							.addComponent(this.runSeasonButton)))
 					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
 		);
 		this.contentPane.setLayout(layout);
 	}
 	
-	public void actionPerformed(final ActionEvent event) {
+	public void actionPerformed(final ActionEvent event) throws EndOfLeagueException {
 		if (event.getSource() == this.runButton) {
 			if (this.parseInput()) {
 				this.displaySchedule();
 				this.displayLeagueTable();
-				this.nextGameButton.setEnabled(true);
+				this.runGameButton.setEnabled(true);
+				this.runSlotButton.setEnabled(true);
+				this.runSeasonButton.setEnabled(true);
 			}
 		} else if (event.getSource() == this.clearButton) {
 			this.clearView();
-		} else if (event.getSource() == this.nextGameButton) {
+		} else if (event.getSource() == this.runGameButton) {
 			try {
 				this.season.getLeagueRunner().runGame();
+				this.displaySchedule();
+				this.displayLeagueTable();
+			} catch(EndOfLeagueException e) {
+				JOptionPane.showMessageDialog(this, e.getMessage());				
+			}
+		} else if (event.getSource() == this.runSlotButton) {
+			try {
+				this.season.getLeagueRunner().runSlot();
+				this.displaySchedule();
+				this.displayLeagueTable();
+			} catch(EndOfLeagueException e) {
+				JOptionPane.showMessageDialog(this, e.getMessage());				
+			}
+		} else if (event.getSource() == this.runSeasonButton) {
+			try {
+				this.season.getLeagueRunner().runSeason();
 				this.displaySchedule();
 				this.displayLeagueTable();
 			} catch(EndOfLeagueException e) {
