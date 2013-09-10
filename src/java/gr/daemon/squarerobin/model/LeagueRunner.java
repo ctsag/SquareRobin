@@ -96,7 +96,7 @@ public class LeagueRunner {
 		
 		while (!endReached) {
 			try {
-				Game currentGame = this.getNextGame();
+				final Game currentGame = this.getNextGame();
 				games.add(currentGame);
 				currentGame.settle();
 				gamesFound++;

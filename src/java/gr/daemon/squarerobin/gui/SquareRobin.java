@@ -125,13 +125,12 @@ public class SquareRobin extends JFrame implements ActionListener {
 		}
 	}
 
-	private void displayLeagueTable() {		
-		final DefaultTableModel model;
+	private void displayLeagueTable() {
 		final String[] values = new String[6];
 		final Team[] leagueTable = this.season.getLeagueTable().sortFormally();
 
 		this.initLeagueModel();				
-		model = (DefaultTableModel)this.leagueTable.getModel();
+		final DefaultTableModel model = (DefaultTableModel)this.leagueTable.getModel();
 		for (final Team team : leagueTable) {
 			Arrays.fill(values, null);
 			values[0] = team.getRelativePosition();

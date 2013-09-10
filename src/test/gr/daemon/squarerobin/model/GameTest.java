@@ -238,11 +238,11 @@ public class GameTest {
 		// Fixture
 		final Team teamA = new Team(GameTest.TEAM_A);
 		final Team teamB = new Team(GameTest.TEAM_B);
-		final Game game = new Game(GameTest.GAME_A, teamA, teamB);
+		final Game game = new Game(GameTest.GAME_A, teamB, teamA);
 		final int expected = GameTest.RESULT_COUNTER;
 		
 		// Match
-		game.settle(GameTest.GOALS_A, GameTest.GOALS_B);
+		game.settle(GameTest.GOALS_B, GameTest.GOALS_A);
 		
 		// Assertion
 		assertEquals(expected, teamB.getLosses());
