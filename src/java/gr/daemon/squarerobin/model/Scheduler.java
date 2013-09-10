@@ -35,6 +35,7 @@ public class Scheduler {
 		this.generateFirstRound();
 		this.normalizeFirstRound();
 		this.generateAdditionalRounds();
+		this.season.getLeagueRunner().ready();
 	}
 	
 	public Season getSeason() {

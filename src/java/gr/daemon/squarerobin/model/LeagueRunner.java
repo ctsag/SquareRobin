@@ -1,72 +1,77 @@
 package gr.daemon.squarerobin.model;
 
 import gr.daemon.squarerobin.model.exceptions.EndOfLeagueException;
-import gr.daemon.squarerobin.model.exceptions.NoNextSlotException;
-import gr.daemon.squarerobin.model.exceptions.SlotNotFoundException;
-import java.util.Arrays;
+import java.util.ArrayList;
 
 public class LeagueRunner {
 	
 	private final Season season;
-	private Slot slot;
+	private final ArrayList<Slot> slots = new ArrayList<>();
+	private Slot currentSlot;
 	
 	protected LeagueRunner(final Season season) {
 		this.season = season;
 	}
 	
-	private Slot getNextSlot(final Slot slot) throws NoNextSlotException, SlotNotFoundException {
-		final Round round = slot.getRound();
-		final Slot[] slots = round.getSlots();
-		final int index = Arrays.asList(slots).indexOf(slot);		
-		
-		if (index > -1) {
-			if (slots.length - index > 1) {
-				return slots[index + 1];
-			} else {
-				throw new NoNextSlotException("Unable to find next slot as this is the last slot");
+	protected void ready() {
+		this.populateSlots();
+		this.currentSlot = this.slots.get(0);
+	}
+	
+	private void populateSlots() {
+		for (final Round round : this.season.getRounds()) {
+			for (final Slot slot : round.getSlots()) {
+				this.slots.add(slot);
 			}
+		}		
+	}
+	
+	private Slot getNextSlot() {
+		final int index = this.slots.indexOf(this.currentSlot);
+		
+		if (this.slots.size() - index > 1) {
+			return this.slots.get(index + 1);
 		} else {
-			throw new NoNextSlotException("Specified slot not found");
+			return this.currentSlot;			
 		}
 	}
 	
-	private void setCurrentSlot() throws NoNextSlotException, SlotNotFoundException {		
-		if (this.slot == null) {
-			this.slot = this.season.getRounds()[0].getSlots()[0];
-		} else {
-			Slot slot = null;
-			for (final Game game : this.slot.getGames()) {
-				if (!game.isSettled()) {
-					slot = this.slot;
-					break;
-				}
-			}
-			if (slot == null) {
-				this.slot = this.getNextSlot(this.slot);
+	private void setCurrentSlot() {		
+		Slot slot = null;
+		
+		for (final Game game : this.currentSlot.getGames()) {
+			if (!game.isSettled()) {
+				slot = this.currentSlot;
+				break;
 			}
 		}
-	}
+		if (slot == null) {
+			this.currentSlot = this.getNextSlot();
+		}
+	}	
 	
-	public Game getNextGame() throws NoNextSlotException, SlotNotFoundException, EndOfLeagueException {
-		Game foundGame = null;
+	public Game getNextGame() throws EndOfLeagueException {
+		Game foundGame = null;		
 		
-		this.setCurrentSlot();
-		for (final Game game : this.slot.getGames()) {
+		this.setCurrentSlot();		
+		for (final Game game : this.currentSlot.getGames()) {
 			if (!game.isSettled()) {
 				foundGame = game; 
+				break;
 			}
 		}
-		if (foundGame == null) {		
+		if (foundGame == null) {
 			throw new EndOfLeagueException("No games remaining");
 		} else {
 			return foundGame;
 		}		
-	}
-	
+	}	
+		
 	public Game runGame() {
 		final Game game = this.getNextGame();		
 		
 		game.settle();
+		this.season.getLeagueTable().update();
 		return game;
 	}
 	

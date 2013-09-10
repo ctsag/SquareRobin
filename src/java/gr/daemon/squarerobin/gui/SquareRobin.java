@@ -5,8 +5,10 @@ import gr.daemon.squarerobin.model.Round;
 import gr.daemon.squarerobin.model.Scheduler;
 import gr.daemon.squarerobin.model.Season;
 import gr.daemon.squarerobin.model.Slot;
+import gr.daemon.squarerobin.model.Team;
 import gr.daemon.squarerobin.model.exceptions.DuplicateEntryException;
 import gr.daemon.squarerobin.model.exceptions.DuplicateTeamsException;
+import gr.daemon.squarerobin.model.exceptions.EndOfLeagueException;
 import gr.daemon.squarerobin.model.exceptions.GameAlreadySettledException;
 import gr.daemon.squarerobin.model.exceptions.GameNotSettledException;
 import gr.daemon.squarerobin.model.exceptions.InsufficientTeamsException;
@@ -121,30 +123,25 @@ public class SquareRobin extends JFrame implements ActionListener {
 		}
 	}
 
-	private void displayLeagueTable() {
-//		TreeMap<Integer, String[]> league;
-//		DefaultTableModel model;
-//		String[] values = new String[6];
-//
-//		this.initLeagueModel();
-//		model = (DefaultTableModel)this.leagueTable.getModel();
-//		try {
-//			league = scheduler.getLeagueTable(true);
-//			for (final int index : league.keySet()) {
-//				Arrays.fill(values, null);
-//				values[0] = league.get(index)[0];
-//				values[1] = league.get(index)[1];
-//				values[2] = league.get(index)[2];
-//				values[3] = league.get(index)[3];
-//				values[4] = league.get(index)[4];
-//				values[5] = league.get(index)[5];
-//				model.addRow(values);
-//			}
-//			this.leagueTable.setModel(model);
-//			model.fireTableDataChanged();
-//		} catch(IllegalArgumentException e) {
-//			JOptionPane.showMessageDialog(this, e.getMessage());
-//		}
+	private void displayLeagueTable() {		
+		final DefaultTableModel model;
+		final String[] values = new String[6];
+		final Team[] leagueTable = this.season.getLeagueTable().sortFormally();
+
+		this.initLeagueModel();				
+		model = (DefaultTableModel)this.leagueTable.getModel();
+		for (final Team team : leagueTable) {
+			Arrays.fill(values, null);
+			values[0] = team.getRelativePosition();
+			values[1] = team.getName();
+			values[2] = Integer.toString(team.getPoints());
+			values[3] = Integer.toString(team.getGoalsFor());
+			values[4] = Integer.toString(team.getGoalsAgainst());
+			values[5] = Integer.toString(team.getGoalAverage());
+			model.addRow(values);
+		}
+		this.leagueTable.setModel(model);
+		model.fireTableDataChanged();
 	}
 
 	private void initComponents() {
@@ -288,10 +285,14 @@ public class SquareRobin extends JFrame implements ActionListener {
 			}
 		} else if (event.getSource() == this.clearButton) {
 			this.clearView();
-		} else if (event.getSource() == this.nextGameButton) {			
-			this.season.getLeagueRunner().runGame();
-			this.displaySchedule();
-			this.displayLeagueTable();
+		} else if (event.getSource() == this.nextGameButton) {
+			try {
+				this.season.getLeagueRunner().runGame();
+				this.displaySchedule();
+				this.displayLeagueTable();
+			} catch(EndOfLeagueException e) {
+				JOptionPane.showMessageDialog(this, e.getMessage());				
+			}
 		}
 	}
 

@@ -31,7 +31,7 @@ public class PointsComparatorTest {
 	}
 	
 	@Test
-	public void testGreaterThan() {
+	public void testDescendingGreaterThan() {
 		// Fixture
 		final PointsComparator comparator = new PointsComparator(); 
 		final Team teamA = new Team(PointsComparatorTest.TEAM_A);
@@ -44,11 +44,11 @@ public class PointsComparatorTest {
 		final int result = comparator.compare(teamA, teamB);
 		
 		// Assertion
-		assertTrue(expected < result);
+		assertTrue(expected > result);
 	}
 	
 	@Test
-	public void testLessThan() {
+	public void testDescendingLessThan() {
 		// Fixture
 		final PointsComparator comparator = new PointsComparator(); 
 		final Team teamA = new Team(PointsComparatorTest.TEAM_A);
@@ -61,7 +61,7 @@ public class PointsComparatorTest {
 		final int result = comparator.compare(teamA, teamB);
 		
 		// Assertion
-		assertTrue(expected > result);
+		assertTrue(expected < result);
 	}
 	
 }

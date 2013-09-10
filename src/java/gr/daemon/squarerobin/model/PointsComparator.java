@@ -6,7 +6,7 @@ public class PointsComparator implements Comparator<Team> {
 	
 	@Override
 	public int compare(final Team first, final Team second) {
-		return first.getPoints() - second.getPoints();
+		return second.getPoints() - first.getPoints();
 	}
 
 }

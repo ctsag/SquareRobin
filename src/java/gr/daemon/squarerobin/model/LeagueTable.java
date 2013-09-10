@@ -21,8 +21,32 @@ public class LeagueTable {
 
 	public Team[] sortByPoints() {
 		final PointsComparator comparator = new PointsComparator();
-		Collections.sort(teams, comparator);
+		
+		Collections.sort(teams, comparator);		
 		return this.toArray();
+	}
+	
+	public Team[] sortFormally() {
+		final PointsComparator comparator = new PointsComparator();
+		
+		Collections.sort(teams, comparator);		
+		return this.toArray();
+	}
+	
+	public void update() {
+		this.sortFormally();
+		int previousPoints = -1;
+		int position = 1;
+		for (Team team : teams) {
+			team.setAbsolutePosition(position);
+			if (team.getPoints() == previousPoints) {
+				team.setRelativePosition("-");
+			} else {
+				team.setRelativePosition(String.valueOf(position));
+			}
+			previousPoints = team.getPoints();
+			position++;
+		}
 	}
 
 }
