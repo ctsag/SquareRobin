@@ -51,5 +51,41 @@ public class LeagueTable {
 		}
 
 	}
+	
+	protected static class GoalAverageComparator implements Comparator<Team> {
+		
+		@Override
+		public int compare(final Team first, final Team second) {
+			return second.getGoalAverage() - first.getGoalAverage();
+		}
+
+	}
+	
+	protected static class GoalsForComparator implements Comparator<Team> {
+		
+		@Override
+		public int compare(final Team first, final Team second) {
+			return second.getGoalsFor() - first.getGoalsFor();
+		}
+
+	}
+	
+	protected static class GoalsAgainstComparator implements Comparator<Team> {
+		
+		@Override
+		public int compare(final Team first, final Team second) {
+			return first.getGoalsAgainst() - second.getGoalsAgainst();
+		}
+
+	}
+
+	protected static class TeamNameComparator implements Comparator<Team> {
+		
+		@Override
+		public int compare(final Team first, final Team second) {
+			return first.getName().compareToIgnoreCase(second.getName());
+		}
+
+	}
 
 }
