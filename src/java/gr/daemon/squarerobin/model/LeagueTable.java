@@ -23,7 +23,7 @@ public class LeagueTable {
 	public Team[] sortFormally() {
 		final LeagueTable.FormalComparator comparator = new LeagueTable.FormalComparator();
 		
-		Collections.sort(teams, comparator);		
+		Collections.sort(teams, comparator);
 		return this.toArray();
 	}
 	
@@ -44,10 +44,24 @@ public class LeagueTable {
 	}
 	
 	protected static class FormalComparator implements Comparator<Team> {
+		final LeagueTable.GoalAverageComparator goalAverageComparator = new LeagueTable.GoalAverageComparator();
+		final LeagueTable.GoalsForComparator goalsForComparator = new LeagueTable.GoalsForComparator();
+		final LeagueTable.TeamNameComparator teamNameComparator = new LeagueTable.TeamNameComparator();
+		int result;
 		
 		@Override
 		public int compare(final Team first, final Team second) {
-			return second.getPoints() - first.getPoints();
+			result = second.getPoints() - first.getPoints();
+			if (result == 0) {
+				result = goalAverageComparator.compare(first, second);
+				if (result == 0) {
+					result = goalsForComparator.compare(first, second);
+					if (result == 0) {
+						result = teamNameComparator.compare(first, second);
+					}
+				}
+			}
+			return result;
 		}
 
 	}
@@ -58,7 +72,7 @@ public class LeagueTable {
 		public int compare(final Team first, final Team second) {
 			return second.getGoalAverage() - first.getGoalAverage();
 		}
-
+		
 	}
 	
 	protected static class GoalsForComparator implements Comparator<Team> {
