@@ -8,34 +8,32 @@ import java.util.Scanner;
 import java.util.TreeMap;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.GnuParser;
+import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
-import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
 public class SquareRobin {	
 	
 	public static final String APPLICATION_NAME = "SquareRobin";
-	public static final String APPLICATION_VERSION = "v0.3.0"; 
-	private State state = State.OK;
+	public static final String APPLICATION_VERSION = "v0.3.0";
 	private ArrayList<String> clubs = new ArrayList<>();
 	private CommandLine cli;
 	private Options options = new Options();	
 	
 	private String joinArray(String[] array) {
-		String joined = "";
+		StringBuilder joined = new StringBuilder();
 		for (String string : array) {
-			joined += string + " ";
+			joined.append(string).append(" ");
 		}
-		return joined;
+		return joined.toString();
 	}
 
 	private void constructOptions() {
 		Option noRounds = new Option("norounds", "do not print round number");
-		Option noDays = new Option("nodays", "do not print day number");		
-		Option only = OptionBuilder.withArgName("club").hasArg().withDescription("only display schedule for this club").create("only");		
+		Option noDays = new Option("nodays", "do not print day number");
+		Option only = Option.builder("club").hasArg().desc("only display schedule for this club").build();
 		Option version = new Option("version", "print the version information and exit");
 		Option help = new Option("help", "print this message");		
 
@@ -47,7 +45,7 @@ public class SquareRobin {
 	}
 	
 	private void parseOptions(String[] args) {
-		CommandLineParser parser = new GnuParser();		
+		CommandLineParser parser = new DefaultParser();
 		
 		try {
 			this.cli = parser.parse(this.options, args);
@@ -83,14 +81,13 @@ public class SquareRobin {
 	}
 
 	private void handleError(State state, String message) {
-		this.state = state;
-		switch (this.state) {
+		switch (state) {
 			case OK :
 				break;
 			case INVALID_ARGUMENTS :				
-				System.err.println(this.state.toString() + " : " + message + "\n");
+				System.err.println(state.toString() + " : " + message + "\n");
 				this.printUsage();
-				System.exit(this.state.getValue());
+				System.exit(state.getValue());
 				break;
 			case UNSPECIFIED_ERROR :
 			case INSUFFICIENT_CLUBS :
@@ -98,8 +95,8 @@ public class SquareRobin {
 				if (!message.equals("")) {
 					message = " : " + message;
 				}
-				System.err.println(this.state.toString() + message);
-				System.exit(this.state.getValue());
+				System.err.println(state.toString() + message);
+				System.exit(state.getValue());
 			default :
 				break;
 		}		
