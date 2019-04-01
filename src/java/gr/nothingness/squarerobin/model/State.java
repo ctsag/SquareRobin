@@ -1,4 +1,4 @@
-package gr.daemon.squarerobin.model;
+package gr.nothingness.squarerobin.model;
 
 public enum State {
 	

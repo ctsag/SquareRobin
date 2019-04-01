@@ -1,7 +1,5 @@
-package gr.daemon.squarerobin.cli;
+package gr.nothingness.squarerobin.cli;
 
-import gr.daemon.squarerobin.cli.SquareRobin;
-import gr.daemon.squarerobin.cli.State;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;

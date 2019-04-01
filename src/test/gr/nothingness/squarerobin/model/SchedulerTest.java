@@ -1,4 +1,4 @@
-package gr.daemon.squarerobin.model;
+package gr.nothingness.squarerobin.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;

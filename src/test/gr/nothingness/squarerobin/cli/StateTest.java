@@ -1,6 +1,5 @@
-package gr.daemon.squarerobin.cli;
+package gr.nothingness.squarerobin.cli;
 
-import gr.daemon.squarerobin.cli.State;
 import static org.junit.Assert.*;
 import org.junit.Test;
 

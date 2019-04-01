@@ -1,6 +1,6 @@
-package gr.daemon.squarerobin.gui;
+package gr.nothingness.squarerobin.gui;
 
-import gr.daemon.squarerobin.model.Scheduler;
+import gr.nothingness.squarerobin.model.Scheduler;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;

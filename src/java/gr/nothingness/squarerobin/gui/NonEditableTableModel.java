@@ -1,4 +1,4 @@
-package gr.daemon.squarerobin.gui;
+package gr.nothingness.squarerobin.gui;
 
 import javax.swing.table.DefaultTableModel;
 

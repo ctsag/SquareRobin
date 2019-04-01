@@ -1,6 +1,5 @@
-package gr.daemon.squarerobin.model;
+package gr.nothingness.squarerobin.model;
 
-import gr.daemon.squarerobin.model.State;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
