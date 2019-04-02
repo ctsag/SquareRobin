@@ -16,7 +16,7 @@ import org.apache.commons.cli.ParseException;
 
 public class SquareRobin {	
 	
-	public static final String APPLICATION_NAME = "SquareRobin";
+	public static final String APPLICATION_NAME = "SquareRobin CLI";
 	public static final String APPLICATION_VERSION = "v0.3.0";
 	private ArrayList<String> clubs = new ArrayList<>();
 	private CommandLine cli;

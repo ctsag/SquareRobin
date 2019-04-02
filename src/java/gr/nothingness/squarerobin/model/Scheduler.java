@@ -13,31 +13,30 @@ public class Scheduler {
     private HashMap<Integer, TreeMap<Integer, ArrayList<String[]>>> fullSchedule = new HashMap<>();
     private TreeMap<Integer, ArrayList<String[]>> normalSchedule = new TreeMap<>();
     private TreeMap<Integer, ArrayList<String[]>> normalizedSchedule;
-    private ArrayList<String> teams = new ArrayList<>();    
+    private ArrayList<String> teams;
     private int rounds;
 
-    private static final int FIXED_TEAM_NUMBER = 0; // number of array index
+    private static final int FIXED_TEAM_NUMBER = 0;
 
     public Scheduler(ArrayList<String> teamList) {
         this(teamList, 2);
     }
     
     public Scheduler(ArrayList<String> teamList, int rounds) throws IllegalArgumentException,IllegalStateException {
+        ArrayList<String> uniqueList = new ArrayList<>(new HashSet<>(teamList));
 
-        // unique check
-        ArrayList<String> uniqueList = new ArrayList<>(new HashSet<String>(teamList)); 
         if (teamList.size() != uniqueList.size()) {
             throw new IllegalArgumentException(State.ERR_CLUBS_NOT_UNIQUE.toString());
         }
-        // empty input check
+
         if (teamList.isEmpty()) {
             throw new IllegalArgumentException(State.ERR_EMPTY_INPUT.toString());
         }
-        // odd clubs check
+
         if ((teamList.size() % 2) == 1) {
             throw new IllegalArgumentException(State.ERR_ODD_CLUBS.toString());
         }
-        // round range check
+
         if (rounds > 0) {
             this.rounds = rounds;
         } else {
@@ -62,7 +61,6 @@ public class Scheduler {
         if (i == 5) {
             throw new IllegalStateException(State.ERR_HOME_AWAY.toString());
         }
-        
 
     }
     
@@ -74,7 +72,6 @@ public class Scheduler {
         // loop through the entire schedule and add a 3rd element in pair array which represents the score
         for (int round : fullSchedule.keySet()) {
             for (int day : fullSchedule.get(round).keySet()) {
-                Iterator it = fullSchedule.get(round).get(day).iterator();
                 for (String[] pair : fullSchedule.get(round).get(day)) {
                     // add the score
                     scoreHome = Long.toString(Math.round(Math.random() * 5));
@@ -124,7 +121,6 @@ public class Scheduler {
         
         HashMap<String, Integer> homeAwayCounter = new HashMap<>();
         ArrayList<String[]> pairList;
-        ArrayList<String[]> newDay;
         int[] homeAwayValues;
         String team;
         Iterator it;
@@ -139,8 +135,8 @@ public class Scheduler {
         
         schedule();
         normalizedSchedule = (TreeMap<Integer, ArrayList<String[]>>) normalSchedule.clone();
+
         it = normalSchedule.entrySet().iterator();
-        
         while (it.hasNext()) {
             Entry thisEntry = (Entry) it.next();
             day = (int) thisEntry.getKey();
@@ -264,7 +260,6 @@ public class Scheduler {
         // loop through the entire schedule in order to create team's points
         for (int round : fullSchedule.keySet()) {
             for (int day : fullSchedule.get(round).keySet()) {
-                Iterator it = fullSchedule.get(round).get(day).iterator();
                 for (String[] pair : fullSchedule.get(round).get(day)) {
                     scoreHome = Integer.parseInt(pair[2]);
                     scoreAway = Integer.parseInt(pair[3]);

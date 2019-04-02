@@ -21,8 +21,8 @@ public class LeagueTableSorter {
         @Override
         public int compare(String[] s1, String[] s2) {
             // goal average = goals scored - goals conceded
-            Integer average1 = Integer.valueOf(Integer.parseInt(s1[2]) - Integer.parseInt(s1[3]));
-            Integer average2 = Integer.valueOf(Integer.parseInt(s2[2]) - Integer.parseInt(s2[3]));
+            Integer average1 = Integer.parseInt(s1[2]) - Integer.parseInt(s1[3]);
+            Integer average2 = Integer.parseInt(s2[2]) - Integer.parseInt(s2[3]);
             return average2.compareTo(average1);
         }
     };
