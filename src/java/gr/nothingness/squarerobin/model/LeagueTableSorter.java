@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 public class LeagueTableSorter {
+
     private String[][] leagueTable;
     
     public LeagueTableSorter(String[][] table) {
@@ -11,13 +12,14 @@ public class LeagueTableSorter {
         Arrays.sort(leagueTable, ORDER_BY_RULES);
     }
 
-    private static final Comparator<String[]> ORDER_BY_POINTS = new Comparator<String[]>() {
+    private static final Comparator<String[]> ORDER_BY_POINTS = new Comparator<>() {
         @Override
         public int compare(String[] s1, String[] s2) {
             return Integer.valueOf(s2[1]).compareTo(Integer.valueOf(s1[1]));
         }
     };
-    private static final Comparator<String[]> ORDER_BY_GOALAVERAGE = new Comparator<String[]>() {
+
+    private static final Comparator<String[]> ORDER_BY_GOALAVERAGE = new Comparator<>() {
         @Override
         public int compare(String[] s1, String[] s2) {
             // goal average = goals scored - goals conceded
@@ -26,20 +28,22 @@ public class LeagueTableSorter {
             return average2.compareTo(average1);
         }
     };
-    private static final Comparator<String[]> ORDER_BY_GOALS = new Comparator<String[]>() {
+
+    private static final Comparator<String[]> ORDER_BY_GOALS = new Comparator<>() {
         @Override
         public int compare(String[] s1, String[] s2) {
             return Integer.valueOf(s2[3]).compareTo(Integer.valueOf(s1[3]));
         }
     };
-    private static final Comparator<String[]> ORDER_BY_NAME = new Comparator<String[]>() {
+
+    private static final Comparator<String[]> ORDER_BY_NAME = new Comparator<>() {
         @Override
         public int compare(String[] s1, String[] s2) {
             return s1[0].compareTo(s2[0]);
         }
     };
 
-    private static final Comparator<String[]> ORDER_BY_RULES = new Comparator<String[]>() {
+    private static final Comparator<String[]> ORDER_BY_RULES = new Comparator<>() {
         @Override
         public int compare(String[] s1, String[] s2) {
             int i = ORDER_BY_POINTS.compare(s1, s2);
@@ -59,4 +63,5 @@ public class LeagueTableSorter {
     public String[][] getLeagueTable() {
         return leagueTable;
     }
+
 }

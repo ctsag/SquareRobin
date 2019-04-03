@@ -9,7 +9,6 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TreeMap;
-
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -43,7 +42,7 @@ public class SquareRobin extends JFrame implements ActionListener {
 	private JTextField roundsTextField;
 	private JLabel roundsLabel;
 
-	public SquareRobin() {
+	private SquareRobin() {
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch(Exception e) {
@@ -54,7 +53,7 @@ public class SquareRobin extends JFrame implements ActionListener {
 	}
 	
 	private boolean parseInput() {
-		String cell = "";
+		String cell;
 		
 		this.clubs.clear();
 		for (int i = 0; i < this.inputTable.getRowCount(); i++) {
@@ -266,4 +265,5 @@ public class SquareRobin extends JFrame implements ActionListener {
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new SwingStartUp());
 	}
+
 }
